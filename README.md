@@ -1,6 +1,6 @@
 # Wolfgang.Audit
 
-An EF Core change-tracking library. Intercepts `DbContext.SaveChanges` / `SaveChangesAsync` and writes a row-by-row audit history (one **header** per changed entity + per-column **detail** rows) into the same transaction as the user's save — so audit data and user data either both commit or both roll back, atomically.
+An EF Core change-tracking library. Calling `context.SaveChangesWithAuditAsync(...)` instead of `SaveChangesAsync` captures every Insert / Update / Delete via `ChangeTracker` and writes a row-by-row audit history — one **header** per changed entity plus per-column **detail** rows — into the **same transaction** as the user's save. Either both commit or both roll back, atomically. Uses EF Core's `IExecutionStrategy` under the hood so transient retries still work.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-6.0%20%7C%208.0%20%7C%2010.0-purple.svg)](https://dotnet.microsoft.com/)
@@ -38,13 +38,9 @@ var auditOptions = new AuditOptions
     ValueSerializer = new StringAuditValueSerializer(),
     EntityKeySerializer = new PipeDelimitedEntityKeySerializer(),
 };
+IAuditUserProvider userProvider = new MyUserProvider();
 
-// 2. Construct the interceptor with an IAuditUserProvider.
-var interceptor = new AuditSaveChangesInterceptor(
-    new MyUserProvider(),
-    auditOptions);
-
-// 3. Wire it into your DbContext.
+// 2. Tell EF Core about the audit entity types in OnModelCreating.
 public class AppDbContext : DbContext
 {
     private readonly AuditOptions _auditOptions;
@@ -57,12 +53,16 @@ public class AppDbContext : DbContext
         => modelBuilder.ApplyAuditing(_auditOptions);
 }
 
-// 4. Save normally; the interceptor handles the rest.
-await using var ctx = new AppDbContext(/* options including AddInterceptors(interceptor) */, auditOptions);
+// 3. Call SaveChangesWithAuditAsync instead of SaveChangesAsync.
+await using var ctx = new AppDbContext(contextOptions, auditOptions);
 ctx.Customers.Add(new Customer { Name = "Alice" });
-await ctx.SaveChangesAsync();
+await ctx.SaveChangesWithAuditAsync(userProvider, auditOptions);
 // AuditHeader + AuditDetail rows for the insert are now in the same transaction.
 ```
+
+### Why an extension method instead of an interceptor?
+
+EF Core's implicit transaction commits *before* `SavedChangesAsync` fires (see [efcore#37131](https://github.com/dotnet/efcore/issues/37131)), so an interceptor cannot guarantee that audit rows commit in the same transaction as the user's data. Owning the transaction at the call site — what `SaveChangesWithAuditAsync` does via `IExecutionStrategy.ExecuteInTransactionAsync` — is the canonical pattern the EF Core team recommends. The cost is one extra method name to learn; the win is real atomicity, including for database-generated primary keys.
 
 Two end-to-end samples ship in [`examples/`](./examples):
 

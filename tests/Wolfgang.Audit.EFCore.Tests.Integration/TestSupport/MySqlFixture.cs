@@ -18,12 +18,11 @@ public sealed class MySqlFixture : IAsyncLifetime, IProviderFixture
 
     public Task DisposeAsync() => _container.DisposeAsync().AsTask();
 
-    public DbContextOptions<TestDbContext> CreateContextOptions(AuditSaveChangesInterceptor interceptor)
+    public DbContextOptions<TestDbContext> CreateContextOptions()
     {
         var connectionString = _container.GetConnectionString();
         return new DbContextOptionsBuilder<TestDbContext>()
             .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
-            .AddInterceptors(interceptor)
             .Options;
     }
 }

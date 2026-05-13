@@ -18,11 +18,10 @@ public sealed class PostgresFixture : IAsyncLifetime, IProviderFixture
 
     public Task DisposeAsync() => _container.DisposeAsync().AsTask();
 
-    public DbContextOptions<TestDbContext> CreateContextOptions(AuditSaveChangesInterceptor interceptor)
+    public DbContextOptions<TestDbContext> CreateContextOptions()
     {
         return new DbContextOptionsBuilder<TestDbContext>()
             .UseNpgsql(_container.GetConnectionString())
-            .AddInterceptors(interceptor)
             .Options;
     }
 }

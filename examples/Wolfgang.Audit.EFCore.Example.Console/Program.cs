@@ -10,13 +10,10 @@ var auditOptions = new AuditOptions
     EntityKeySerializer = new PipeDelimitedEntityKeySerializer(),
 };
 
-var interceptor = new AuditSaveChangesInterceptor(
-    new StaticAuditUserProvider("alice@example.com"),
-    auditOptions);
+var userProvider = new StaticAuditUserProvider("alice@example.com");
 
 var contextOptions = new DbContextOptionsBuilder<AppDbContext>()
     .UseSqlite("DataSource=audit-example.db")
-    .AddInterceptors(interceptor)
     .Options;
 
 await using (var setup = new AppDbContext(contextOptions, auditOptions))
@@ -28,11 +25,11 @@ await using (var setup = new AppDbContext(contextOptions, auditOptions))
 await using (var ctx = new AppDbContext(contextOptions, auditOptions))
 {
     ctx.Products.Add(new Product { Name = "Widget", Price = 9.99m });
-    await ctx.SaveChangesAsync();
+    await ctx.SaveChangesWithAuditAsync(userProvider, auditOptions);
 
     var widget = await ctx.Products.SingleAsync();
     widget.Price = 12.49m;
-    await ctx.SaveChangesAsync();
+    await ctx.SaveChangesWithAuditAsync(userProvider, auditOptions);
 }
 
 await using (var ctx = new AppDbContext(contextOptions, auditOptions))

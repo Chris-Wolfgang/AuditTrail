@@ -16,13 +16,9 @@ builder.Services.AddSingleton(new AuditOptions
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuditUserProvider, HttpContextAuditUserProvider>();
 
-builder.Services.AddScoped<AuditSaveChangesInterceptor>();
-
-builder.Services.AddDbContext<AppDbContext>((sp, options) =>
+builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options
-        .UseSqlite("DataSource=audit-webapi-example.db")
-        .AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>());
+    options.UseSqlite("DataSource=audit-webapi-example.db");
 });
 
 var app = builder.Build();
@@ -35,10 +31,14 @@ using (var scope = app.Services.CreateScope())
 
 // Add a product. The acting human's identity (HTTP header X-User) is captured as
 // OnBehalfOfUserId; the running service account ("svc-orders") is captured as UserId.
-app.MapPost("/products", async (Product product, AppDbContext ctx) =>
+app.MapPost("/products", async (
+    Product product,
+    AppDbContext ctx,
+    IAuditUserProvider userProvider,
+    AuditOptions auditOptions) =>
 {
     ctx.Products.Add(product);
-    await ctx.SaveChangesAsync();
+    await ctx.SaveChangesWithAuditAsync(userProvider, auditOptions);
     return Results.Created($"/products/{product.ProductId}", product);
 });
 

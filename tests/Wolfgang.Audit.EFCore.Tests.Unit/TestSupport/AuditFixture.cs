@@ -29,7 +29,6 @@ public sealed class AuditFixture : IDisposable
         };
 
         UserProvider = new StaticAuditUserProvider(userId, onBehalfOfUserId);
-        Interceptor = new AuditSaveChangesInterceptor(UserProvider, Options);
 
         _connection = new SqliteConnection("Filename=:memory:");
         _connection.Open();
@@ -45,16 +44,20 @@ public sealed class AuditFixture : IDisposable
 
     public StaticAuditUserProvider UserProvider { get; }
 
-    public AuditSaveChangesInterceptor Interceptor { get; }
-
     public TestDbContext CreateContext()
     {
         var builder = new DbContextOptionsBuilder<TestDbContext>()
-            .UseSqlite(_connection)
-            .AddInterceptors(Interceptor);
+            .UseSqlite(_connection);
 
         return new TestDbContext(builder.Options, Options);
     }
+
+    /// <summary>
+    /// Convenience wrapper so individual tests don't have to repeat the user-provider
+    /// + options arguments. Mirrors what real consumers do at the call site.
+    /// </summary>
+    public Task<int> SaveAsync(TestDbContext context, CancellationToken cancellationToken = default)
+        => context.SaveChangesWithAuditAsync(UserProvider, Options, cancellationToken);
 
     public void Dispose()
     {

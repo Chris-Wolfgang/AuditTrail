@@ -7,17 +7,17 @@ using Wolfgang.Audit.Serializers;
 namespace Wolfgang.Audit.Benchmarks;
 
 /// <summary>
-/// Compares <see cref="DbContext.SaveChanges"/> with and without the audit
-/// interceptor across Insert, Update, Delete, and mixed workloads. SQLite is used
-/// for a consistent, dependency-free baseline; the relative delta is what matters,
-/// not absolute numbers.
+/// Compares <c>SaveChangesAsync</c> (unaudited baseline) with
+/// <c>SaveChangesWithAuditAsync</c> across Insert, Lifecycle, and MixedStates
+/// workloads. SQLite is used for a consistent, dependency-free baseline; the
+/// relative delta is what matters, not absolute numbers.
 /// </summary>
 [MemoryDiagnoser]
 public class SaveChangesBenchmarks
 {
     private DbConnection _connection = null!;
     private AuditOptions _options = null!;
-    private AuditSaveChangesInterceptor _interceptor = null!;
+    private StaticAuditUserProvider _userProvider = null!;
 
     [Params(1, 10, 50)]
     public int BatchSize { get; set; }
@@ -33,9 +33,9 @@ public class SaveChangesBenchmarks
             ValueSerializer = new StringAuditValueSerializer(),
             EntityKeySerializer = new PipeDelimitedEntityKeySerializer(),
         };
-        _interceptor = new AuditSaveChangesInterceptor(new StaticAuditUserProvider(), _options);
+        _userProvider = new StaticAuditUserProvider();
 
-        using var seed = CreateAuditedContext();
+        using var seed = CreateContext(auditEnabled: true);
         seed.Database.EnsureCreated();
     }
 
@@ -45,151 +45,149 @@ public class SaveChangesBenchmarks
         _connection.Dispose();
     }
 
-    private BenchmarkDbContext CreateAuditedContext()
+    private BenchmarkDbContext CreateContext(bool auditEnabled)
     {
         return new BenchmarkDbContext(
             new DbContextOptionsBuilder<BenchmarkDbContext>()
                 .UseSqlite(_connection)
-                .AddInterceptors(_interceptor)
                 .Options,
-            _options);
+            auditOptions: auditEnabled ? _options : null);
     }
 
-    private BenchmarkDbContext CreateUnauditedContext()
+    private void Save(BenchmarkDbContext ctx, bool audited)
     {
-        return new BenchmarkDbContext(
-            new DbContextOptionsBuilder<BenchmarkDbContext>()
-                .UseSqlite(_connection)
-                .Options,
-            auditOptions: null);
+        if (audited)
+        {
+            ctx.SaveChangesWithAuditAsync(_userProvider, _options).GetAwaiter().GetResult();
+        }
+        else
+        {
+            ctx.SaveChanges();
+        }
     }
 
     [Benchmark(Baseline = true)]
     public void Insert_without_audit()
     {
-        using var ctx = CreateUnauditedContext();
+        using var ctx = CreateContext(auditEnabled: false);
         for (var i = 0; i < BatchSize; i++)
         {
             ctx.Customers.Add(new Customer { Name = $"User{i}", Email = $"u{i}@x.com", LoyaltyPoints = i });
         }
-        ctx.SaveChanges();
+        Save(ctx, audited: false);
     }
 
     [Benchmark]
     public void Insert_with_audit()
     {
-        using var ctx = CreateAuditedContext();
+        using var ctx = CreateContext(auditEnabled: true);
         for (var i = 0; i < BatchSize; i++)
         {
             ctx.Customers.Add(new Customer { Name = $"User{i}", Email = $"u{i}@x.com", LoyaltyPoints = i });
         }
-        ctx.SaveChanges();
+        Save(ctx, audited: true);
     }
 
     [Benchmark]
     public void Lifecycle_without_audit()
     {
-        using var ctx = CreateUnauditedContext();
+        using var ctx = CreateContext(auditEnabled: false);
         var rows = new Customer[BatchSize];
         for (var i = 0; i < BatchSize; i++)
         {
             rows[i] = new Customer { Name = $"L{i}", Email = $"l{i}@x.com", LoyaltyPoints = i };
             ctx.Customers.Add(rows[i]);
         }
-        ctx.SaveChanges();
+        Save(ctx, audited: false);
 
         for (var i = 0; i < BatchSize; i++)
         {
             rows[i].Email = $"updated-{i}@x.com";
         }
-        ctx.SaveChanges();
+        Save(ctx, audited: false);
 
         for (var i = 0; i < BatchSize; i++)
         {
             ctx.Customers.Remove(rows[i]);
         }
-        ctx.SaveChanges();
+        Save(ctx, audited: false);
     }
 
     [Benchmark]
     public void Lifecycle_with_audit()
     {
-        using var ctx = CreateAuditedContext();
+        using var ctx = CreateContext(auditEnabled: true);
         var rows = new Customer[BatchSize];
         for (var i = 0; i < BatchSize; i++)
         {
             rows[i] = new Customer { Name = $"L{i}", Email = $"l{i}@x.com", LoyaltyPoints = i };
             ctx.Customers.Add(rows[i]);
         }
-        ctx.SaveChanges();
+        Save(ctx, audited: true);
 
         for (var i = 0; i < BatchSize; i++)
         {
             rows[i].Email = $"updated-{i}@x.com";
         }
-        ctx.SaveChanges();
+        Save(ctx, audited: true);
 
         for (var i = 0; i < BatchSize; i++)
         {
             ctx.Customers.Remove(rows[i]);
         }
-        ctx.SaveChanges();
+        Save(ctx, audited: true);
     }
 
     [Benchmark]
     public void MixedStates_per_save_without_audit()
     {
-        // First, seed half the batch so we have rows to update/delete in the measured save.
-        using var seedCtx = CreateUnauditedContext();
+        using var seedCtx = CreateContext(auditEnabled: false);
         var existing = new Customer[BatchSize];
         for (var i = 0; i < BatchSize; i++)
         {
             existing[i] = new Customer { Name = $"E{i}", LoyaltyPoints = i };
             seedCtx.Customers.Add(existing[i]);
         }
-        seedCtx.SaveChanges();
+        Save(seedCtx, audited: false);
         seedCtx.Dispose();
 
-        using var ctx = CreateUnauditedContext();
+        using var ctx = CreateContext(auditEnabled: false);
         ctx.Customers.AttachRange(existing);
-        // Update first half.
         for (var i = 0; i < BatchSize / 2; i++)
         {
             existing[i].Email = $"u{i}@x.com";
-            ctx.Entry(existing[i]).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            ctx.Entry(existing[i]).State = EntityState.Modified;
         }
-        // Delete second half.
         for (var i = BatchSize / 2; i < BatchSize; i++)
         {
             ctx.Customers.Remove(existing[i]);
         }
-        // Insert new ones.
         for (var i = 0; i < BatchSize; i++)
         {
             ctx.Customers.Add(new Customer { Name = $"N{i}", LoyaltyPoints = i });
         }
-        ctx.SaveChanges();
+        Save(ctx, audited: false);
     }
 
     [Benchmark]
     public void MixedStates_per_save_with_audit()
     {
-        using var seedCtx = CreateAuditedContext();
+        using var seedCtx = CreateContext(auditEnabled: true);
         var existing = new Customer[BatchSize];
         for (var i = 0; i < BatchSize; i++)
         {
             existing[i] = new Customer { Name = $"E{i}", LoyaltyPoints = i };
             seedCtx.Customers.Add(existing[i]);
         }
-        seedCtx.SaveChanges();
+        Save(seedCtx, audited: true);
         seedCtx.Dispose();
 
-        using var ctx = CreateAuditedContext();
+        using var ctx = CreateContext(auditEnabled: true);
         ctx.Customers.AttachRange(existing);
         for (var i = 0; i < BatchSize / 2; i++)
         {
             existing[i].Email = $"u{i}@x.com";
-            ctx.Entry(existing[i]).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            ctx.Entry(existing[i]).State = EntityState.Modified;
         }
         for (var i = BatchSize / 2; i < BatchSize; i++)
         {
@@ -199,6 +197,6 @@ public class SaveChangesBenchmarks
         {
             ctx.Customers.Add(new Customer { Name = $"N{i}", LoyaltyPoints = i });
         }
-        ctx.SaveChanges();
+        Save(ctx, audited: true);
     }
 }

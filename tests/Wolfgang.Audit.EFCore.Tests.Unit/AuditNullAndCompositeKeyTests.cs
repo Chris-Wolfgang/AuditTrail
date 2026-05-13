@@ -15,7 +15,7 @@ public class AuditNullAndCompositeKeyTests
         await using (var context = fixture.CreateContext())
         {
             context.Customers.Add(new Customer { Name = "Alice", Email = null });
-            await context.SaveChangesAsync();
+            await fixture.SaveAsync(context);
         }
 
         await using var verify = fixture.CreateContext();
@@ -37,7 +37,7 @@ public class AuditNullAndCompositeKeyTests
         await using (var context = fixture.CreateContext())
         {
             context.OrderLines.Add(new OrderLine { OrderId = 7, LineNumber = 3, Description = "Widget" });
-            await context.SaveChangesAsync();
+            await fixture.SaveAsync(context);
         }
 
         await using var verify = fixture.CreateContext();

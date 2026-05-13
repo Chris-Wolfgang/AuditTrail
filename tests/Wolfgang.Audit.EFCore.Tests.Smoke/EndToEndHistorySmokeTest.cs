@@ -23,7 +23,7 @@ public class EndToEndHistorySmokeTest
             ValueSerializer = new StringAuditValueSerializer(),
             EntityKeySerializer = new PipeDelimitedEntityKeySerializer(),
         };
-        var interceptor = new AuditSaveChangesInterceptor(new StaticAuditUserProvider("smoke-user"), options);
+        var userProvider = new StaticAuditUserProvider("smoke-user");
 
         DbConnection connection = new SqliteConnection("Filename=:memory:");
         await connection.OpenAsync();
@@ -32,7 +32,6 @@ public class EndToEndHistorySmokeTest
             SmokeDbContext NewContext() => new(
                 new DbContextOptionsBuilder<SmokeDbContext>()
                     .UseSqlite(connection)
-                    .AddInterceptors(interceptor)
                     .Options,
                 options);
 
@@ -48,7 +47,7 @@ public class EndToEndHistorySmokeTest
             {
                 var order = new Order { CustomerName = "Alice", Total = 100m };
                 ctx.Orders.Add(order);
-                await ctx.SaveChangesAsync();
+                await ctx.SaveChangesWithAuditAsync(userProvider, options);
                 orderId = order.OrderId;
             }
 
@@ -57,7 +56,7 @@ public class EndToEndHistorySmokeTest
             {
                 var order = await ctx.Orders.SingleAsync();
                 order.Status = "Processing";
-                await ctx.SaveChangesAsync();
+                await ctx.SaveChangesWithAuditAsync(userProvider, options);
             }
 
             // 3. Update total (price adjustment).
@@ -65,7 +64,7 @@ public class EndToEndHistorySmokeTest
             {
                 var order = await ctx.Orders.SingleAsync();
                 order.Total = 95m;
-                await ctx.SaveChangesAsync();
+                await ctx.SaveChangesWithAuditAsync(userProvider, options);
             }
 
             // 4. Update status: Processing -> Shipped.
@@ -73,7 +72,7 @@ public class EndToEndHistorySmokeTest
             {
                 var order = await ctx.Orders.SingleAsync();
                 order.Status = "Shipped";
-                await ctx.SaveChangesAsync();
+                await ctx.SaveChangesWithAuditAsync(userProvider, options);
             }
 
             // 5. Delete.
@@ -81,7 +80,7 @@ public class EndToEndHistorySmokeTest
             {
                 var order = await ctx.Orders.SingleAsync();
                 ctx.Orders.Remove(order);
-                await ctx.SaveChangesAsync();
+                await ctx.SaveChangesWithAuditAsync(userProvider, options);
             }
 
             await using var verify = NewContext();

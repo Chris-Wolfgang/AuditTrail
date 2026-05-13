@@ -18,11 +18,10 @@ public sealed class SqlServerFixture : IAsyncLifetime, IProviderFixture
 
     public Task DisposeAsync() => _container.DisposeAsync().AsTask();
 
-    public DbContextOptions<TestDbContext> CreateContextOptions(AuditSaveChangesInterceptor interceptor)
+    public DbContextOptions<TestDbContext> CreateContextOptions()
     {
         return new DbContextOptionsBuilder<TestDbContext>()
             .UseSqlServer(_container.GetConnectionString())
-            .AddInterceptors(interceptor)
             .Options;
     }
 }

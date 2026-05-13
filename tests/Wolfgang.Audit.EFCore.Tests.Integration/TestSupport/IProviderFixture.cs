@@ -8,7 +8,7 @@ namespace Wolfgang.Audit.Tests.Integration.TestSupport;
 /// </summary>
 public interface IProviderFixture
 {
-    DbContextOptions<TestDbContext> CreateContextOptions(AuditSaveChangesInterceptor interceptor);
+    DbContextOptions<TestDbContext> CreateContextOptions();
 
     string ProviderName { get; }
 }
