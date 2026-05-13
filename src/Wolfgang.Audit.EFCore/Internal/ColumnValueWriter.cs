@@ -4,8 +4,8 @@ namespace Wolfgang.Audit.Internal;
 
 /// <summary>
 /// Bridges an <see cref="IAuditValueSerializer"/> back onto the strongly-typed
-/// <see cref="AuditDetail"/> columns. Routes <c>ValueText</c> / <c>ValueBinary</c>
-/// writes onto the matching properties.
+/// <see cref="AuditDetail"/> columns. Routes <c>WriteText</c> onto
+/// <see cref="AuditDetail.ValueText"/>.
 /// </summary>
 internal sealed class ColumnValueWriter : IAuditValueWriter
 {
@@ -19,10 +19,5 @@ internal sealed class ColumnValueWriter : IAuditValueWriter
     public void WriteText(string columnName, string? value)
     {
         _detail.ValueText = value;
-    }
-
-    public void WriteBinary(string columnName, byte[]? value)
-    {
-        _detail.ValueBinary = value;
     }
 }

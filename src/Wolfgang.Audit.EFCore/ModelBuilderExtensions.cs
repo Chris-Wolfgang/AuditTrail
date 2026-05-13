@@ -62,7 +62,6 @@ public static class ModelBuilderExtensions
             builder.Property(d => d.HeaderId).IsRequired();
             builder.Property(d => d.ColumnName).HasMaxLength(256).IsRequired();
             builder.Property(d => d.ValueText);
-            builder.Property(d => d.ValueBinary);
             builder.Property(d => d.ValueType).HasMaxLength(20).IsRequired();
 
             builder.HasOne(d => d.Header)
