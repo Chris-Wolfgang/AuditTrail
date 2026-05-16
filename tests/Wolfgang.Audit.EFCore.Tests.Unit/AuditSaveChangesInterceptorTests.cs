@@ -115,11 +115,14 @@ public class AuditSaveChangesInterceptorTests
         await using var verify = fixture.CreateContext();
         var deleteHeader = await verify
             .Set<AuditHeader>()
+            .Include(h => h.Details)
             .Where(h => h.Operation == AuditOperation.Delete)
             .SingleAsync();
 
         Assert.Equal("test-user", deleteHeader.UserId);
         Assert.Equal("1", deleteHeader.EntityKey);
+        // CaptureDeletedValues defaults to false → no detail rows on delete.
+        Assert.Empty(deleteHeader.Details);
     }
 
 
@@ -195,5 +198,54 @@ public class AuditSaveChangesInterceptorTests
 
         Assert.Equal(3, headers.Count);
         Assert.Single(headers.Select(h => h.TransactionId).Distinct());
+    }
+
+
+
+    [Fact]
+    public void SaveChanges_sync_when_interceptor_is_registered_writes_audit_rows_for_an_insert()
+    {
+        // The interceptor exposes both sync (SavingChanges / SavedChanges /
+        // SaveChangesFailed) and async hooks; the async path is covered elsewhere
+        // in this class. This test exercises the sync path directly to catch
+        // regressions in the synchronous transaction / capture / audit-save flow.
+        using var fixture = new InterceptorFixture();
+
+        using (var ctx = fixture.CreateContext())
+        {
+            ctx.Customers.Add(new Customer { Name = "SyncAlice", Email = "sa@example.com" });
+            ctx.SaveChanges();
+        }
+
+        using var verify = fixture.CreateContext();
+        var header = verify.Set<AuditHeader>().Include(h => h.Details).Single();
+        Assert.Equal(AuditOperation.Insert, header.Operation);
+        Assert.Equal("test-user", header.UserId);
+        var details = header.Details.ToDictionary(d => d.ColumnName, StringComparer.Ordinal);
+        Assert.Equal("SyncAlice", details["Name"].ValueText);
+        Assert.Equal("sa@example.com", details["Email"].ValueText);
+    }
+
+
+
+    [Fact]
+    public void SaveChanges_sync_when_interceptor_is_registered_and_user_owns_the_transaction_rolls_back_cleanly()
+    {
+        // Sync counterpart to the async transaction-rollback test. Proves the sync
+        // hook path (SavingChanges / SavedChanges) honors an existing user transaction
+        // and rolls back user data + audit rows together.
+        using var fixture = new InterceptorFixture();
+
+        using (var ctx = fixture.CreateContext())
+        {
+            using var tx = ctx.Database.BeginTransaction();
+            ctx.Customers.Add(new Customer { Name = "SyncRollback" });
+            ctx.SaveChanges();
+            tx.Rollback();
+        }
+
+        using var verify = fixture.CreateContext();
+        Assert.Empty(verify.Customers.ToList());
+        Assert.Empty(verify.Set<AuditHeader>().ToList());
     }
 }
