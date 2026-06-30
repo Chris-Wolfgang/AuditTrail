@@ -1299,8 +1299,11 @@ jobs:
       - name: Run InspectCode
         run: |
           # AuditTrail.slnx is the single root solution; resolve it dynamically so
-          # the step survives a rename.
-          SLN=$(ls *.slnx 2>/dev/null | head -1)
+          # the step survives a rename. Use a nullglob array rather than `ls` so
+          # names with dashes aren't treated as options (shellcheck SC2035/SC2012).
+          shopt -s nullglob
+          slnx_files=( ./*.slnx )
+          SLN="${slnx_files[0]}"
           if [ -z "$SLN" ]; then
             echo "::error::No .slnx solution found at repo root"
             exit 1
