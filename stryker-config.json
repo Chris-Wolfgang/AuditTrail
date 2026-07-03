@@ -10,9 +10,9 @@
       "progress"
     ],
     "thresholds": {
-      "high": 80,
-      "low": 65,
-      "break": 62
+      "high": 85,
+      "low": 70,
+      "break": 70
     },
     "ignore-methods": [
       "ConfigureAwait"
