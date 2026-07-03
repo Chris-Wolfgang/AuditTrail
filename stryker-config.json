@@ -5,7 +5,17 @@
       "tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit.csproj"
     ],
     "target-framework": "net8.0",
-    "reporters": [ "html", "progress" ],
-    "thresholds": { "high": 80, "low": 65, "break": 62 }
+    "reporters": [
+      "html",
+      "progress"
+    ],
+    "thresholds": {
+      "high": 80,
+      "low": 65,
+      "break": 62
+    },
+    "ignore-methods": [
+      "ConfigureAwait"
+    ]
   }
 }
