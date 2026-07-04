@@ -9,57 +9,14 @@ namespace Wolfgang.AuditTrail.Tests.Unit;
 
 
 /// <summary>
-/// Exercises the <see cref="AuditSaveChangesInterceptor"/> **synchronous** path
-/// (<c>SavingChanges</c> → <c>BeginAudit</c> → <c>SavedChanges</c> →
-/// <c>FinishAudit</c>), which the async suite doesn't reach. Mirrors the async
-/// insert/update/delete assertions via <c>SaveChanges()</c> so the sync
-/// begin/finish/commit orchestration is asserted, not just executed.
+/// Extends the interceptor's **synchronous** coverage to the update and delete
+/// operations. The sync insert + ambient-transaction rollback are already covered
+/// in <c>AuditSaveChangesInterceptorTests</c>; these add the sync
+/// <c>SavingChanges → SavedChanges → FinishAudit</c> path for updates and deletes
+/// (incl. captured delete values) so those branches are asserted, not just executed.
 /// </summary>
 public sealed class AuditSaveChangesInterceptorSyncPathTests
 {
-    [Fact]
-    public void SaveChanges_sync_writes_audit_rows_for_an_insert()
-    {
-        using var fixture = new InterceptorFixture();
-
-        using (var ctx = fixture.CreateContext())
-        {
-            ctx.Customers.Add(new Customer { Name = "Alice", Email = "alice@example.com" });
-            ctx.SaveChanges();
-        }
-
-        using var verify = fixture.CreateContext();
-        var header = verify.Set<AuditHeader>().Include(h => h.Details).Single();
-
-        Assert.Equal(AuditOperation.Insert, header.Operation);
-        Assert.Equal("test-user", header.UserId);
-        Assert.Contains("Customer", header.EntityType, StringComparison.Ordinal);
-        Assert.Equal("1", header.EntityKey);
-
-        var byColumn = header.Details.ToDictionary(d => d.ColumnName, StringComparer.Ordinal);
-        Assert.Equal("Alice", byColumn["Name"].ValueText);
-        Assert.Equal("alice@example.com", byColumn["Email"].ValueText);
-    }
-
-
-
-    [Fact]
-    public void SaveChanges_sync_recursion_guard_produces_exactly_one_header()
-    {
-        using var fixture = new InterceptorFixture();
-
-        using (var ctx = fixture.CreateContext())
-        {
-            ctx.Customers.Add(new Customer { Name = "Solo" });
-            ctx.SaveChanges();
-        }
-
-        using var verify = fixture.CreateContext();
-        Assert.Single(verify.Set<AuditHeader>().ToList());
-    }
-
-
-
     [Fact]
     public void SaveChanges_sync_writes_audit_rows_for_an_update()
     {
