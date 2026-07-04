@@ -39,7 +39,7 @@ jobs:
             10.0.x
 
       - name: Install dotnet-project-licenses
-        run: dotnet tool install --global dotnet-project-licenses
+        run: dotnet tool install --global dotnet-project-licenses --version 2.7.1
 
       - name: Restore (populates project.assets.json)
         run: dotnet restore
