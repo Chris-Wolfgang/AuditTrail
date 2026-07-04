@@ -53,14 +53,14 @@ public sealed class ModelBuilderConfigurationTests : IDisposable
 
     // Interface-mandated signatures; parameters are intentionally unused because a
     // unique key per call is exactly what disables the model cache.
-#pragma warning disable RCS1163 // Unused parameter
+#pragma warning disable RCS1163, S1172 // Unused parameter — intentional (unique key per call)
     private sealed class UncachedModelCacheKeyFactory : IModelCacheKeyFactory
     {
         public object Create(DbContext context, bool designTime) => new object();
 
         public object Create(DbContext context) => new object();
     }
-#pragma warning restore RCS1163
+#pragma warning restore RCS1163, S1172
 
     // Model metadata is immutable and outlives the context, so it is safe to read
     // after the context is disposed. Dispose it here so the helpers don't leak.
