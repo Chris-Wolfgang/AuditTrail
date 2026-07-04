@@ -24,12 +24,27 @@ Wolfgang.AuditTrail.AuditUser.OnBehalfOfUserId.get -> string?
 Wolfgang.AuditTrail.AuditUser.OnBehalfOfUserId.init -> void
 Wolfgang.AuditTrail.AuditUser.UserId.get -> string!
 Wolfgang.AuditTrail.AuditUser.UserId.init -> void
+Wolfgang.AuditTrail.AuditUser.Deconstruct(out string! UserId, out string? OnBehalfOfUserId) -> void
+Wolfgang.AuditTrail.AuditUser.Equals(Wolfgang.AuditTrail.AuditUser other) -> bool
+override Wolfgang.AuditTrail.AuditUser.GetHashCode() -> int
+static Wolfgang.AuditTrail.AuditUser.operator !=(Wolfgang.AuditTrail.AuditUser left, Wolfgang.AuditTrail.AuditUser right) -> bool
+static Wolfgang.AuditTrail.AuditUser.operator ==(Wolfgang.AuditTrail.AuditUser left, Wolfgang.AuditTrail.AuditUser right) -> bool
+~override Wolfgang.AuditTrail.AuditUser.Equals(object obj) -> bool
+~override Wolfgang.AuditTrail.AuditUser.ToString() -> string
 Wolfgang.AuditTrail.AuditValueColumn
 Wolfgang.AuditTrail.AuditValueColumn.AuditValueColumn(string! Name, bool IsNullable = true) -> void
 Wolfgang.AuditTrail.AuditValueColumn.IsNullable.get -> bool
 Wolfgang.AuditTrail.AuditValueColumn.IsNullable.init -> void
 Wolfgang.AuditTrail.AuditValueColumn.Name.get -> string!
 Wolfgang.AuditTrail.AuditValueColumn.Name.init -> void
+Wolfgang.AuditTrail.AuditValueColumn.<Clone>$() -> Wolfgang.AuditTrail.AuditValueColumn!
+Wolfgang.AuditTrail.AuditValueColumn.Deconstruct(out string! Name, out bool IsNullable) -> void
+Wolfgang.AuditTrail.AuditValueColumn.Equals(Wolfgang.AuditTrail.AuditValueColumn? other) -> bool
+override Wolfgang.AuditTrail.AuditValueColumn.Equals(object? obj) -> bool
+override Wolfgang.AuditTrail.AuditValueColumn.GetHashCode() -> int
+override Wolfgang.AuditTrail.AuditValueColumn.ToString() -> string!
+static Wolfgang.AuditTrail.AuditValueColumn.operator !=(Wolfgang.AuditTrail.AuditValueColumn? left, Wolfgang.AuditTrail.AuditValueColumn? right) -> bool
+static Wolfgang.AuditTrail.AuditValueColumn.operator ==(Wolfgang.AuditTrail.AuditValueColumn? left, Wolfgang.AuditTrail.AuditValueColumn? right) -> bool
 Wolfgang.AuditTrail.Entities.AuditDetail
 Wolfgang.AuditTrail.Entities.AuditDetail.AuditDetail() -> void
 Wolfgang.AuditTrail.Entities.AuditDetail.ColumnName.get -> string!
