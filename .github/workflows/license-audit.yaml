@@ -32,14 +32,18 @@ jobs:
           persist-credentials: false
 
       - name: Set up .NET
+        # 7.0.x (EOL) is installed only because the dotnet-project-licenses tool
+        # targets net7.0; the runner image no longer ships it, so the tool fails
+        # to launch without an explicit install. Do not remove.
         uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
         with:
           dotnet-version: |
+            7.0.x
             8.0.x
             10.0.x
 
       - name: Install dotnet-project-licenses
-        run: dotnet tool install --global dotnet-project-licenses
+        run: dotnet tool install --global dotnet-project-licenses --version 2.7.1
 
       - name: Restore (populates project.assets.json)
         run: dotnet restore

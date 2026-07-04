@@ -7,7 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-_(empty — open this section as work for v0.2.0 begins.)_
+_(empty — open this section as work for the next release begins.)_
+
+## [0.1.1] — 2026-07-02
+
+Maintenance release: dependency updates plus substantial internal test, CI, and
+documentation hardening. **No public API changes** — a drop-in upgrade from 0.1.0.
+
+### Changed
+
+- `Wolfgang.AuditTrail.TestKit.Xunit` now depends on **FsCheck.Xunit 3.x**
+  (was 2.16.x). Consumers inheriting the contract-test bases receive FsCheck 3.x
+  transitively; the TestKit public surface is unchanged.
+- Bumped shipped dependencies (`System.Memory`, `Microsoft.Extensions.*`) and
+  test infrastructure (`Npgsql`, `Testcontainers.*`, `coverlet.collector`,
+  `xunit.runner.visualstudio`, `Serilog.Settings.Configuration`).
+
+### Fixed
+
+- Testcontainers integration fixtures use the image-parameter builder
+  constructors (the parameterless ones are obsolete — `CS0618`).
+- Cleared a `VSTHRD103` false positive on `DbSet.Add` surfaced by the analyzer
+  bump (EF Core's `AddAsync` is only for special value generators).
+
+### Internal (no consumer impact)
+
+- **Mutation testing (Stryker)** wired as a scheduled release-quality gate; the
+  EF Core mutation score was hardened from 63.9% to ~79% via targeted tests
+  (model configuration, serializer wire format, capture/schema branches,
+  interceptor exception messages and sync path, null guards).
+- New CI workflows: license audit (generates `THIRD-PARTY-NOTICES`), OSSF
+  Scorecard, workflow-security (actionlint + zizmor), and build-reproducibility
+  verification. All GitHub Actions are SHA-pinned.
+- New docs: Architecture Decision Records (`docs/adr/`), a STRIDE threat model,
+  a major-version migration-guide template, and a mutation-testing guide.
 
 ## [0.1.0] — 2026-06-28
 
