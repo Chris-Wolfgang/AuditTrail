@@ -1,0 +1,8 @@
+# Analyzer rules relaxed for example projects
+
+[*.cs]
+
+# VSTHRD103 flags DbSet<T>.Add and suggests AddAsync. That's a false positive for
+# EF Core: Add does not block, and AddAsync exists only for special value generators
+# (HiLo/sequences), not for normal use. The example apps seed sample data via Add.
+dotnet_diagnostic.VSTHRD103.severity = none

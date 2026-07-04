@@ -8,6 +8,12 @@ updates:
     labels:
       - "dependencies"
       - "dotnet"
+    ignore:
+      # The FsCheck.Xunit 3.x migration is done (#175). Keep holding *future major*
+      # bumps (4.x+) so a breaking API change to the published contract-test bases
+      # is taken as a deliberate migration, not auto-proposed. Minor/patch flow.
+      - dependency-name: "FsCheck.Xunit"
+        update-types: ["version-update:semver-major"]
     groups:
       dotnet-dependencies:
         patterns:

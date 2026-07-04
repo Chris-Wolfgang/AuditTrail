@@ -8,7 +8,7 @@
     <IsPackable>true</IsPackable>
 
     <PackageId>Wolfgang.AuditTrail.Abstractions</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Title>Wolfgang.AuditTrail.Abstractions</Title>
     <Authors>Chris Wolfgang</Authors>
     <Description>Core abstractions (interfaces, attributes, entity types) for the Wolfgang.AuditTrail family of EF audit/change-tracking libraries. Consumed by Wolfgang.AuditTrail.EntityFrameworkCore (and future Wolfgang.AuditTrail.EFLegacy) so contracts stay synchronized across ORM implementations.</Description>
@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Memory" Version="4.6.3" />
   </ItemGroup>
 
 </Project>

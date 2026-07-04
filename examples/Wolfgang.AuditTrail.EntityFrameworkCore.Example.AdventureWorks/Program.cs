@@ -22,8 +22,7 @@ using Wolfgang.AuditTrail.Serializers;
 
 Console.WriteLine("📦 Starting SQL Server container + restoring AdventureWorks2022...");
 
-await using var container = new MsSqlBuilder()
-    .WithImage("mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04")
+await using var container = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04")
     .Build();
 await container.StartAsync();
 await RestoreAdventureWorksAsync(container);
