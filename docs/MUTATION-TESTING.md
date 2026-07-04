@@ -23,13 +23,17 @@ with low mutation value).
 
 | | Score |
 |---|---|
-| Measured baseline (umbrella config, net8.0, local) | **69.4 %** |
-| `thresholds.break` (gate) | **62 %** |
+| Measured baseline (umbrella config, net8.0, local) | **~76–79 %** |
+| `thresholds.break` (gate) | **70 %** |
 
-> The score climbed from an initial 63.9% as the test suite was hardened against
-> surviving mutants (model configuration, serializer wire format, interceptor
-> exception messages). Work toward ~80% (the practical killable ceiling, once
-> equivalent mutants are set aside) continues in follow-up PRs.
+> The score climbed from an initial 63.9% → 76.5% (last clean full run) → ~79%
+> (estimated after the migrations/installer hardening) as the suite was hardened
+> against surviving mutants: model configuration, serializer wire format,
+> interceptor exception messages, capture skip/delete branches, null guards, and
+> the schema version-store / installer paths. `ConfigureAwait` is excluded via
+> `ignore-methods` (equivalent boolean mutant on every awaited call). The
+> remaining survivors are dominated by the interceptor's async/transaction
+> branches and genuine equivalent mutants; ~80% is the practical killable ceiling.
 
 The floor is set **below** the current baseline on purpose:
 
