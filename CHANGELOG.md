@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `AuditOptions.ValueSerializer` and `EntityKeySerializer` now default to
+  `StringAuditValueSerializer` / `PipeDelimitedEntityKeySerializer` when left
+  `null` — applied by the `AuditingDbContext` and `AuditSaveChangesInterceptor`
+  constructors (in addition to `AddEfCoreAuditing`). Non-DI construction such as
+  unit-test context factories and `IDesignTimeDbContextFactory` now works with a
+  plain `new AuditOptions()`; previously it threw two sequential
+  `ArgumentException`s. ([#185](https://github.com/Chris-Wolfgang/AuditTrail/issues/185))
+
 ### Known issues
 
 - **Performance:** the `Microsoft.EntityFrameworkCore.SqlServer` 8→9 and
