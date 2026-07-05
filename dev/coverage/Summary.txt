@@ -1,6 +1,6 @@
 Summary
-  Generated on: 07/04/2026 - 23:47:43
-  Coverage date: 07/04/2026 - 23:47:40
+  Generated on: 07/05/2026 - 00:21:10
+  Coverage date: 07/05/2026 - 00:21:07
   Parser: Cobertura
   Assemblies: 3
   Classes: 28
@@ -18,7 +18,7 @@ Summary
   Covered methods: 156
   Fully covered methods: 148
   Total methods: 156
-  Tag: 164_28723475272
+  Tag: 167_28724207753
 
 Wolfgang.AuditTrail.Abstractions                                            100%
   Wolfgang.AuditTrail.AuditOptions                                          100%
