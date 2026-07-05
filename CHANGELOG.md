@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+_(empty — open this section as work for the next release begins.)_
+
+## [0.2.0] — 2026-07-05
+
+Minor release. Non-DI construction of the audit context no longer requires wiring
+the default serializers by hand. Drop-in upgrade from 0.1.x — no public API surface
+change, and existing DI-based setups are unaffected.
+
 ### Changed
 
 - `AuditOptions.ValueSerializer` and `EntityKeySerializer` now default to
