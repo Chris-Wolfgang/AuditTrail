@@ -72,7 +72,7 @@ public sealed class AuditSchemaInstaller
         var detailFqn = QuoteIdentifier(context.Database.ProviderName, schema, detailTable);
         var headerFqn = QuoteIdentifier(context.Database.ProviderName, schema, headerTable);
 
-#pragma warning disable EF1002 // Identifiers validated + provider-quoted above; values come from AuditOptions, not user input.
+#pragma warning disable EF1002, S2077 // Identifiers validated + provider-quoted above; values come from AuditOptions, not user input. DDL identifiers cannot be parameterized.
         await context.Database
             .ExecuteSqlRawAsync($"DROP TABLE IF EXISTS {detailFqn}", cancellationToken)
             .ConfigureAwait(false);
@@ -80,7 +80,7 @@ public sealed class AuditSchemaInstaller
         await context.Database
             .ExecuteSqlRawAsync($"DROP TABLE IF EXISTS {headerFqn}", cancellationToken)
             .ConfigureAwait(false);
-#pragma warning restore EF1002
+#pragma warning restore EF1002, S2077
     }
 
 
