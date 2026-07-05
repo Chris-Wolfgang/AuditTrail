@@ -54,33 +54,33 @@ public class AuditSaveChangesInterceptorEdgeCasesTests
 
 
     [Fact]
-    public void Constructor_throws_when_value_serializer_is_null()
+    public void Constructor_defaults_value_serializer_when_null()
     {
-        var ex = Assert.Throws<ArgumentException>(() =>
-            new AuditSaveChangesInterceptor(
-                new StaticAuditUserProvider("u"),
-                new AuditOptions
-                {
-                    ValueSerializer     = null,
-                    EntityKeySerializer = new PipeDelimitedEntityKeySerializer(),
-                }));
-        Assert.Contains("ValueSerializer", ex.Message, StringComparison.Ordinal);
+        var options = new AuditOptions
+        {
+            ValueSerializer     = null,
+            EntityKeySerializer = new PipeDelimitedEntityKeySerializer(),
+        };
+
+        _ = new AuditSaveChangesInterceptor(new StaticAuditUserProvider("u"), options);
+
+        Assert.IsType<StringAuditValueSerializer>(options.ValueSerializer);
     }
 
 
 
     [Fact]
-    public void Constructor_throws_when_entity_key_serializer_is_null()
+    public void Constructor_defaults_entity_key_serializer_when_null()
     {
-        var ex = Assert.Throws<ArgumentException>(() =>
-            new AuditSaveChangesInterceptor(
-                new StaticAuditUserProvider("u"),
-                new AuditOptions
-                {
-                    ValueSerializer     = new StringAuditValueSerializer(),
-                    EntityKeySerializer = null,
-                }));
-        Assert.Contains("EntityKeySerializer", ex.Message, StringComparison.Ordinal);
+        var options = new AuditOptions
+        {
+            ValueSerializer     = new StringAuditValueSerializer(),
+            EntityKeySerializer = null,
+        };
+
+        _ = new AuditSaveChangesInterceptor(new StaticAuditUserProvider("u"), options);
+
+        Assert.IsType<PipeDelimitedEntityKeySerializer>(options.EntityKeySerializer);
     }
 
 
