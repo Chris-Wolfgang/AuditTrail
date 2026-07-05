@@ -179,11 +179,11 @@ public class ProviderSaveChangesBenchmarks
             BenchmarkProvider.PostgreSQL => "\"AuditHeader\"",
             _ => "AuditHeader",
         };
-#pragma warning disable EF1002 // Static SQL with no user input.
+#pragma warning disable EF1002, S2077 // Static SQL, table names are hardcoded provider literals with no user input.
         ctx.Database.ExecuteSqlRaw($"DELETE FROM {detailTable}");
         ctx.Database.ExecuteSqlRaw($"DELETE FROM {headerTable}");
         ctx.Database.ExecuteSqlRaw($"DELETE FROM {customerTable}");
-#pragma warning restore EF1002
+#pragma warning restore EF1002, S2077
     }
 
 
