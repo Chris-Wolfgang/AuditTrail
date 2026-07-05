@@ -17,15 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   plain `new AuditOptions()`; previously it threw two sequential
   `ArgumentException`s. ([#185](https://github.com/Chris-Wolfgang/AuditTrail/issues/185))
 
-### Known issues
-
-- **Performance:** the `Microsoft.EntityFrameworkCore.SqlServer` 8→9 and
-  `Microsoft.Data.SqlClient` 6→7 dependency bumps show a possible ~2.4× slowdown
-  on the `Insert_with_audit(BatchSize: 50)` benchmark (~50 ms vs ~21 ms). The
-  baseline measurement is noisy (±50%), so the exact factor is unconfirmed.
-  Tracked in [#195](https://github.com/Chris-Wolfgang/AuditTrail/issues/195) for
-  investigation and possible mitigation before the next release.
-
 ## [0.1.1] — 2026-07-02
 
 Maintenance release: dependency updates plus substantial internal test, CI, and
