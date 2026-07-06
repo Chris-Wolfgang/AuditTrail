@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <Version>0.1.1</Version>
+    <Version>0.2.0</Version>
     <!--
       Excluded from the v0.1.0 NuGet publish. This is a self-contained single-
       file exe (PublishSingleFile, AssemblyName=audittrail), NOT a `dotnet tool`

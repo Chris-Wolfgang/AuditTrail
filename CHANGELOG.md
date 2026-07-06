@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(empty — open this section as work for the next release begins.)_
 
+## [0.2.0] — 2026-07-05
+
+Minor release. Non-DI construction of the audit context no longer requires wiring
+the default serializers by hand. Drop-in upgrade from 0.1.x — no public API surface
+change, and existing DI-based setups are unaffected.
+
+### Changed
+
+- `AuditOptions.ValueSerializer` and `EntityKeySerializer` now default to
+  `StringAuditValueSerializer` / `PipeDelimitedEntityKeySerializer` when left
+  `null` — applied by the `AuditingDbContext` and `AuditSaveChangesInterceptor`
+  constructors (in addition to `AddEfCoreAuditing`). Non-DI construction such as
+  unit-test context factories and `IDesignTimeDbContextFactory` now works with a
+  plain `new AuditOptions()`; previously it threw two sequential
+  `ArgumentException`s. ([#185](https://github.com/Chris-Wolfgang/AuditTrail/issues/185))
+
 ## [0.1.1] — 2026-07-02
 
 Maintenance release: dependency updates plus substantial internal test, CI, and

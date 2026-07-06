@@ -48,16 +48,18 @@ public sealed class AuditOptions
     /// <summary>
     /// The value serializer used by the interceptor to encode column values into
     /// detail rows, and (via the schema installer) to drive the detail table's column
-    /// shape. Defaults to <c>StringAuditValueSerializer</c> (set by the registration
-    /// extension; may be <c>null</c> if accessed before registration).
+    /// shape. When left <c>null</c> it defaults to <c>StringAuditValueSerializer</c> —
+    /// applied by <c>AddEfCoreAuditing</c> and, for non-DI construction, by the
+    /// <c>AuditingDbContext</c> / <c>AuditSaveChangesInterceptor</c> constructors.
     /// </summary>
     public IAuditValueSerializer? ValueSerializer { get; set; }
 
     /// <summary>
     /// The entity-key serializer used to render primary-key values into the
-    /// <c>EntityKey</c> column on <c>AuditHeader</c>. Defaults to
-    /// <c>PipeDelimitedEntityKeySerializer</c> (set by the registration extension; may
-    /// be <c>null</c> if accessed before registration).
+    /// <c>EntityKey</c> column on <c>AuditHeader</c>. When left <c>null</c> it defaults
+    /// to <c>PipeDelimitedEntityKeySerializer</c> — applied by <c>AddEfCoreAuditing</c>
+    /// and, for non-DI construction, by the <c>AuditingDbContext</c> /
+    /// <c>AuditSaveChangesInterceptor</c> constructors.
     /// </summary>
     public IAuditEntityKeySerializer? EntityKeySerializer { get; set; }
 }
