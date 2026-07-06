@@ -105,6 +105,27 @@ public class AuditingDbContextConstructorTests
 
 
     [Fact]
+    public void Constructor_preserves_consumer_supplied_serializers()
+    {
+        // The `??=` defaulting must not overwrite non-null serializers the caller set.
+        var userProvider = new StaticAuditUserProvider("u");
+        var valueSerializer = new StringAuditValueSerializer();
+        var keySerializer = new PipeDelimitedEntityKeySerializer();
+        var auditOptions = new AuditOptions
+        {
+            ValueSerializer     = valueSerializer,
+            EntityKeySerializer = keySerializer,
+        };
+
+        using var ctx = new TestDbContext(BuildOptions(), userProvider, auditOptions);
+
+        Assert.Same(valueSerializer, auditOptions.ValueSerializer);
+        Assert.Same(keySerializer, auditOptions.EntityKeySerializer);
+    }
+
+
+
+    [Fact]
     public void AuditOptions_property_exposes_the_injected_options()
     {
         var userProvider = new StaticAuditUserProvider("u");

@@ -85,6 +85,26 @@ public class AuditSaveChangesInterceptorEdgeCasesTests
 
 
 
+    [Fact]
+    public void Constructor_preserves_consumer_supplied_serializers()
+    {
+        // The `??=` defaulting must not overwrite non-null serializers the caller set.
+        var valueSerializer = new StringAuditValueSerializer();
+        var keySerializer = new PipeDelimitedEntityKeySerializer();
+        var options = new AuditOptions
+        {
+            ValueSerializer     = valueSerializer,
+            EntityKeySerializer = keySerializer,
+        };
+
+        _ = new AuditSaveChangesInterceptor(new StaticAuditUserProvider("u"), options);
+
+        Assert.Same(valueSerializer, options.ValueSerializer);
+        Assert.Same(keySerializer, options.EntityKeySerializer);
+    }
+
+
+
     // ── Sync SavingChanges defensive cleanup catch ──────────────────────────
 
     [Fact]
