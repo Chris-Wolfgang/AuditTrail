@@ -6,7 +6,7 @@ The header/detail-per-column schema is the same shape that [Z.EntityFramework.Pl
 
 [![NuGet](https://img.shields.io/nuget/v/Wolfgang.AuditTrail.EntityFrameworkCore.svg?logo=nuget&label=NuGet)](https://www.nuget.org/packages/Wolfgang.AuditTrail.EntityFrameworkCore)
 [![NuGet downloads](https://img.shields.io/nuget/dt/Wolfgang.AuditTrail.EntityFrameworkCore.svg?logo=nuget&label=downloads)](https://www.nuget.org/packages/Wolfgang.AuditTrail.EntityFrameworkCore)
-[![PR build](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/AuditTrail/pr.yaml?event=pull_request&label=PR%20build&logo=github)](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/pr.yaml)
+[![PR build](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/AuditTrail/pr.yaml?event=pull_request_target&label=PR%20build&logo=github)](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/pr.yaml)
 [![Release](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/AuditTrail/release.yaml?label=release&logo=github)](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/release.yaml)
 [![CodeQL](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/codeql.yaml/badge.svg)](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/codeql.yaml)
 [![Benchmarks](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/benchmarks.yaml/badge.svg)](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/benchmarks.yaml)
