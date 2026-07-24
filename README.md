@@ -11,7 +11,7 @@ The header/detail-per-column schema is the same shape that [Z.EntityFramework.Pl
 [![CodeQL](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/codeql.yaml/badge.svg)](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/codeql.yaml)
 [![Benchmarks](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/benchmarks.yaml/badge.svg)](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/benchmarks.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-6.0%20%7C%208.0%20%7C%2010.0-purple.svg)](https://dotnet.microsoft.com/)
+[![.NET](https://img.shields.io/badge/.NET-Multi--Targeted-purple.svg)](https://dotnet.microsoft.com/)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/Chris-Wolfgang/AuditTrail)
 
 ---
