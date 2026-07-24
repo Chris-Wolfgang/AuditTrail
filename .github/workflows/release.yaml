@@ -703,14 +703,20 @@ jobs:
       # independently rebuild from the tag and confirm byte-for-byte reproducibility.
       # See docs/REPRODUCIBLE-BUILD.md for the consumer-side verification procedure.
       - name: Generate reproducible-build manifest
+        # Context values are passed via env (not inlined into the script) so a
+        # crafted tag name can't break out of the shell — zizmor template-injection.
+        env:
+          MANIFEST_REPO: ${{ github.repository }}
+          MANIFEST_TAG: ${{ github.event.release.tag_name }}
+          MANIFEST_COMMIT: ${{ github.sha }}
         run: |
           manifest="reproducible-build-manifest.json"
           {
             printf '{\n'
             printf '  "schemaVersion": 1,\n'
-            printf '  "repository": "%s",\n' "${{ github.repository }}"
-            printf '  "tag": "%s",\n' "${{ github.event.release.tag_name }}"
-            printf '  "commit": "%s",\n' "${{ github.sha }}"
+            printf '  "repository": "%s",\n' "$MANIFEST_REPO"
+            printf '  "tag": "%s",\n' "$MANIFEST_TAG"
+            printf '  "commit": "%s",\n' "$MANIFEST_COMMIT"
             printf '  "artifacts": [\n'
             sep=""
             for f in ./nuget-packages/*.nupkg; do
