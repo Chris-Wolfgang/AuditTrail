@@ -699,6 +699,32 @@ jobs:
       - name: Zip coverage report
         run: zip -r release-coverage.zip ./release-coverage
 
+      # Publishes the expected SHA-256 of every released .nupkg so a third party can
+      # independently rebuild from the tag and confirm byte-for-byte reproducibility.
+      # See docs/REPRODUCIBLE-BUILD.md for the consumer-side verification procedure.
+      - name: Generate reproducible-build manifest
+        run: |
+          manifest="reproducible-build-manifest.json"
+          {
+            printf '{\n'
+            printf '  "schemaVersion": 1,\n'
+            printf '  "repository": "%s",\n' "${{ github.repository }}"
+            printf '  "tag": "%s",\n' "${{ github.event.release.tag_name }}"
+            printf '  "commit": "%s",\n' "${{ github.sha }}"
+            printf '  "artifacts": [\n'
+            sep=""
+            for f in ./nuget-packages/*.nupkg; do
+              [ -e "$f" ] || continue
+              name="$(basename "$f")"
+              hash="$(sha256sum "$f" | cut -d' ' -f1)"
+              printf '%s    { "file": "%s", "sha256": "%s" }' "$sep" "$name" "$hash"
+              sep=$',\n'
+            done
+            printf '\n  ]\n}\n'
+          } > "$manifest"
+          echo "Generated $manifest:"
+          cat "$manifest"
+
       - name: Attach artifacts to release
         uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228  # v3.0.2
         with:
@@ -707,4 +733,5 @@ jobs:
             ./nuget-packages/*.nupkg
             ./nuget-packages/*.bom.json
             release-coverage.zip
+            reproducible-build-manifest.json
 
