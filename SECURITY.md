@@ -34,3 +34,35 @@ Facts a maintainer would need at 2am if the release identity is compromised. Gen
   - `Wolfgang.AuditTrail.Abstractions` — https://www.nuget.org/packages/Wolfgang.AuditTrail.Abstractions/
   - `Wolfgang.AuditTrail.EntityFrameworkCore` — https://www.nuget.org/packages/Wolfgang.AuditTrail.EntityFrameworkCore/
   - `Wolfgang.AuditTrail.TestKit.Xunit` — https://www.nuget.org/packages/Wolfgang.AuditTrail.TestKit.Xunit/
+
+## Verifying the supply chain
+
+Every release publishes evidence that the packages on NuGet were built from this
+repository, unmodified. Consumers (and enterprise procurement) can verify each link:
+
+- **Build provenance (SLSA).** `release.yaml` generates a signed provenance
+  attestation for every `.nupkg` via `actions/attest-build-provenance`. It proves
+  the package was built by this repo's release workflow at a specific commit.
+  Verify a downloaded package with the GitHub CLI:
+
+  ```bash
+  gh attestation verify Wolfgang.AuditTrail.EntityFrameworkCore.<version>.nupkg \
+    --repo Chris-Wolfgang/AuditTrail
+  ```
+
+- **Repository signature.** NuGet.org applies a repository signature to every
+  published package. Verify it with:
+
+  ```bash
+  nuget verify -Signatures Wolfgang.AuditTrail.EntityFrameworkCore.<version>.nupkg
+  ```
+
+  > Author (code-signing-certificate) signing is not currently applied — packages
+  > carry NuGet.org's repository signature plus the build-provenance attestation
+  > above. Author signing may be added later; it requires a code-signing certificate.
+
+- **SBOM.** A CycloneDX SBOM (`*.bom.json`) for each package is attached to the
+  GitHub Release, listing the exact dependency set the package was built against.
+
+- **Reproducible build.** Rebuild from the tag and compare hashes — see
+  [docs/REPRODUCIBLE-BUILD.md](docs/REPRODUCIBLE-BUILD.md).
