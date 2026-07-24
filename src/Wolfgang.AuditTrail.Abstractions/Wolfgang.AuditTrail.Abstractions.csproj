@@ -8,7 +8,7 @@
     <IsPackable>true</IsPackable>
 
     <PackageId>Wolfgang.AuditTrail.Abstractions</PackageId>
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
 
     <!-- Binary/ABI-compatibility gate (#51). PackageValidation compares the packed
          assemblies against the last published version on NuGet and fails the pack if
