@@ -11,7 +11,7 @@ The header/detail-per-column schema is the same shape that [Z.EntityFramework.Pl
 [![CodeQL](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/codeql.yaml/badge.svg)](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/codeql.yaml)
 [![Benchmarks](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/benchmarks.yaml/badge.svg)](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/benchmarks.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-6.0%20%7C%208.0%20%7C%2010.0-purple.svg)](https://dotnet.microsoft.com/)
+[![.NET](https://img.shields.io/badge/.NET-Multi--Targeted-purple.svg)](https://dotnet.microsoft.com/)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/Chris-Wolfgang/AuditTrail)
 
 ---
@@ -142,9 +142,11 @@ Two end-to-end samples ship in [`examples/`](./examples):
 
 ---
 
-## 🎯 Target frameworks
+## 🎯 Supported Frameworks
 
-| Package | TFMs |
+This repo ships three NuGet packages, each with its own TFM matrix:
+
+| Package | Target Frameworks |
 |---|---|
 | `Wolfgang.AuditTrail.Abstractions` | `netstandard2.0`, `net8.0`, `net10.0` |
 | `Wolfgang.AuditTrail.EntityFrameworkCore` | `net6.0`, `net8.0`, `net10.0` |
@@ -152,9 +154,9 @@ Two end-to-end samples ship in [`examples/`](./examples):
 
 The `audittrail` CLI (`src/Wolfgang.AuditTrail.Cli`) targets `net10.0` and is built from source; it isn't a published v0.1.0 package (see [Packages](#-packages)).
 
-EF Core 6, 7, 8, 9, and 10 are all supported (the library targets the LTS net6.0 / net8.0 / net10.0; an EF Core 7 consumer running on net6.0+ or net7.0+ resolves the appropriate TFM automatically).
+EF Core 6, 7, 8, 9, and 10 are all supported (the library targets the LTS `net6.0` / `net8.0` / `net10.0`; an EF Core 7 consumer running on `net6.0+` or `net7.0+` resolves the appropriate TFM automatically).
 
----
+See each package's NuGet page for the authoritative per-TFM compatibility matrix.
 
 ## 🧪 Testing
 
@@ -237,10 +239,21 @@ dotnet test AuditTrail.slnx -c Release
 
 ---
 
+## ✅ Verify the build
+
+The packages build deterministically — you can rebuild any release from source and
+confirm the compiled assemblies match what was published to NuGet, without trusting
+our CI. Each release attaches a `reproducible-build-manifest.json` with the expected
+SHA-256 of every `.nupkg`. Full consumer-side procedure:
+[docs/REPRODUCIBLE-BUILD.md](docs/REPRODUCIBLE-BUILD.md).
+
+---
+
 ## 📚 Documentation
 
 - **API reference:** <https://Chris-Wolfgang.github.io/AuditTrail/>
 - **Benchmark chart:** <https://Chris-Wolfgang.github.io/AuditTrail/dev/bench/>
+- **Verify the build:** [docs/REPRODUCIBLE-BUILD.md](docs/REPRODUCIBLE-BUILD.md)
 - **Contributing guide:** [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ---

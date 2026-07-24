@@ -9,6 +9,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(empty — open this section as work for the next release begins.)_
 
+## [0.2.1] — 2026-07-24
+
+Maintenance and supply-chain-hardening release. **No public API changes** — a
+drop-in upgrade from 0.2.0. The compiled assemblies are unchanged; this release
+adds build-integrity evidence and internal quality gates.
+
+### Added
+
+- **SLSA build-provenance attestation** for every published `.nupkg`
+  (`actions/attest-build-provenance`), verifiable with
+  `gh attestation verify <pkg> --repo Chris-Wolfgang/AuditTrail`.
+  ([#47](https://github.com/Chris-Wolfgang/AuditTrail/issues/47))
+- **Reproducible-build manifest** (`reproducible-build-manifest.json`, per-package
+  SHA-256) attached to each release, plus `docs/REPRODUCIBLE-BUILD.md` documenting
+  how third parties independently verify the build.
+  ([#65](https://github.com/Chris-Wolfgang/AuditTrail/issues/65))
+- **Binary/ABI-compatibility gate** — SDK PackageValidation now validates each pack
+  against the previous published version, so a non-major release cannot silently
+  introduce a binary break.
+  ([#51](https://github.com/Chris-Wolfgang/AuditTrail/issues/51))
+- `SECURITY.md` gains "Release path & compromise scope" and "Verifying the supply
+  chain" sections.
+  ([#61](https://github.com/Chris-Wolfgang/AuditTrail/issues/61),
+  [#47](https://github.com/Chris-Wolfgang/AuditTrail/issues/47))
+
+### Changed
+
+- Internal test and CI hardening (no consumer impact): approval/snapshot tests for
+  the generated migration DDL ([#49](https://github.com/Chris-Wolfgang/AuditTrail/issues/49)),
+  a continuous-fuzz suite over the serializers with a weekly workflow
+  ([#42](https://github.com/Chris-Wolfgang/AuditTrail/issues/42)), and bumped
+  benchmark dependencies
+  ([#207](https://github.com/Chris-Wolfgang/AuditTrail/pull/207)).
+
 ## [0.2.0] — 2026-07-05
 
 Minor release. Non-DI construction of the audit context no longer requires wiring
