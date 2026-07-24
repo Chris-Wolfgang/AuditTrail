@@ -239,10 +239,21 @@ dotnet test AuditTrail.slnx -c Release
 
 ---
 
+## ✅ Verify the build
+
+The packages build deterministically — you can rebuild any release from source and
+confirm the compiled assemblies match what was published to NuGet, without trusting
+our CI. Each release attaches a `reproducible-build-manifest.json` with the expected
+SHA-256 of every `.nupkg`. Full consumer-side procedure:
+[docs/REPRODUCIBLE-BUILD.md](docs/REPRODUCIBLE-BUILD.md).
+
+---
+
 ## 📚 Documentation
 
 - **API reference:** <https://Chris-Wolfgang.github.io/AuditTrail/>
 - **Benchmark chart:** <https://Chris-Wolfgang.github.io/AuditTrail/dev/bench/>
+- **Verify the build:** [docs/REPRODUCIBLE-BUILD.md](docs/REPRODUCIBLE-BUILD.md)
 - **Contributing guide:** [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ---
