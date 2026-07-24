@@ -10,6 +10,15 @@
 
     <PackageId>Wolfgang.AuditTrail.TestKit.Xunit</PackageId>
     <Version>0.2.0</Version>
+
+    <!-- Binary/ABI-compatibility gate (#51). PackageValidation compares the packed
+         assemblies against the last published version on NuGet and fails the pack if
+         a break is introduced; per SemVer a PATCH/MINOR bump must not break ABI.
+         Bump PackageValidationBaselineVersion to the new value AFTER each release
+         (see reference: keep the baseline at the last PUBLISHED version). Intentional
+         breaks in a MAJOR release are recorded in CompatibilitySuppressions.xml. -->
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>0.2.0</PackageValidationBaselineVersion>
     <Title>Wolfgang.AuditTrail.TestKit.Xunit</Title>
     <Authors>Chris Wolfgang</Authors>
     <Description>Shipped xunit contract-test bases for the Wolfgang.AuditTrail family. AuditValueSerializerContractTests&lt;TSut&gt; uses FsCheck.Xunit property-based testing plus explicit boundary theories to verify any IAuditValueSerializer implementation round-trips every supported CLR type. Each new serializer (binary, hybrid, custom) inherits the suite and provides CreateSut().</Description>
