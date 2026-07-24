@@ -52,6 +52,13 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <!--
+      Snapshot/approval testing of the generated migration DDL (issue #49).
+      Pinned to net10.0 only: the SQLite DDL that EF Core emits can differ
+      between EF versions, so a single-TFM snapshot avoids maintaining one
+      .verified.txt per target. The snapshot tests are #if NET10_0-gated to match.
+    -->
+    <PackageReference Include="Verify.Xunit" Version="31.12.5" />
   </ItemGroup>
 
 </Project>
