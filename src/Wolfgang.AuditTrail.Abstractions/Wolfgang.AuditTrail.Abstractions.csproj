@@ -17,7 +17,7 @@
          (see reference: keep the baseline at the last PUBLISHED version). Intentional
          breaks in a MAJOR release are recorded in CompatibilitySuppressions.xml. -->
     <EnablePackageValidation>true</EnablePackageValidation>
-    <PackageValidationBaselineVersion>0.2.0</PackageValidationBaselineVersion>
+    <PackageValidationBaselineVersion>0.2.1</PackageValidationBaselineVersion>
     <Title>Wolfgang.AuditTrail.Abstractions</Title>
     <Authors>Chris Wolfgang</Authors>
     <Description>Core abstractions (interfaces, attributes, entity types) for the Wolfgang.AuditTrail family of EF audit/change-tracking libraries. Consumed by Wolfgang.AuditTrail.EntityFrameworkCore (and future Wolfgang.AuditTrail.EFLegacy) so contracts stay synchronized across ORM implementations.</Description>
