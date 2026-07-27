@@ -66,6 +66,7 @@
     <Project Path="tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit.csproj" />
     <Project Path="tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration.csproj" />
     <Project Path="tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Smoke/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Smoke.csproj" />
+    <Project Path="tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Fuzz/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Fuzz.csproj" />
   </Folder>
 </Solution>
 

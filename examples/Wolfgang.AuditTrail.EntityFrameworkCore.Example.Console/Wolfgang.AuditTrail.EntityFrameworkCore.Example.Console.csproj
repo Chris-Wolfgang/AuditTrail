@@ -30,7 +30,7 @@
       vulnerable 2.1.x line transitively, which trips NU1903 (warning as
       error). Override here forces the safe 3.0.x bundle.
     -->
-    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.4" />
   </ItemGroup>
 
 </Project>
