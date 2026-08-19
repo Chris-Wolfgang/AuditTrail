@@ -1,0 +1,16 @@
+# zizmor configuration — see https://docs.zizmor.sh/configuration/
+#
+# rules.<id>.ignore is a list of "path[:line[:column]]" globs. Findings whose
+# location matches ANY entry are suppressed. Keep every waiver justified inline;
+# a bare entry is a technical-debt marker with no accountability.
+rules:
+  dangerous-triggers:
+    ignore:
+      # pr.yaml deliberately uses `pull_request_target` so gating checks run from
+      # the base-branch definition of pr.yaml (not from PR-authored copies), which
+      # is required for the coverage / analyzer / license gates to be tamper-proof
+      # on this workflow's design. AuditTrail has no external forked-PR
+      # contributors today, so the untrusted-code-checkout risk that motivates the
+      # zizmor warning does not apply here. Migration to `pull_request` (per the
+      # fleet-wide preference in CLAUDE MEMORY.md) is tracked separately.
+      - pr.yaml

@@ -41,7 +41,7 @@ public class UseAuditingTests
             ?.Interceptors;
 
         Assert.NotNull(interceptors);
-        Assert.Contains(interceptors!, i => i is AuditSaveChangesInterceptor);
+        Assert.Contains(interceptors, i => i is AuditSaveChangesInterceptor);
     }
 
 

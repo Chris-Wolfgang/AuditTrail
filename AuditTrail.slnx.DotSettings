@@ -1,0 +1,54 @@
+<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<!--
+	  ReSharper InspectCode noise-floor (see issue #231).
+
+	  Purpose: silence InspectCode inspections that are either (a) already covered
+	  and gated by the build's Roslyn analyzer stack (Meziantou, SonarAnalyzer,
+	  Roslynator, AsyncFixer, VS.Threading, BannedApiAnalyzers, .NET SDK analyzers)
+	  — double-reporting them here adds no signal — or (b) known false positives on
+	  this repo's multi-package / multi-TFM layout. The goal is 0 noise findings on
+	  a clean main so the first error after the job lands is always actionable.
+
+	  Only error-severity findings gate merge (pr.yaml inspectcode job); these
+	  entries drop the corresponding warnings from Code Scanning entirely.
+
+	  Follows the canonical noise-floor profile proven out in Extensions-Logging-Data
+	  (repo-template#431 rollout).
+	-->
+
+	<!-- CheckNamespace: all AuditTrail library code deliberately declares the flat
+	     root namespace `Wolfgang.AuditTrail` (plus `Wolfgang.AuditTrail.Entities` /
+	     `.Schema` / `.Serializers`), independent of which package (Abstractions,
+	     EntityFrameworkCore, TestKit.Xunit) the physical folder lives in. The
+	     Polyfills/ folder additionally declares the polyfill types under their
+	     runtime `System.*` namespace on TFMs that lack them. R# expects namespace
+	     to mirror the folder path — a valid check on a single-project solution,
+	     but noise for this multi-package fleet layout. -->
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CheckNamespace/@EntryIndexedValue">DO_NOT_SHOW</s:String>
+
+	<!-- Redundant-code style rules — covered in-build by Roslynator / IDE00xx and
+	     .editorconfig. RedundantUsingDirective in particular is a FALSE POSITIVE on
+	     src library projects: <ImplicitUsings> is enabled only for net10.0 (and
+	     net8.0 on some projects), so explicit System usings are REQUIRED on
+	     netstandard2.0 / net6.0 but look redundant to InspectCode (which analyses
+	     a single TFM). -->
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=RedundantUsingDirective/@EntryIndexedValue">DO_NOT_SHOW</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=RedundantNameQualifier/@EntryIndexedValue">DO_NOT_SHOW</s:String>
+
+	<!-- Nullability — owned by the Roslyn nullable reference-type analysis, not R#.
+	     The *AccordingTo(Nullable)APIContract rules flag defensive null-checks on
+	     non-null-annotated parameters; those checks are INTENTIONAL in a library
+	     that is called from nullable-oblivious code where callers can still pass
+	     null despite the annotation. RedundantSuppressNullableWarningExpression
+	     duplicates SonarAnalyzer S8969, which is the rule we actually gate on. -->
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=RedundantSuppressNullableWarningExpression/@EntryIndexedValue">DO_NOT_SHOW</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract/@EntryIndexedValue">DO_NOT_SHOW</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract/@EntryIndexedValue">DO_NOT_SHOW</s:String>
+
+	<!-- Public-API false positives: R# cannot see external consumers of a library's
+	     public auto-properties or record positional properties, so it reports them
+	     as unused (.Global variant). The NuGet-published types are the whole point
+	     of the library — treat both rules as noise. -->
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=UnusedAutoPropertyAccessor_002EGlobal/@EntryIndexedValue">DO_NOT_SHOW</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=NotAccessedPositionalProperty_002EGlobal/@EntryIndexedValue">DO_NOT_SHOW</s:String>
+</wpf:ResourceDictionary>

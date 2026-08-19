@@ -128,7 +128,7 @@ public class SmallCoverageGapsTests
         using var ctx = new AuditMigrationsDbContext(dbOptions, auditOptions);
         var entity = ctx.Model.FindEntityType(typeof(AuditSchemaVersion));
         Assert.NotNull(entity);
-        Assert.Equal("myaudit", entity!.GetSchema());
+        Assert.Equal("myaudit", entity.GetSchema());
     }
 
 

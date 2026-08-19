@@ -64,7 +64,8 @@ jobs:
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-        run: zizmor --format sarif . > zizmor.sarif
+        # --config points at repo-root zizmor.yml (rule waivers with rationale).
+        run: zizmor --config zizmor.yml --format sarif . > zizmor.sarif
 
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6

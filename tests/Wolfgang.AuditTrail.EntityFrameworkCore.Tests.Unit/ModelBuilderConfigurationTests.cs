@@ -48,17 +48,15 @@ public sealed class ModelBuilderConfigurationTests : IDisposable
             // testing can't attribute those mutants to these assertions. Force a
             // fresh model per build so each test actually exercises the config.
             .ReplaceService<IModelCacheKeyFactory, UncachedModelCacheKeyFactory>();
-        return new TestDbContext(builder.Options, new StaticAuditUserProvider("u", null), options);
+        return new TestDbContext(builder.Options, new StaticAuditUserProvider("u"), options);
     }
 
-    // Interface-mandated signatures; parameters are intentionally unused because a
-    // unique key per call is exactly what disables the model cache.
+    // Interface-mandated signature; the parameters are intentionally unused because
+    // a unique key per call is exactly what disables the model cache.
 #pragma warning disable RCS1163, S1172 // Unused parameter — intentional (unique key per call)
     private sealed class UncachedModelCacheKeyFactory : IModelCacheKeyFactory
     {
         public object Create(DbContext context, bool designTime) => new object();
-
-        public object Create(DbContext context) => new object();
     }
 #pragma warning restore RCS1163, S1172
 

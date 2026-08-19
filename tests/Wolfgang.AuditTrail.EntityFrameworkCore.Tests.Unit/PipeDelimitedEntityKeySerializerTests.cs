@@ -115,7 +115,7 @@ public class PipeDelimitedEntityKeySerializerTests
     {
         var sut = new PipeDelimitedEntityKeySerializer();
 
-        Assert.Equal(expected, sut.Serialize(new object?[] { value }));
+        Assert.Equal(expected, sut.Serialize(new[] { value }));
     }
 
 

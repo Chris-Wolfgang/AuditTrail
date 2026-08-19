@@ -84,6 +84,9 @@ public sealed class AuditCaptureColumnNameTests : IDisposable
 
 
 
+    // EF hydrates these via reflection; R# can't see the runtime usage.
+    // ReSharper disable UnusedMember.Local
+    // ReSharper disable UnusedAutoPropertyAccessor.Local
     private sealed class MappedItem
     {
         public int Id { get; set; }
@@ -91,4 +94,6 @@ public sealed class AuditCaptureColumnNameTests : IDisposable
         [Column("item_display")]
         public string DisplayName { get; set; } = string.Empty;
     }
+    // ReSharper restore UnusedAutoPropertyAccessor.Local
+    // ReSharper restore UnusedMember.Local
 }

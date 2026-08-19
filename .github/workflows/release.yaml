@@ -618,8 +618,13 @@ jobs:
 
       - name: Verify trusted-publishing username is configured
         shell: bash
+        env:
+          # Bind the workflow variable into an env var so the shell body reads
+          # it as "$NUGET_USER" instead of expanding ${{ vars.NUGET_USER }}
+          # directly into the run script (zizmor: template-injection).
+          NUGET_USER: ${{ vars.NUGET_USER }}
         run: |
-          if [ -z "${{ vars.NUGET_USER }}" ]; then
+          if [ -z "$NUGET_USER" ]; then
             echo "::error::vars.NUGET_USER is not set. Add the nuget.org account username under Settings → Secrets and variables → Actions → Variables, and create a Trusted Publishing policy on nuget.org for Chris-Wolfgang/AuditTrail / release.yaml."
             exit 1
           fi
@@ -744,12 +749,18 @@ jobs:
           subject-path: './nuget-packages/*.nupkg'
 
       - name: Attach artifacts to release
-        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228  # v3.0.2
-        with:
-          tag_name: ${{ github.event.release.tag_name }}
-          files: |
-            ./nuget-packages/*.nupkg
-            ./nuget-packages/*.bom.json
-            release-coverage.zip
-            reproducible-build-manifest.json
+        # Uses the runner-bundled `gh` CLI instead of an external action — the
+        # release already exists (user-tagged; this workflow only runs on
+        # release:published), so `gh release upload` attaches to it directly
+        # (zizmor: superfluous-actions).
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          gh release upload "$RELEASE_TAG" \
+            ./nuget-packages/*.nupkg \
+            ./nuget-packages/*.bom.json \
+            release-coverage.zip \
+            reproducible-build-manifest.json \
+            --clobber
 

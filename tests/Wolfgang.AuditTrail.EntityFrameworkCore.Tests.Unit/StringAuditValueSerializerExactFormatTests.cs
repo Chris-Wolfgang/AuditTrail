@@ -17,6 +17,9 @@ public sealed class StringAuditValueSerializerExactFormatTests
 {
     private enum Color
     {
+        // Kept so the enum has more than one member — the encoding test only
+        // exercises Green, but a single-member enum would be an odd shape.
+        // ReSharper disable once UnusedMember.Local
         Red,
         Green,
     }
