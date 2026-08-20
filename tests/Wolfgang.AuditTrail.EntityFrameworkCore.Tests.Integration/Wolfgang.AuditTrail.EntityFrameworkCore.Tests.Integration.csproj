@@ -49,6 +49,10 @@
     <PackageReference Include="Testcontainers.MsSql" Version="4.13.0" />
     <PackageReference Include="Testcontainers.PostgreSql" Version="4.13.0" />
     <PackageReference Include="Testcontainers.MySql" Version="4.13.0" />
+    <!-- NU1903 transitive override: Testcontainers 4.13.0 pulls SSH.NET 2025.1.0,
+         which has GHSA-q939-rpr3-3284. Pin to 2026.0.0 until Testcontainers
+         ships a release that references a patched version. -->
+    <PackageReference Include="SSH.NET" Version="2026.0.0" />
   </ItemGroup>
 
 </Project>
