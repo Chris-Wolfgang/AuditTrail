@@ -90,8 +90,8 @@ public sealed class AuditCaptureBranchTests
             .Select(d => d.ColumnName)
             .ToListAsync();
 
-        Assert.Contains(nameof(Customer.Name), columns);
-        Assert.DoesNotContain(nameof(Customer.Notes), columns);
+        Assert.Contains(nameof(Customer.Name), columns, StringComparer.Ordinal);
+        Assert.DoesNotContain(nameof(Customer.Notes), columns, StringComparer.Ordinal);
     }
 
 
