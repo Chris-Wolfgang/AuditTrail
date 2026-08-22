@@ -8,6 +8,11 @@ updates:
     labels:
       - "dependencies"
       - "dotnet"
+    # Cooldown: wait 7 days after a release before proposing an update, so freshly
+    # published packages have time to have any release-day issues surfaced by the
+    # ecosystem before they land in a PR here.
+    cooldown:
+      default-days: 7
     ignore:
       # The FsCheck.Xunit 3.x migration is done (#175). Keep holding *future major*
       # bumps (4.x+) so a breaking API change to the published contract-test bases
@@ -27,6 +32,8 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
+    cooldown:
+      default-days: 7
     groups:
       github-actions:
         patterns:

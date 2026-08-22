@@ -57,7 +57,7 @@ internal static class IHostBuilderExtensions
         bool reloadOnChange
     )
     {
-        builder.ConfigureAppConfiguration((context, configurationBuilder) =>
+        builder.ConfigureAppConfiguration((_, configurationBuilder) =>
         {
             configurationBuilder
                 .SetBasePath(AppContext.BaseDirectory)

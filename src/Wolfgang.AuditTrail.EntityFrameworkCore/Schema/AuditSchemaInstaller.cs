@@ -67,7 +67,7 @@ public sealed class AuditSchemaInstaller
         var headerTable = EnsureSafeIdentifier(_options.HeaderTableName, nameof(_options.HeaderTableName));
         var schema      = string.IsNullOrWhiteSpace(_options.Schema)
             ? null
-            : EnsureSafeIdentifier(_options.Schema!, nameof(_options.Schema));
+            : EnsureSafeIdentifier(_options.Schema, nameof(_options.Schema));
 
         var detailFqn = QuoteIdentifier(context.Database.ProviderName, schema, detailTable);
         var headerFqn = QuoteIdentifier(context.Database.ProviderName, schema, headerTable);

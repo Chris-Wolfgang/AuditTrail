@@ -31,7 +31,7 @@ public class PipeDelimitedEntityKeySerializerTests
         var a = sut.Serialize(new object?[] { new byte[] { 0x01, 0x02, 0x03 } });
         var b = sut.Serialize(new object?[] { new byte[] { 0x04, 0x05, 0x06 } });
 
-        Assert.NotEqual(a, b);
+        Assert.NotEqual(a, b, StringComparer.Ordinal);
         Assert.Equal("010203", a);
         Assert.Equal("040506", b);
     }
@@ -61,7 +61,7 @@ public class PipeDelimitedEntityKeySerializerTests
         var sa = sut.Serialize(new object?[] { a });
         var sb = sut.Serialize(new object?[] { b });
 
-        Assert.NotEqual(sa, sb);
+        Assert.NotEqual(sa, sb, StringComparer.Ordinal);
         // "o" (round-trip) format preserves full tick precision + Z kind suffix.
         Assert.EndsWith("Z", sa, StringComparison.Ordinal);
     }
@@ -79,8 +79,8 @@ public class PipeDelimitedEntityKeySerializerTests
         var c = new DateTimeOffset(2026, 1, 15, 14, 30, 45, TimeSpan.FromHours(2));
         var d = new DateTimeOffset(2026, 1, 15, 12, 30, 45, TimeSpan.Zero);
 
-        Assert.NotEqual(sut.Serialize(new object?[] { a }), sut.Serialize(new object?[] { b }));
-        Assert.NotEqual(sut.Serialize(new object?[] { c }), sut.Serialize(new object?[] { d }));
+        Assert.NotEqual(sut.Serialize(new object?[] { a }), sut.Serialize(new object?[] { b }), StringComparer.Ordinal);
+        Assert.NotEqual(sut.Serialize(new object?[] { c }), sut.Serialize(new object?[] { d }), StringComparer.Ordinal);
     }
 
 
@@ -115,7 +115,7 @@ public class PipeDelimitedEntityKeySerializerTests
     {
         var sut = new PipeDelimitedEntityKeySerializer();
 
-        Assert.Equal(expected, sut.Serialize(new object?[] { value }));
+        Assert.Equal(expected, sut.Serialize(new[] { value }));
     }
 
 

@@ -91,7 +91,7 @@ public class MigrateTests
 
             Assert.Equal(ExitCode.Success, exit);
             Assert.NotNull(runner.CapturedOptions);
-            Assert.Equal("Server=.;Database=fromenv", runner.CapturedOptions!.ConnectionString);
+            Assert.Equal("Server=.;Database=fromenv", runner.CapturedOptions.ConnectionString);
         }
         finally
         {

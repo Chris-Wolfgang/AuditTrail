@@ -34,7 +34,7 @@ internal static class DbContextItemBag
 
     public static T? GetItem<T>(this DbContext context, string key)
     {
-        if (_state.TryGetValue(context, out var state) && state!.TryGetValue(key, out var value))
+        if (_state.TryGetValue(context, out var state) && state.TryGetValue(key, out var value))
         {
             return (T?)value;
         }
@@ -47,7 +47,7 @@ internal static class DbContextItemBag
     {
         if (_state.TryGetValue(context, out var state))
         {
-            state!.Remove(key);
+            state.Remove(key);
         }
     }
 

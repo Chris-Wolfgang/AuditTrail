@@ -37,7 +37,7 @@ internal class Program
                         .ReadFrom.Configuration(context.Configuration)
                         .Enrich.WithProperty("Version", Assembly.GetEntryAssembly()?.GetName().Version);
                 })
-                .ConfigureServices((context, services) =>
+                .ConfigureServices((_, services) =>
                 {
                     services
                         .AddSingleton<IReporter, ConsoleReporter>()

@@ -180,7 +180,7 @@ public abstract class AuditValueSerializerContractTests<TSut>
     [Fact]
     public void Empty_byte_array_round_trips()
     {
-        var decoded = RoundTrip<byte[]>(Array.Empty<byte>());
+        var decoded = RoundTrip(Array.Empty<byte>());
         Assert.Equal(Array.Empty<byte>(), decoded);
     }
 

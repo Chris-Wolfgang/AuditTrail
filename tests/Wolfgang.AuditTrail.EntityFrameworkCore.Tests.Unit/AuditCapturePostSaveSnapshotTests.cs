@@ -120,6 +120,8 @@ public class AuditCapturePostSaveSnapshotTests
 
     // ── Fixture and entity isolated from the shared TestDbContext ───────────
 
+    // EF hydrates these via reflection; R# can't see the runtime usage.
+    // ReSharper disable UnusedAutoPropertyAccessor.Local
     [ExcludeFromCodeCoverage]
     private sealed class Widget
     {
@@ -129,6 +131,7 @@ public class AuditCapturePostSaveSnapshotTests
 
         public int RowVersion { get; set; }
     }
+    // ReSharper restore UnusedAutoPropertyAccessor.Local
 
 
 

@@ -29,7 +29,7 @@ public class AuditingDbContextSaveChangesTests
         var detailsByColumn = header.Details.ToDictionary(d => d.ColumnName, StringComparer.Ordinal);
         Assert.Equal("Alice", detailsByColumn["Name"].ValueText);
         Assert.Equal("alice@example.com", detailsByColumn["Email"].ValueText);
-        Assert.DoesNotContain("Notes", detailsByColumn.Keys);
+        Assert.DoesNotContain("Notes", detailsByColumn.Keys, StringComparer.Ordinal);
     }
 
     [Fact]
