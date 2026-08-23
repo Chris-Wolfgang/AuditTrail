@@ -4,17 +4,27 @@ name: Workflow security audit
 # for workflow-level security issues — untrusted-input injection into run blocks,
 # over-broad permissions, expression-context secret leaks (zizmor). Advisory:
 # surfaces findings as annotations / in the Security tab; does not gate PRs.
+#
+# The path filters below must cover every file zizmor reads, not just the
+# workflows: it also audits .github/dependabot.yml (dependabot-cooldown et al.)
+# and reads its rule waivers from zizmor.yml. A file left out of the filters
+# never re-triggers the audit, so a fix to it sits unreconciled — and stale
+# findings stay open in the Security tab — until the Monday cron fires.
 
 on:
   pull_request:
     paths:
       - '.github/workflows/**'
       - '.github/actions/**'
+      - '.github/dependabot.yml'
+      - 'zizmor.yml'
   push:
     branches: [ main ]
     paths:
       - '.github/workflows/**'
       - '.github/actions/**'
+      - '.github/dependabot.yml'
+      - 'zizmor.yml'
   schedule:
     - cron: '30 4 * * 1'   # Mondays 04:30 UTC
 
