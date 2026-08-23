@@ -37,6 +37,54 @@ jobs:
           # is visible at https://securityscorecards.dev.
           publish_results: true
 
+      # Suppress Scorecard findings that are known won't-fix for this repo,
+      # BEFORE the SARIF reaches code-scanning. Doing it here (rather than
+      # dismissing individual alerts) makes the suppression durable across
+      # weekly re-runs — Scorecard emits a fresh SARIF each run, and
+      # fingerprint drift means dismissals do not always survive.
+      #
+      # Suppressed PinnedDependenciesID sub-check (partial rule):
+      #   nugetCommand — `dotnet restore` is not hash-pinned. Every csproj in
+      #                  this repo already uses explicit PackageReference
+      #                  Versions (no floating ranges), and Dependabot's
+      #                  `nuget` ecosystem bumps transitives. No repo in the
+      #                  fleet ships packages.lock.json; adopting
+      #                  `--locked-mode` is a separate fleet-wide decision.
+      #
+      # Nothing else is suppressed. `gitHubAction not pinned` rows stay live so
+      # any regression to an @vN action ref without a SHA pin still fires, and
+      # the other Scorecard rules (DangerousWorkflowID, BranchProtectionID,
+      # CodeReviewID, CIIBestPracticesID) continue to report.
+      #
+      # The scorecard.dev score published to the transparency log (README
+      # badge) still counts every check; this only trims code-scanning noise.
+      - name: Filter suppressed findings from SARIF
+        shell: bash
+        env:
+          # Substrings matched against each PinnedDependenciesID result's
+          # message text. Order-independent; a single match suppresses.
+          SUPPRESSED_PIN_KINDS: 'nugetCommand not pinned'
+        run: |
+          if ! command -v jq >/dev/null 2>&1; then
+            echo "::error::jq not available on the runner; cannot filter SARIF."
+            exit 1
+          fi
+          jq \
+            --arg pinKinds "$SUPPRESSED_PIN_KINDS" \
+            '
+              .runs |= map(
+                .results |= map(select(
+                  (.ruleId // "") as $r
+                  | (.message.text // "") as $t
+                  | (($r == "PinnedDependenciesID") and ($t | test($pinKinds))) | not
+                ))
+              )
+            ' results.sarif > results.filtered.sarif
+          before=$(jq '[.runs[].results[]] | length' results.sarif)
+          after=$(jq '[.runs[].results[]] | length' results.filtered.sarif)
+          echo "Scorecard SARIF results: $before -> $after after suppression"
+          mv results.filtered.sarif results.sarif
+
       - name: Upload artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
