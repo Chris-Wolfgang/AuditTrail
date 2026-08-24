@@ -1,0 +1,108 @@
+name: AOT Smoke
+
+# Publishes a tiny consumer with <PublishAot>true</PublishAot> (passed on the
+# publish command line, not in the csproj -- see the AotSmoke csproj comment
+# for why) and runs the native binary, proving that AuditingDbContext's
+# SaveChanges -> audit-capture -> serialize -> persist -> read-back path
+# survives trimming and Native AOT compilation when backed by an EF Core
+# compiled model.
+#
+# EF Core requires a compiled model under Native AOT -- runtime
+# OnModelCreating throws "Model building is not supported when publishing
+# with NativeAOT". The AotSmoke.Setup project (never AOT) owns AppDbContext,
+# generates that compiled model via `dotnet ef dbcontext optimize`, creates
+# the SQLite schema, and separately verifies MigrateAuditSchemaAsync -- the
+# migrations-diff pipeline is a permanent, by-design gap under compiled
+# models, not something AOT support closes. A production app publishing with
+# Native AOT installs/migrates its schema out-of-band (this library's
+# Wolfgang.AuditTrail.Cli `migrate` command, itself never AOT-published) and
+# only uses the compiled model for runtime CRUD -- this workflow mirrors that
+# split. Native AOT needs a C++ toolchain (clang + zlib), which is why this
+# runs on Linux CI rather than as a local check.
+
+on:
+  # NO `paths:` FILTER ON pull_request -- INTENTIONAL. If this is ever
+  # promoted to a required status check on main, a paths filter would let a
+  # PR that doesn't touch the filtered paths sit "Blocked" forever (the check
+  # never reports, it doesn't report "skipped"). See fleet precedent:
+  # ETL-SqlBulkCopy's aot-smoke.yaml and its own required-check history.
+  pull_request:
+    branches: [main, vNext]
+  push:
+    branches: [vNext]
+    paths:
+      - 'src/**'
+      - 'tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke/**'
+      - 'tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/**'
+      - '.github/workflows/aot-smoke.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aot-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  aot-smoke:
+    name: Publish & run Native AOT consumer
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: |
+            10.0.x
+
+      - name: Install Native AOT prerequisites
+        run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
+
+      - name: Install dotnet-ef
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Generate compiled model
+        run: |
+          set -euo pipefail
+          dotnet ef dbcontext optimize \
+            --project tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj \
+            --startup-project tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj \
+            --context AppDbContext \
+            --output-dir CompiledModels \
+            --namespace Wolfgang.AuditTrail.AotSmoke.CompiledModels
+
+      - name: Create schema and verify the schema migrator (non-AOT)
+        run: |
+          set -euo pipefail
+          dotnet run -c Release \
+            --project tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj \
+            -- "${{ runner.temp }}/aot-smoke.db"
+
+      - name: Publish Native AOT (linux-x64)
+        run: |
+          set -euo pipefail
+          dotnet publish tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.csproj \
+            -c Release -r linux-x64 -p:PublishAot=true -o aot-out 2>&1 | tee aot-publish.log
+
+      - name: Assert no AOT/trim warnings from this library
+        run: |
+          set -euo pipefail
+          # Catches warnings from the shipped library AND the smoke/compiled-model
+          # code itself -- both live under the Wolfgang.AuditTrail prefix.
+          if grep -iE 'IL[0-9]{4}' aot-publish.log | grep -i 'Wolfgang.AuditTrail'; then
+            echo "::error::Native AOT publish produced trim/AOT warnings referencing Wolfgang.AuditTrail"
+            exit 1
+          fi
+          echo "No AOT/trim warnings from Wolfgang.AuditTrail."
+
+      - name: Run the native binary
+        run: |
+          set -euo pipefail
+          ./aot-out/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke "${{ runner.temp }}/aot-smoke.db"
+          echo "Native AOT smoke exited $?."

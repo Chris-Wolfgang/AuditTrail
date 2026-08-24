@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Wolfgang.AuditTrail.AotSmoke</RootNamespace>
+    <AssemblyName>Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup</AssemblyName>
+
+    <!--
+      DELIBERATELY NOT PublishAot. This project owns AppDbContext and is the
+      design-time host `dotnet ef dbcontext optimize` uses to generate the
+      compiled model consumed by the sibling AotSmoke project (#53). It also
+      performs the two operations EF Core's compiled models explicitly do NOT
+      support: runtime schema creation (EnsureCreatedAsync) and the
+      migrations-diff pipeline (MigrateAuditSchemaAsync) — both need the full,
+      uncompiled runtime model. Setting PublishAot=true on a project (even
+      without ever publishing it) bakes an "IsNativeAot" feature switch into
+      its runtimeconfig.json that EF Core checks on first DbContext use, which
+      would break `dotnet ef` itself (chicken-and-egg) and these two
+      operations. AotSmoke gets PublishAot=true only via the `dotnet publish
+      -p:PublishAot=true` command line in aot-smoke.yaml, never in a csproj
+      that also needs runtime model building.
+    -->
+
+    <!--
+      Example/demo-style code: relax the strict-library analyzers that don't
+      apply to a runnable smoke consumer.
+    -->
+    <NoWarn>$(NoWarn);CA1515;CA1812;MA0004;MA0048</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Wolfgang.AuditTrail.EntityFrameworkCore\Wolfgang.AuditTrail.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <!--
+      Pin the SQLite native bundle to a version without GHSA-2m69-gcr7-jv3q.
+      Matches the pin in examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.Console.
+    -->
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.5" />
+    <!--
+      Microsoft.EntityFrameworkCore.Design 10.0.0 pulls System.Security.Cryptography.Xml
+      9.0.0 transitively, which trips NU1903 (multiple GHSA advisories, warning
+      as error). Override to the current patched 10.x line.
+    -->
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.11" />
+  </ItemGroup>
+
+</Project>

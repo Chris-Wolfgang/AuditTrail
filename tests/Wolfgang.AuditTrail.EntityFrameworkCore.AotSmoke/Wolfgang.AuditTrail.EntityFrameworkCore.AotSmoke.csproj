@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- Native AOT is net7.0+; net10.0 matches the library's newest target. -->
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>true</IsPublishable>
+    <RootNamespace>Wolfgang.AuditTrail.AotSmoke</RootNamespace>
+    <AssemblyName>Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke</AssemblyName>
+
+    <!--
+      PublishAot is DELIBERATELY NOT set here — pass it on the `dotnet publish`
+      command line instead (`-p:PublishAot=true`, see aot-smoke.yaml). EF Core
+      requires a compiled model under Native AOT (runtime OnModelCreating
+      throws "Model building is not supported when publishing with
+      NativeAOT"), and the AOT feature switch is baked into
+      runtimeconfig.json at BUILD time whenever PublishAot=true lives in the
+      csproj — including plain `dotnet build`/`dotnet run` — which would break
+      `dotnet ef dbcontext optimize` (the tool that generates that compiled
+      model) with the same exception. See
+      Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup for the
+      design-time host + the schema-install/migration operations that
+      genuinely cannot run under a compiled model at all.
+
+      The whole point: publish this consumer with Native AOT and run a real
+      SaveChanges -> audit-capture -> serialize -> persist -> read-back cycle
+      against the precompiled model, proving THIS library's
+      reflection-adjacent hot path (ColumnValueWriter,
+      PipeDelimitedEntityKeySerializer, StringAuditValueSerializer,
+      AuditSaveChangesInterceptor, NotAuditedAttribute discovery) survives
+      trimming and AOT compilation. EF Core's own AOT story beyond "use a
+      compiled model" is out of scope — see the warning filter in
+      aot-smoke.yaml, which only fails on IL2xxx/IL3050 referencing
+      Wolfgang.AuditTrail namespaces.
+    -->
+    <InvariantGlobalization>true</InvariantGlobalization>
+
+    <!--
+      Example/demo-style code: relax the strict-library analyzers that don't
+      apply to a runnable smoke consumer (mirrors
+      examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.Console).
+    -->
+    <NoWarn>$(NoWarn);CA1515;CA1812;MA0004;MA0048</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Reuses AppDbContext/Product/StaticAuditUserProvider AND the compiled
+      model `dotnet ef dbcontext optimize` generates into that project (see
+      aot-smoke.yaml) — both need to exist in a project without PublishAot.
+    -->
+    <ProjectReference Include="..\Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup\Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
+    <!--
+      Pin the SQLite native bundle to a version without GHSA-2m69-gcr7-jv3q.
+      Microsoft.EntityFrameworkCore.Sqlite 10.0.0 still pulls in the
+      vulnerable 2.1.x line transitively, which trips NU1903 (warning as
+      error). Override here forces the safe 3.0.x bundle. Matches the pin in
+      examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.Console.
+    -->
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.5" />
+  </ItemGroup>
+
+</Project>
