@@ -8,9 +8,10 @@ using Wolfgang.AuditTrail.Schema;
 // Two jobs, both of which need EF Core's real runtime model builder and
 // therefore cannot run inside the AOT-published sibling project:
 //
-//   1. `dotnet ef dbcontext optimize` targets AppDbContext (defined below) in
-//      THIS project to generate the compiled model the AotSmoke project uses
-//      via `.UseModel(AppDbContextModel.Instance)`.
+//   1. `dotnet ef dbcontext optimize` (run with THIS project as
+//      --startup-project) targets AppDbContext, defined in the sibling
+//      AotSmoke.Model library, to generate the compiled model the AotSmoke
+//      project uses via `.UseModel(AppDbContextModel.Instance)`.
 //   2. At workflow run time, this Program creates the SQLite schema the
 //      AOT-published binary will read/write (EnsureCreatedAsync), and
 //      separately verifies the schema-installer path (MigrateAuditSchemaAsync)
@@ -83,43 +84,4 @@ static async Task VerifySchemaMigratorAsync(string dbPath)
     }
 
     Console.WriteLine($"MigrateAuditSchemaAsync dry-run: {sql.Length} chars of DDL generated.");
-}
-
-namespace Wolfgang.AuditTrail.AotSmoke
-{
-    public class Product
-    {
-        public int ProductId { get; set; }
-
-        public string Name { get; set; } = string.Empty;
-
-        public decimal Price { get; set; }
-
-        [NotAudited]
-        public string InternalNotes { get; set; } = string.Empty;
-    }
-
-    public class AppDbContext : AuditingDbContext
-    {
-        public AppDbContext
-        (
-            DbContextOptions<AppDbContext> options,
-            IAuditUserProvider userProvider,
-            AuditOptions auditOptions
-        )
-            : base(options, userProvider, auditOptions)
-        {
-        }
-
-        public DbSet<Product> Products => Set<Product>();
-    }
-
-    public sealed class StaticAuditUserProvider : IAuditUserProvider
-    {
-        private readonly AuditUser _user;
-
-        public StaticAuditUserProvider(string userId) => _user = new AuditUser(userId);
-
-        public AuditUser GetCurrentUser() => _user;
-    }
 }

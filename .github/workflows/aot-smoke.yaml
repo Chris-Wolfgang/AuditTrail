@@ -74,7 +74,7 @@ jobs:
         run: |
           set -euo pipefail
           dotnet ef dbcontext optimize \
-            --project tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj \
+            --project tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Model/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Model.csproj \
             --startup-project tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj \
             --context AppDbContext \
             --output-dir CompiledModels \

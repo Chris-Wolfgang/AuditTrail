@@ -35,7 +35,9 @@
 
       See Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup for the
       design-time host + the schema-install/migration operations that
-      genuinely cannot run under a compiled model at all.
+      genuinely cannot run under a compiled model at all, and
+      AotSmoke.Model (referenced below) for why AppDbContext lives in a
+      separate Library project rather than in either Exe directly.
 
       The whole point: publish this consumer with Native AOT and run a real
       SaveChanges -> audit-capture -> serialize -> persist -> read-back cycle
@@ -62,10 +64,13 @@
   <ItemGroup>
     <!--
       Reuses AppDbContext/Product/StaticAuditUserProvider AND the compiled
-      model `dotnet ef dbcontext optimize` generates into that project (see
-      aot-smoke.yaml) — both need to exist in a project without PublishAot.
+      model `dotnet ef dbcontext optimize` generates into this project (see
+      aot-smoke.yaml). A Library reference, deliberately not .Setup (an Exe)
+      — Native AOT publish is always self-contained, and the SDK rejects a
+      self-contained executable referencing a non-self-contained one
+      (NETSDK1150).
     -->
-    <ProjectReference Include="..\Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup\Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj" />
+    <ProjectReference Include="..\Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Model\Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>
