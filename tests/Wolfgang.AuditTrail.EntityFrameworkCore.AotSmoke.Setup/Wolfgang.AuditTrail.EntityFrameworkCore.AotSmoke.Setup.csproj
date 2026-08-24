@@ -1,0 +1,72 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Wolfgang.AuditTrail.AotSmoke</RootNamespace>
+    <AssemblyName>Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup</AssemblyName>
+
+    <!--
+      DELIBERATELY NOT PublishAot. This is the design-time host `dotnet ef
+      dbcontext optimize` uses (as the startup project, with the sibling
+      AotSmoke project as the context-owning project) to generate the
+      compiled model + precompiled query interceptors consumed by AotSmoke
+      (#53). It also performs the two operations EF Core's compiled models
+      explicitly do NOT support: runtime schema creation
+      (EnsureCreatedAsync) and the migrations-diff pipeline
+      (MigrateAuditSchemaAsync) — both need the full, uncompiled runtime
+      model. Setting PublishAot=true on a project (even without ever
+      publishing it) bakes an "IsNativeAot" feature switch into its
+      runtimeconfig.json that EF Core checks on first DbContext use, which
+      would break `dotnet ef` itself (chicken-and-egg) and these two
+      operations.
+    -->
+
+    <!--
+      Example/demo-style code: relax the strict-library analyzers that don't
+      apply to a runnable smoke consumer.
+    -->
+    <NoWarn>$(NoWarn);CA1515;CA1812;MA0004;MA0048</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      AppDbContext/Product/StaticAuditUserProvider/the design-time factory
+      all live directly in AotSmoke (not a separate library) — dotnet-ef's
+      query-precompilation mode needs the DbContext type discoverable in the
+      same project as the LINQ query call sites it scans, and doesn't
+      resolve it transitively through a referenced project in that mode.
+      Referencing AotSmoke from here is safe: Setup is never published
+      self-contained, so it never trips NETSDK1150 the way the reverse
+      direction (AotSmoke -> an Exe) did.
+    -->
+    <ProjectReference Include="..\Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke\Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      dotnet-ef requires Microsoft.EntityFrameworkCore.Design on the STARTUP
+      project specifically, not just on the project that owns the DbContext.
+    -->
+    <!--
+      10.0.11, not 10.0.0: AotSmoke (referenced above) pulls Design >= 10.0.11
+      transitively via Microsoft.EntityFrameworkCore.Tasks; pinning below
+      that trips NU1605 (package downgrade, warning as error).
+    -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <!--
+      Microsoft.EntityFrameworkCore.Design pulls System.Security.Cryptography.Xml
+      9.0.0 transitively, which trips NU1903 (multiple GHSA advisories, warning
+      as error). Override to the current patched 10.x line.
+    -->
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.11" />
+  </ItemGroup>
+
+</Project>

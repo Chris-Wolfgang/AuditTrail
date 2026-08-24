@@ -1,0 +1,150 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- Native AOT is net7.0+; net10.0 matches the library's newest target. -->
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>true</IsPublishable>
+    <RootNamespace>Wolfgang.AuditTrail.AotSmoke</RootNamespace>
+    <AssemblyName>Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke</AssemblyName>
+
+    <!--
+      PublishAot is conditioned on RuntimeIdentifier being set (i.e. only when
+      `dotnet publish -r <rid>` actually runs — see aot-smoke.yaml) rather
+      than unconditionally true, for two independent reasons:
+
+      1. EF Core requires a compiled model under Native AOT (runtime
+         OnModelCreating throws "Model building is not supported when
+         publishing with NativeAOT"), and the AOT feature switch is baked
+         into runtimeconfig.json at BUILD time whenever PublishAot=true is
+         active — including plain `dotnet build`/`dotnet run` — which would
+         break `dotnet ef dbcontext optimize` (the tool that generates that
+         compiled model) with the same exception.
+      2. It must be a PROJECT-LOCAL property, never passed as a `-p:` global
+         on the publish command line: a global PublishAot=true leaks into
+         every ProjectReference's evaluation, including the outer builds of
+         the multi-targeted src/ libraries (net6.0, netstandard2.0, ...),
+         and NETSDK1207 ("Ahead-of-time compilation is not supported for the
+         target framework") fires for every non-AOT-capable TFM slice even
+         though only the net10.0 slice is ever actually selected. Keeping
+         PublishAot local to this csproj avoids that cascade entirely.
+
+      See Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup for the
+      design-time host + the schema-install/migration operations that
+      genuinely cannot run under a compiled model at all. AppDbContext lives
+      directly in this project (not a separate library) because query
+      precompilation needs the DbContext type discoverable in the same
+      project as the LINQ query call sites it's scanning — dotnet-ef does not
+      resolve it transitively through a referenced project in that mode.
+      Setup references this project (not the reverse) to reuse the same
+      types; that direction is safe because Setup is never published
+      self-contained.
+
+      The whole point: publish this consumer with Native AOT and run a real
+      SaveChanges -> audit-capture -> serialize -> persist -> read-back cycle
+      against the precompiled model, proving THIS library's
+      reflection-adjacent hot path (ColumnValueWriter,
+      PipeDelimitedEntityKeySerializer, StringAuditValueSerializer,
+      AuditSaveChangesInterceptor, NotAuditedAttribute discovery) survives
+      trimming and AOT compilation, and that it actually runs correctly
+      despite EF Core's own advisory trim/AOT warnings — see the
+      TreatWarningsAsErrors note below and the allowlisted-warning check in
+      aot-smoke.yaml.
+    -->
+    <PublishAot Condition="'$(RuntimeIdentifier)' != ''">true</PublishAot>
+    <InvariantGlobalization>true</InvariantGlobalization>
+
+    <!--
+      Query precompilation (Microsoft's official, still-experimental NativeAOT
+      recipe — https://learn.microsoft.com/ef/core/performance/nativeaot-and-precompiled-queries).
+      Without this, EF Core's compiled model still leaves entity-tracking
+      machinery (e.g. RuntimeTypeBase.EmptyShadowValuesFactory) to be built
+      lazily via Expression.Compile at first use, which throws the exact same
+      "Model building is not supported when publishing with NativeAOT"
+      exception the compiled model was supposed to eliminate. C# interceptors
+      generate the missing runtime code ahead of time instead. Opt-in required
+      per Microsoft's docs; interceptors are still an experimental C# feature.
+    -->
+    <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.EntityFrameworkCore.GeneratedInterceptors</InterceptorsNamespaces>
+
+    <!--
+      Directory.Build.props sets TreatWarningsAsErrors=true in Release, which
+      would turn ILC's trim/AOT analysis output into hard build failures
+      instead of warnings this project can actually inspect. EF Core's own
+      DbContext(DbContextOptions) constructor carries
+      [RequiresUnreferencedCode]/[RequiresDynamicCode] — EVERY DbContext
+      subclass in existence trips IL2026/IL3050 on that base call, including
+      AuditingDbContext here; that is EF Core's own documented, permanent AOT
+      limitation (https://aka.ms/efcore-docs-trimming), not something this
+      project's code can avoid. aot-smoke.yaml's warning-assertion step
+      allowlists that one specific, expected diagnostic and fails on anything
+      new from the Wolfgang.AuditTrail namespace.
+    -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+
+    <!--
+      Example/demo-style code: relax the strict-library analyzers that don't
+      apply to a runnable smoke consumer (mirrors
+      examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.Console).
+    -->
+    <NoWarn>$(NoWarn);CA1515;CA1812;MA0004;MA0048</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Wolfgang.AuditTrail.EntityFrameworkCore\Wolfgang.AuditTrail.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
+    <!--
+      Pin the SQLite native bundle to a version without GHSA-2m69-gcr7-jv3q.
+      Microsoft.EntityFrameworkCore.Sqlite 10.0.0 still pulls in the
+      vulnerable 2.1.x line transitively, which trips NU1903 (warning as
+      error). Override here forces the safe 3.0.x bundle. Matches the pin in
+      examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.Console.
+    -->
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.5" />
+    <!--
+      10.0.11, not 10.0.0: Microsoft.EntityFrameworkCore.Tasks (below) pulls
+      Design >= 10.0.11 transitively; pinning below that trips NU1605
+      (package downgrade, warning as error).
+    -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <!--
+      Microsoft.EntityFrameworkCore.Design pulls System.Security.Cryptography.Xml
+      9.0.0 transitively, which trips NU1903 (multiple GHSA advisories, warning
+      as error). Override to the current patched 10.x line.
+    -->
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.11" />
+    <!--
+      MSBuild integration that runs query precompilation (and regenerates the
+      compiled model) at publish time. PrivateAssets=all: a dev/build-time
+      tool, not something that should flow to anything downstream (nothing
+      references this project anyway, but matches the repo's convention for
+      build-only packages).
+    -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks" Version="10.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <!--
+      Microsoft's docs (https://github.com/dotnet/efcore/issues/35945)
+      recommend pinning Microsoft.CodeAnalysis.CSharp.Workspaces/
+      Workspaces.MSBuild to 4.13.0+ to avoid CS9137 from outdated transitive
+      refs. That pin is now BELOW the floor EF Core 10.0.11's own Design
+      package already requires (Microsoft.CodeAnalysis.CSharp >= 5.0.0) and
+      trips NU1107 instead — so the workaround is unnecessary here; EF Core
+      10 already carries a high enough Roslyn version on its own.
+    -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.0.0" />
+  </ItemGroup>
+
+</Project>
