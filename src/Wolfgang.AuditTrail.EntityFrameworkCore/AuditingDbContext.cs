@@ -30,6 +30,19 @@ namespace Wolfgang.AuditTrail;
 /// <c>options.UseAuditing(serviceProvider)</c>.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code>
+/// public class AppDbContext : AuditingDbContext
+/// {
+///     public AppDbContext(DbContextOptions options, IAuditUserProvider userProvider, AuditOptions auditOptions)
+///         : base(options, userProvider, auditOptions)
+///     {
+///     }
+///
+///     public DbSet&lt;Order&gt; Orders =&gt; Set&lt;Order&gt;();
+/// }
+/// </code>
+/// </example>
 public abstract class AuditingDbContext : DbContext
 {
     private readonly IAuditUserProvider _userProvider;

@@ -26,6 +26,14 @@ public static class ServiceCollectionExtensions
     /// at every call site — audit rows are written atomically in the same
     /// transaction.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// services.AddEfCoreAuditing&lt;ExampleUserProvider&gt;(options =&gt;
+    /// {
+    ///     options.CaptureDeletedValues = true;
+    /// });
+    /// </code>
+    /// </example>
     public static IServiceCollection AddEfCoreAuditing<TUserProvider>
     (
         this IServiceCollection services,

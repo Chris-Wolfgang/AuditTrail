@@ -8,6 +8,14 @@ namespace Wolfgang.AuditTrail;
 /// resolves it once per <c>SaveChanges</c> call and writes the result to every header
 /// row produced by that call.
 /// </remarks>
+/// <example>
+/// <code>
+/// public sealed class StaticAuditUserProvider : IAuditUserProvider
+/// {
+///     public AuditUser GetCurrentUser() =&gt; new("system");
+/// }
+/// </code>
+/// </example>
 public interface IAuditUserProvider
 {
     /// <summary>
