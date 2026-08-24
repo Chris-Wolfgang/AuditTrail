@@ -45,13 +45,28 @@
       reflection-adjacent hot path (ColumnValueWriter,
       PipeDelimitedEntityKeySerializer, StringAuditValueSerializer,
       AuditSaveChangesInterceptor, NotAuditedAttribute discovery) survives
-      trimming and AOT compilation. EF Core's own AOT story beyond "use a
-      compiled model" is out of scope — see the warning filter in
-      aot-smoke.yaml, which only fails on IL2xxx/IL3050 referencing
-      Wolfgang.AuditTrail namespaces.
+      trimming and AOT compilation, and that it actually runs correctly
+      despite EF Core's own advisory trim/AOT warnings — see the
+      TreatWarningsAsErrors note below and the allowlisted-warning check in
+      aot-smoke.yaml.
     -->
     <PublishAot Condition="'$(RuntimeIdentifier)' != ''">true</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
+
+    <!--
+      Directory.Build.props sets TreatWarningsAsErrors=true in Release, which
+      would turn ILC's trim/AOT analysis output into hard build failures
+      instead of warnings this project can actually inspect. EF Core's own
+      DbContext(DbContextOptions) constructor carries
+      [RequiresUnreferencedCode]/[RequiresDynamicCode] — EVERY DbContext
+      subclass in existence trips IL2026/IL3050 on that base call, including
+      AuditingDbContext here; that is EF Core's own documented, permanent AOT
+      limitation (https://aka.ms/efcore-docs-trimming), not something this
+      project's code can avoid. aot-smoke.yaml's warning-assertion step
+      allowlists that one specific, expected diagnostic and fails on anything
+      new from the Wolfgang.AuditTrail namespace.
+    -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
 
     <!--
       Example/demo-style code: relax the strict-library analyzers that don't

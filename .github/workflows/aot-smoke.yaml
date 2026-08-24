@@ -97,16 +97,33 @@ jobs:
           dotnet publish tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.csproj \
             -c Release -r linux-x64 -o aot-out 2>&1 | tee aot-publish.log
 
-      - name: Assert no AOT/trim warnings from this library
+      - name: Assert only the known EF Core warning appears
         run: |
           set -euo pipefail
-          # Catches warnings from the shipped library AND the smoke/compiled-model
-          # code itself -- both live under the Wolfgang.AuditTrail prefix.
-          if grep -iE 'IL[0-9]{4}' aot-publish.log | grep -i 'Wolfgang.AuditTrail'; then
-            echo "::error::Native AOT publish produced trim/AOT warnings referencing Wolfgang.AuditTrail"
+          # Every MSBuild diagnostic line ends "... [/path/.../Wolfgang.AuditTrail...csproj]"
+          # regardless of which assembly produced it -- grepping the whole
+          # line for "Wolfgang.AuditTrail" would always match. Instead, match
+          # only where the DIAGNOSED type/member (immediately after "ILnnnn:")
+          # is in our namespace -- that's a real hit on our own code, not
+          # collateral from the trailing project-path suffix.
+          #
+          # AuditingDbContext.AuditingDbContext(...) is allowlisted: it fires
+          # solely from calling EF Core's own DbContext(DbContextOptions)
+          # constructor, which EF Core marks
+          # [RequiresUnreferencedCode]/[RequiresDynamicCode] unconditionally.
+          # Every DbContext subclass in existence trips this -- it is EF
+          # Core's own documented, permanent AOT limitation
+          # (https://aka.ms/efcore-docs-trimming), not something this
+          # project's code can avoid. Anything else matching is a real
+          # regression.
+          if grep -E 'IL[0-9]{4}: *Wolfgang\.AuditTrail\.' aot-publish.log \
+               | grep -v 'AuditingDbContext\.AuditingDbContext(' \
+               > unexpected-warnings.txt; then
+            echo "::error::Unexpected AOT/trim warnings from Wolfgang.AuditTrail code:"
+            cat unexpected-warnings.txt
             exit 1
           fi
-          echo "No AOT/trim warnings from Wolfgang.AuditTrail."
+          echo "Only the known, allowlisted EF Core DbContext constructor warning appears (if any)."
 
       - name: Run the native binary
         run: |
