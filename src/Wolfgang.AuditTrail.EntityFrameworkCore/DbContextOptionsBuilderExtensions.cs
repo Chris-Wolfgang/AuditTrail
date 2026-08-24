@@ -63,7 +63,9 @@ public static class DbContextOptionsBuilderExtensions
     /// <param name="serviceProvider">
     /// The DI service provider; must already contain <see cref="AuditOptions"/>
     /// and <see cref="IAuditUserProvider"/> (register them via
-    /// <c>services.AddEfCoreAuditing&lt;TUserProvider&gt;()</c>).
+    /// <c>services.AddEfCoreAuditing&lt;TUserProvider&gt;()</c>). An <see cref="IAuditBulkWriter"/>
+    /// is picked up automatically if one is registered (e.g. by a provider integration
+    /// package) — optional, absent by default.
     /// </param>
     /// <returns><paramref name="optionsBuilder"/> for chaining.</returns>
     public static DbContextOptionsBuilder UseAuditing
@@ -77,7 +79,8 @@ public static class DbContextOptionsBuilderExtensions
 
         var userProvider = serviceProvider.GetRequiredService<IAuditUserProvider>();
         var options = serviceProvider.GetRequiredService<AuditOptions>();
+        var bulkWriter = serviceProvider.GetService<IAuditBulkWriter>();
 
-        return optionsBuilder.AddInterceptors(new AuditSaveChangesInterceptor(userProvider, options));
+        return optionsBuilder.AddInterceptors(new AuditSaveChangesInterceptor(userProvider, options, bulkWriter));
     }
 }

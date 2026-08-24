@@ -62,4 +62,19 @@ public sealed class AuditOptions
     /// <c>AuditSaveChangesInterceptor</c> constructors.
     /// </summary>
     public IAuditEntityKeySerializer? EntityKeySerializer { get; set; }
+
+    /// <summary>
+    /// Minimum number of pending audit headers in a single save before the interceptor
+    /// tries a provider-specific bulk-insert fast path instead of the normal EF Core
+    /// tracked-entity insert. <c>null</c> (the default) disables bulk insert entirely —
+    /// every save uses the standard path regardless of size.
+    /// </summary>
+    /// <remarks>
+    /// Only takes effect when a provider-specific <c>IAuditBulkWriter</c> is registered
+    /// (e.g. via a provider integration package) AND that writer's <c>CanHandle</c>
+    /// returns <c>true</c> for the current context. Providers with no registered writer,
+    /// or a writer that declines, always use the standard EF Core insert path regardless
+    /// of this threshold.
+    /// </remarks>
+    public int? BulkInsertRowThreshold { get; set; }
 }
