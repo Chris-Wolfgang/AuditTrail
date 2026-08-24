@@ -8,10 +8,11 @@ using Wolfgang.AuditTrail.Schema;
 // Two jobs, both of which need EF Core's real runtime model builder and
 // therefore cannot run inside the AOT-published sibling project:
 //
-//   1. `dotnet ef dbcontext optimize` (run with THIS project as
-//      --startup-project) targets AppDbContext, defined in the sibling
-//      AotSmoke.Model library, to generate the compiled model the AotSmoke
-//      project uses via `.UseModel(AppDbContextModel.Instance)`.
+//   1. `dotnet ef dbcontext optimize --precompile-queries --nativeaot` (run
+//      with THIS project as the startup project) targets AppDbContext,
+//      defined in the sibling AotSmoke project, to generate the compiled
+//      model and query interceptors AotSmoke uses. EF Core auto-discovers
+//      both at runtime; no explicit .UseModel() call is needed.
 //   2. At workflow run time, this Program creates the SQLite schema the
 //      AOT-published binary will read/write (EnsureCreatedAsync), and
 //      separately verifies the schema-installer path (MigrateAuditSchemaAsync)

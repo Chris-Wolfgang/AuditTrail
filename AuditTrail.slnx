@@ -62,7 +62,6 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.csproj" />
-    <Project Path="tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Model/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Model.csproj" />
     <Project Path="tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj" />
     <Project Path="tests/Wolfgang.AuditTrail.Cli.Tests.Unit/Wolfgang.AuditTrail.Cli.Tests.Unit.csproj" />
     <Project Path="tests/Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration/Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration.csproj" />

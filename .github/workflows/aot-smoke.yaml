@@ -1,24 +1,30 @@
 name: AOT Smoke
 
-# Publishes a tiny consumer with <PublishAot>true</PublishAot> (passed on the
-# publish command line, not in the csproj -- see the AotSmoke csproj comment
-# for why) and runs the native binary, proving that AuditingDbContext's
-# SaveChanges -> audit-capture -> serialize -> persist -> read-back path
-# survives trimming and Native AOT compilation when backed by an EF Core
-# compiled model.
+# Publishes a tiny consumer with Native AOT and runs the native binary,
+# proving that AuditingDbContext's SaveChanges -> audit-capture -> serialize
+# -> persist -> read-back path survives trimming and AOT compilation when
+# backed by Microsoft's still-EXPERIMENTAL EF Core NativeAOT recipe (compiled
+# model + precompiled-query C# interceptors):
+# https://learn.microsoft.com/ef/core/performance/nativeaot-and-precompiled-queries
 #
 # EF Core requires a compiled model under Native AOT -- runtime
 # OnModelCreating throws "Model building is not supported when publishing
-# with NativeAOT". The AotSmoke.Setup project (never AOT) owns AppDbContext,
-# generates that compiled model via `dotnet ef dbcontext optimize`, creates
-# the SQLite schema, and separately verifies MigrateAuditSchemaAsync -- the
-# migrations-diff pipeline is a permanent, by-design gap under compiled
-# models, not something AOT support closes. A production app publishing with
-# Native AOT installs/migrates its schema out-of-band (this library's
-# Wolfgang.AuditTrail.Cli `migrate` command, itself never AOT-published) and
-# only uses the compiled model for runtime CRUD -- this workflow mirrors that
-# split. Native AOT needs a C++ toolchain (clang + zlib), which is why this
-# runs on Linux CI rather than as a local check.
+# with NativeAOT". A compiled model alone isn't enough, though: entity-
+# tracking machinery (e.g. RuntimeTypeBase.EmptyShadowValuesFactory) still
+# builds itself lazily via Expression.Compile on first use and throws the
+# same exception -- query precompilation (dotnet ef dbcontext optimize
+# --precompile-queries --nativeaot) generates the missing code ahead of time
+# instead, via C# interceptors (also experimental).
+#
+# AotSmoke.Setup (never AOT) creates the SQLite schema and separately
+# verifies MigrateAuditSchemaAsync -- the migrations-diff pipeline is a
+# permanent, by-design gap under compiled models, not something AOT support
+# closes. A production app publishing with Native AOT installs/migrates its
+# schema out-of-band (this library's Wolfgang.AuditTrail.Cli `migrate`
+# command, itself never AOT-published) and only uses the compiled model for
+# runtime CRUD -- this workflow mirrors that split. Native AOT needs a C++
+# toolchain (clang + zlib), which is why this runs on Linux CI rather than as
+# a local check.
 
 on:
   # NO `paths:` FILTER ON pull_request -- INTENTIONAL. If this is ever
@@ -70,15 +76,24 @@ jobs:
       - name: Restore
         run: dotnet restore tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj
 
-      - name: Generate compiled model
+      - name: Generate compiled model and precompiled-query interceptors
         run: |
           set -euo pipefail
+          # --project targets AotSmoke itself: --precompile-queries scans the
+          # target project's OWN source for LINQ queries against DbSet<> and
+          # emits C# interceptors into that same project (interceptors only
+          # work within the compilation that contains the call site) --
+          # AppDbContext lives directly in AotSmoke for the same reason.
+          # --startup-project is Setup, which references AotSmoke (safe
+          # direction only -- see the csproj comments on both projects for
+          # why that reference can't run the other way).
           dotnet ef dbcontext optimize \
-            --project tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Model/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Model.csproj \
+            --project tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.csproj \
             --startup-project tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj \
             --context AppDbContext \
             --output-dir CompiledModels \
-            --namespace Wolfgang.AuditTrail.AotSmoke.CompiledModels
+            --namespace Wolfgang.AuditTrail.AotSmoke.CompiledModels \
+            --precompile-queries --nativeaot
 
       - name: Create schema and verify the schema migrator (non-AOT)
         run: |
