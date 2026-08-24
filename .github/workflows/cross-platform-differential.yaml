@@ -1,0 +1,146 @@
+name: Cross-Platform Differential
+
+# pr.yaml's Stages 1/2/3 already prove the test suite PASSES on Linux,
+# Windows, and macOS independently. This workflow proves something stronger:
+# that it passes the SAME WAY everywhere -- the same tests, in the same
+# order by name, with the same outcome. A library can be green on all three
+# while quietly behaving differently on one (line-ending handling,
+# culture-sensitive sorts, filesystem case sensitivity, timing-dependent
+# assertions) and nothing in the per-OS gate would ever catch that, because
+# each OS leg only ever compares itself to "pass/fail", never to its
+# siblings.
+#
+# Scope: the deterministic Tests.Unit suite only (SQLite-backed, no external
+# services) -- Integration/Schema/Fuzz/Concurrency suites need Docker or
+# real time budgets that would make this a flaky, expensive thing to diff.
+# Tests that are *intentionally* platform-specific opt out via
+# `[Trait("Category", "PlatformSpecific")]`; none exist today, but the
+# convention is wired in from the start.
+
+on:
+  # NO `paths:` FILTER ON pull_request -- see aot-smoke.yaml's rationale.
+  # This isn't a required check today, but if it's ever promoted to one, a
+  # paths filter would let a non-matching PR sit "Blocked" forever.
+  pull_request:
+    branches: [main, vNext]
+  push:
+    branches: [vNext]
+    paths:
+      - 'src/**'
+      - 'tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit/**'
+      - '.github/workflows/cross-platform-differential.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cross-platform-differential-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  run-tests:
+    name: Run tests (${{ matrix.platform }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux-x64
+          - os: ubuntu-24.04-arm
+            platform: linux-arm64
+          - os: macos-14
+            platform: macos-arm64
+          - os: windows-latest
+            platform: windows-x64
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: |
+            10.0.x
+
+      - name: Run Tests.Unit
+        shell: pwsh
+        run: |
+          dotnet test tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit.csproj `
+            -c Release `
+            --filter "Category!=PlatformSpecific" `
+            --logger "trx;LogFileName=results.trx" `
+            --results-directory ./TestResults
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Test run failed on ${{ matrix.platform }} -- fix the failure before the differential can mean anything."
+            exit $LASTEXITCODE
+          }
+
+      - name: Normalize results
+        shell: pwsh
+        run: |
+          $trxPath = "TestResults/results.trx"
+          $trx = [xml](Get-Content -Raw $trxPath)
+
+          # TRX's default xmlns makes prefixed XPath awkward; GetElementsByTagName
+          # matches by unprefixed qualified name regardless of the default
+          # namespace, which is exactly what TRX uses.
+          $lines = $trx.GetElementsByTagName("UnitTestResult") | ForEach-Object {
+            "$($_.testName)`t$($_.outcome)"
+          } | Sort-Object
+
+          if ($lines.Count -eq 0) {
+            Write-Error "No UnitTestResult entries found in $trxPath -- something is wrong with the TRX output, not a real 0-test suite."
+            exit 1
+          }
+
+          $lines | Out-File -Encoding utf8 "results-${{ matrix.platform }}.txt"
+          Write-Host "$($lines.Count) test results normalized for ${{ matrix.platform }}."
+
+      - name: Upload normalized results
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: results-${{ matrix.platform }}
+          path: results-${{ matrix.platform }}.txt
+          retention-days: 14
+
+  diff:
+    name: Diff platforms
+    needs: run-tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all normalized results
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v6
+        with:
+          pattern: results-*
+          merge-multiple: true
+
+      - name: Diff every platform against linux-x64
+        run: |
+          set -euo pipefail
+          baseline="results-linux-x64.txt"
+
+          if [ ! -f "$baseline" ]; then
+            echo "::error::Baseline $baseline missing -- did the linux-x64 leg fail to upload?"
+            exit 1
+          fi
+
+          failed=0
+          for f in results-*.txt; do
+            [ "$f" = "$baseline" ] && continue
+            echo "Diffing $f against $baseline..."
+            if ! diff -u "$baseline" "$f"; then
+              echo "::error::$f diverges from $baseline -- same test suite, different outcome per platform."
+              failed=1
+            fi
+          done
+
+          if [ "$failed" -ne 0 ]; then
+            exit 1
+          fi
+          echo "All platforms match linux-x64 exactly."
