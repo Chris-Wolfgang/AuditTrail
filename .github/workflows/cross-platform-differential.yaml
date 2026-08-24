@@ -70,8 +70,15 @@ jobs:
       - name: Run Tests.Unit
         shell: pwsh
         run: |
+          # --framework net10.0 pins to a single TFM -- Tests.Unit multi-targets
+          # net6.0/net8.0/net10.0, `dotnet test` runs every built TFM by
+          # default, and this runner only has .NET 10 installed
+          # (setup-dotnet above doesn't provision 6.0). This differential is
+          # about OS/arch behavior, not TFM availability -- pr.yaml's
+          # per-TFM matrix already covers that separately.
           dotnet test tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit.csproj `
             -c Release `
+            --framework net10.0 `
             --filter "Category!=PlatformSpecific" `
             --logger "trx;LogFileName=results.trx" `
             --results-directory ./TestResults
