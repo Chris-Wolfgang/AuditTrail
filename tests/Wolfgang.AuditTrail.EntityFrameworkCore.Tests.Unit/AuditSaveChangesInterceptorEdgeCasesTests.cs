@@ -21,6 +21,7 @@ public class AuditSaveChangesInterceptorEdgeCasesTests
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1163", Justification = "Test stub matching the messageGenerator signature.")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Sonar", "S3257",     Justification = "Test stub matching the messageGenerator signature.")]
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "Passed as a messageGenerator delegate but never invoked -- these tests never trigger diagnostic-message formatting.")]
     private static string FormatNothing(Microsoft.EntityFrameworkCore.Diagnostics.EventDefinitionBase definition, EventData eventData)
         => string.Empty;
 
