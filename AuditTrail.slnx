@@ -54,6 +54,9 @@
     <Project Path="examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.Console/Wolfgang.AuditTrail.EntityFrameworkCore.Example.Console.csproj" />
     <Project Path="examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.WebApi/Wolfgang.AuditTrail.EntityFrameworkCore.Example.WebApi.csproj" />
   </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/Wolfgang.AuditTrail.EntityFrameworkCore.Samples.ShadowWorkload/Wolfgang.AuditTrail.EntityFrameworkCore.Samples.ShadowWorkload.csproj" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/Wolfgang.AuditTrail.Abstractions/Wolfgang.AuditTrail.Abstractions.csproj" />
     <Project Path="src/Wolfgang.AuditTrail.Cli/Wolfgang.AuditTrail.Cli.csproj" />
@@ -69,6 +72,7 @@
     <Project Path="tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration.csproj" />
     <Project Path="tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Smoke/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Smoke.csproj" />
     <Project Path="tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Fuzz/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Fuzz.csproj" />
+    <Project Path="tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Concurrency/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Concurrency.csproj" />
   </Folder>
 </Solution>
 
