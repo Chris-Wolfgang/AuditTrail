@@ -176,8 +176,10 @@ jobs:
 
       - name: Fail on unacknowledged regression
         if: steps.delta.outputs.acknowledged == 'false'
+        env:
+          REGRESSED_COUNT: ${{ steps.delta.outputs.regressed }}
         run: |
-          echo "::error::${{ steps.delta.outputs.regressed }} benchmark(s) regressed beyond threshold (time >${TIME_THRESHOLD_PCT}%, alloc >${ALLOC_THRESHOLD_PCT}%). Add the 'perf-impact-acknowledged' label to override."
+          echo "::error::$REGRESSED_COUNT benchmark(s) regressed beyond threshold (time >${TIME_THRESHOLD_PCT}%, alloc >${ALLOC_THRESHOLD_PCT}%). Add the 'perf-impact-acknowledged' label to override."
           exit 1
 
       - name: Upload delta artifact
