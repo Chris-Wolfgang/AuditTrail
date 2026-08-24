@@ -103,12 +103,72 @@ internal static class AuditCapture
 
     /// <summary>
     /// Materializes <see cref="AuditHeader"/> + <see cref="AuditDetail"/> entities from
-    /// the pending snapshot and attaches them to <paramref name="context"/>. Caller is
-    /// responsible for calling <c>SaveChanges</c> afterwards.
+    /// the pending snapshot, then either bulk-writes them via <paramref name="bulkWriter"/>
+    /// (when applicable — see <see cref="TryGetBulkWriter"/>) or attaches them to
+    /// <paramref name="context"/> for the caller's subsequent <c>SaveChanges</c>. See
+    /// <see cref="AddAuditEntitiesAsync"/> for the async counterpart used by the async
+    /// save path.
     /// </summary>
     public static void AddAuditEntities
     (
         DbContext context,
+        List<PendingAuditEntry> pending,
+        IAuditUserProvider userProvider,
+        AuditOptions options,
+        Guid transactionId,
+        IAuditBulkWriter? bulkWriter
+    )
+    {
+        var headers = BuildHeaders(pending, userProvider, options, transactionId);
+
+        if (TryGetBulkWriter(context, options, bulkWriter, headers.Count, out var writer))
+        {
+            writer.Write(context, headers);
+            return;
+        }
+
+        foreach (var header in headers)
+        {
+            context.Add(header);
+        }
+    }
+
+
+
+    /// <summary>
+    /// Async counterpart to <see cref="AddAuditEntities"/> — awaits the bulk writer's
+    /// <see cref="IAuditBulkWriter.WriteAsync"/> instead of blocking on it, when a bulk
+    /// write applies. Otherwise identical.
+    /// </summary>
+    public static async Task AddAuditEntitiesAsync
+    (
+        DbContext context,
+        List<PendingAuditEntry> pending,
+        IAuditUserProvider userProvider,
+        AuditOptions options,
+        Guid transactionId,
+        IAuditBulkWriter? bulkWriter,
+        CancellationToken cancellationToken
+    )
+    {
+        var headers = BuildHeaders(pending, userProvider, options, transactionId);
+
+        if (TryGetBulkWriter(context, options, bulkWriter, headers.Count, out var writer))
+        {
+            await writer.WriteAsync(context, headers, cancellationToken).ConfigureAwait(false);
+            return;
+        }
+
+        foreach (var header in headers)
+        {
+            context.Add(header);
+        }
+    }
+
+
+
+    private static List<AuditHeader> BuildHeaders
+    (
         List<PendingAuditEntry> pending,
         IAuditUserProvider userProvider,
         AuditOptions options,
@@ -119,6 +179,7 @@ internal static class AuditCapture
         var auditedAt = DateTime.UtcNow;
         var keySerializer = options.EntityKeySerializer!;
         var valueSerializer = options.ValueSerializer!;
+        var headers = new List<AuditHeader>(pending.Count);
 
         foreach (var entry in pending)
         {
@@ -149,13 +210,52 @@ internal static class AuditCapture
 
                 var detailValue = ResolveDetailValue(entry, changed);
 
-                var writer = new ColumnValueWriter(detail);
-                detail.ValueType = valueSerializer.Encode(detailValue, changed.ClrType, writer);
+                var columnWriter = new ColumnValueWriter(detail);
+                detail.ValueType = valueSerializer.Encode(detailValue, changed.ClrType, columnWriter);
                 header.Details.Add(detail);
             }
 
-            context.Add(header);
+            headers.Add(header);
         }
+
+        return headers;
+    }
+
+
+
+    // Bulk insert only applies when the caller opted in (BulkInsertRowThreshold set),
+    // the batch meets that threshold, a provider-specific writer was actually supplied,
+    // and that writer accepts the current context. Any missing piece falls back to the
+    // standard EF Core tracked-entity insert -- bulk insert is strictly an opt-in
+    // fast path, never a behavior change consumers didn't ask for.
+    private static bool TryGetBulkWriter
+    (
+        DbContext context,
+        AuditOptions options,
+        IAuditBulkWriter? candidate,
+        int headerCount,
+        [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out IAuditBulkWriter? writer
+    )
+    {
+        writer = null;
+
+        if (candidate is null)
+        {
+            return false;
+        }
+
+        if (options.BulkInsertRowThreshold is not { } threshold || headerCount < threshold)
+        {
+            return false;
+        }
+
+        if (!candidate.CanHandle(context))
+        {
+            return false;
+        }
+
+        writer = candidate;
+        return true;
     }
 
 
