@@ -90,8 +90,12 @@ jobs:
       - name: Publish Native AOT (linux-x64)
         run: |
           set -euo pipefail
+          # -r alone (no -p:PublishAot=true) is deliberate — see the csproj
+          # comment: PublishAot must stay a project-local, RID-conditioned
+          # property, not a global CLI override that cascades into the
+          # multi-targeted src/ ProjectReferences' outer builds.
           dotnet publish tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.csproj \
-            -c Release -r linux-x64 -p:PublishAot=true -o aot-out 2>&1 | tee aot-publish.log
+            -c Release -r linux-x64 -o aot-out 2>&1 | tee aot-publish.log
 
       - name: Assert no AOT/trim warnings from this library
         run: |

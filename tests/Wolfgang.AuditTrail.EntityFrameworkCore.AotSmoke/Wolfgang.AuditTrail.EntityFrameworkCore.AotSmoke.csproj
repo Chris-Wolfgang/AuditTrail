@@ -13,16 +13,27 @@
     <AssemblyName>Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke</AssemblyName>
 
     <!--
-      PublishAot is DELIBERATELY NOT set here — pass it on the `dotnet publish`
-      command line instead (`-p:PublishAot=true`, see aot-smoke.yaml). EF Core
-      requires a compiled model under Native AOT (runtime OnModelCreating
-      throws "Model building is not supported when publishing with
-      NativeAOT"), and the AOT feature switch is baked into
-      runtimeconfig.json at BUILD time whenever PublishAot=true lives in the
-      csproj — including plain `dotnet build`/`dotnet run` — which would break
-      `dotnet ef dbcontext optimize` (the tool that generates that compiled
-      model) with the same exception. See
-      Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup for the
+      PublishAot is conditioned on RuntimeIdentifier being set (i.e. only when
+      `dotnet publish -r <rid>` actually runs — see aot-smoke.yaml) rather
+      than unconditionally true, for two independent reasons:
+
+      1. EF Core requires a compiled model under Native AOT (runtime
+         OnModelCreating throws "Model building is not supported when
+         publishing with NativeAOT"), and the AOT feature switch is baked
+         into runtimeconfig.json at BUILD time whenever PublishAot=true is
+         active — including plain `dotnet build`/`dotnet run` — which would
+         break `dotnet ef dbcontext optimize` (the tool that generates that
+         compiled model) with the same exception.
+      2. It must be a PROJECT-LOCAL property, never passed as a `-p:` global
+         on the publish command line: a global PublishAot=true leaks into
+         every ProjectReference's evaluation, including the outer builds of
+         the multi-targeted src/ libraries (net6.0, netstandard2.0, ...),
+         and NETSDK1207 ("Ahead-of-time compilation is not supported for the
+         target framework") fires for every non-AOT-capable TFM slice even
+         though only the net10.0 slice is ever actually selected. Keeping
+         PublishAot local to this csproj avoids that cascade entirely.
+
+      See Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup for the
       design-time host + the schema-install/migration operations that
       genuinely cannot run under a compiled model at all.
 
@@ -37,6 +48,7 @@
       aot-smoke.yaml, which only fails on IL2xxx/IL3050 referencing
       Wolfgang.AuditTrail namespaces.
     -->
+    <PublishAot Condition="'$(RuntimeIdentifier)' != ''">true</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
 
     <!--
