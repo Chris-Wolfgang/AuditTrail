@@ -67,6 +67,9 @@ jobs:
       - name: Install dotnet-ef
         run: dotnet tool install --global dotnet-ef
 
+      - name: Restore
+        run: dotnet restore tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj
+
       - name: Generate compiled model
         run: |
           set -euo pipefail
