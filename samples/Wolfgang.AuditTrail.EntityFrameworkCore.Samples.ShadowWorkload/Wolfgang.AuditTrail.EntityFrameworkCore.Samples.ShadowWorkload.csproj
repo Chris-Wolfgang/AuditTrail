@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Wolfgang.AuditTrail.Samples.ShadowWorkload</RootNamespace>
+    <AssemblyName>Wolfgang.AuditTrail.EntityFrameworkCore.Samples.ShadowWorkload</AssemblyName>
+
+    <!--
+      Baseline/current toggle for shadow.yaml (#43): the SAME workload code
+      runs twice — once against the current commit's source, once against
+      the last-published NuGet package — so latency/allocation numbers are
+      directly comparable without needing a git-tag checkout of an old
+      revision (which wouldn't even contain this sample the first time it's
+      added). Default is the ProjectReference (current source); pass
+      -p:UseBaselinePackage=true -p:BaselineVersion=X.Y.Z to switch to the
+      published package instead.
+    -->
+    <UseBaselinePackage Condition="'$(UseBaselinePackage)' == ''">false</UseBaselinePackage>
+    <BaselineVersion Condition="'$(BaselineVersion)' == ''">0.2.1</BaselineVersion>
+
+    <!--
+      Example/demo-style code: relax the strict-library analyzers that don't
+      apply to a runnable sample (mirrors
+      examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.Console).
+      CA2007 (twin of MA0004): `await using` has no syntax to ConfigureAwait
+      the implicit DisposeAsync, same unavoidable pattern documented in
+      DbContextAuditSchemaExtensions.cs/AuditSchemaMigrator.cs.
+      VSTHRD103: DbSet.Add is the recommended, non-blocking EF Core API,
+      same false positive suppressed in AuditSchemaVersionStore.cs (PR #178).
+    -->
+    <NoWarn>$(NoWarn);CA1515;CA1812;MA0004;MA0048;CA2007;VSTHRD103</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(UseBaselinePackage)' != 'true'">
+    <ProjectReference Include="..\..\src\Wolfgang.AuditTrail.EntityFrameworkCore\Wolfgang.AuditTrail.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseBaselinePackage)' == 'true'">
+    <PackageReference Include="Wolfgang.AuditTrail.EntityFrameworkCore" Version="$(BaselineVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
+    <!--
+      Pin the SQLite native bundle to a version without GHSA-2m69-gcr7-jv3q.
+      Matches the pin in examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.Console.
+    -->
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.5" />
+  </ItemGroup>
+
+</Project>
