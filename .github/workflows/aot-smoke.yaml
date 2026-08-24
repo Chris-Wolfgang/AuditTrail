@@ -30,6 +30,25 @@ name: AOT Smoke
 # runtime CRUD -- this workflow mirrors that split. Native AOT needs a C++
 # toolchain (clang + zlib), which is why this runs on Linux CI rather than as
 # a local check.
+#
+# NON-BLOCKING BY DESIGN (#53): the publish + run steps use
+# continue-on-error. Microsoft's own docs call this feature "highly
+# experimental... not yet suited for production use" and warn publishing
+# "currently reports a number of trimming and NativeAOT warnings, meaning
+# your application isn't fully guaranteed to run properly." In practice we
+# hit three distinct, reproducible bugs in EF Core 10.0.11's tooling, each
+# only surfacing after fixing the last: (1) .Include() on a one-to-many
+# navigation makes the query-precompilation interceptor generator emit C#
+# referencing undeclared `left`/`right` identifiers; (2) the
+# Microsoft.EntityFrameworkCore.Tasks MSBuild integration's automatic
+# publish-time precompilation pass conflicts with a prior manual `dotnet ef
+# dbcontext optimize --precompile-queries` run, producing a spurious
+# "Dynamic LINQ queries are not supported" failure; (3) that same Tasks
+# integration logs its own MSBuildWorkspace project-loading diagnostics --
+# including ones it itself labels "Warning" -- through MSBuild's error
+# channel unconditionally, failing the build on benign noise. This workflow
+# still runs on every PR so it keeps giving fresh signal (and will start
+# passing outright once upstream stabilizes), but it does not gate merges.
 
 on:
   # NO `paths:` FILTER ON pull_request -- INTENTIONAL. If this is ever
@@ -86,6 +105,8 @@ jobs:
             -- "${{ runner.temp }}/aot-smoke.db"
 
       - name: Publish Native AOT (linux-x64)
+        id: publish
+        continue-on-error: true
         run: |
           set -euo pipefail
           # -r alone (no -p:PublishAot=true) is deliberate — see the csproj
@@ -96,6 +117,7 @@ jobs:
             -c Release -r linux-x64 -o aot-out 2>&1 | tee aot-publish.log
 
       - name: Assert only the known EF Core warning appears
+        if: steps.publish.outcome == 'success'
         run: |
           set -euo pipefail
           # Every MSBuild diagnostic line ends "... [/path/.../Wolfgang.AuditTrail...csproj]"
@@ -124,7 +146,17 @@ jobs:
           echo "Only the known, allowlisted EF Core DbContext constructor warning appears (if any)."
 
       - name: Run the native binary
+        if: steps.publish.outcome == 'success'
         run: |
           set -euo pipefail
           ./aot-out/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke "${{ runner.temp }}/aot-smoke.db"
           echo "Native AOT smoke exited $?."
+
+      - name: Report status
+        if: always()
+        run: |
+          if [ "${{ steps.publish.outcome }}" = "success" ]; then
+            echo "Native AOT publish succeeded -- see the run/warning-check steps above for the full result."
+          else
+            echo "::warning::Native AOT publish failed -- expected for now. EF Core's NativeAOT support is officially experimental (https://learn.microsoft.com/ef/core/performance/nativeaot-and-precompiled-queries); see #53 for the specific upstream bugs hit. This step is informational, not a merge gate."
+          fi
