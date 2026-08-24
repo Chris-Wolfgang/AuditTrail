@@ -12,9 +12,14 @@ name: AOT Smoke
 # with NativeAOT". A compiled model alone isn't enough, though: entity-
 # tracking machinery (e.g. RuntimeTypeBase.EmptyShadowValuesFactory) still
 # builds itself lazily via Expression.Compile on first use and throws the
-# same exception -- query precompilation (dotnet ef dbcontext optimize
-# --precompile-queries --nativeaot) generates the missing code ahead of time
-# instead, via C# interceptors (also experimental).
+# same exception -- query precompilation generates the missing code ahead of
+# time instead, via C# interceptors (also experimental). Both the compiled
+# model and the interceptors are generated AUTOMATICALLY at `dotnet publish`
+# time by the Microsoft.EntityFrameworkCore.Tasks MSBuild integration
+# (referenced in the AotSmoke csproj) -- no separate `dotnet ef dbcontext
+# optimize` step needed; running that manually as well as relying on Tasks'
+# automatic pass caused a spurious "Dynamic LINQ queries are not supported"
+# failure, apparently from Tasks re-scanning the CLI-generated output.
 #
 # AotSmoke.Setup (never AOT) creates the SQLite schema and separately
 # verifies MigrateAuditSchemaAsync -- the migrations-diff pipeline is a
@@ -70,30 +75,8 @@ jobs:
       - name: Install Native AOT prerequisites
         run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
 
-      - name: Install dotnet-ef
-        run: dotnet tool install --global dotnet-ef
-
       - name: Restore
         run: dotnet restore tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj
-
-      - name: Generate compiled model and precompiled-query interceptors
-        run: |
-          set -euo pipefail
-          # --project targets AotSmoke itself: --precompile-queries scans the
-          # target project's OWN source for LINQ queries against DbSet<> and
-          # emits C# interceptors into that same project (interceptors only
-          # work within the compilation that contains the call site) --
-          # AppDbContext lives directly in AotSmoke for the same reason.
-          # --startup-project is Setup, which references AotSmoke (safe
-          # direction only -- see the csproj comments on both projects for
-          # why that reference can't run the other way).
-          dotnet ef dbcontext optimize \
-            --project tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.csproj \
-            --startup-project tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj \
-            --context AppDbContext \
-            --output-dir CompiledModels \
-            --namespace Wolfgang.AuditTrail.AotSmoke.CompiledModels \
-            --precompile-queries --nativeaot
 
       - name: Create schema and verify the schema migrator (non-AOT)
         run: |
