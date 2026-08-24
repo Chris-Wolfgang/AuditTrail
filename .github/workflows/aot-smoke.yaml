@@ -154,8 +154,14 @@ jobs:
 
       - name: Report status
         if: always()
+        env:
+          # zizmor: code injection via template expansion -- route the
+          # expression through env: instead of inlining ${{ }} into the
+          # script, matching this repo's existing convention (see #47's
+          # ${{ tag_name }} -> env: fix in release.yaml).
+          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
         run: |
-          if [ "${{ steps.publish.outcome }}" = "success" ]; then
+          if [ "$PUBLISH_OUTCOME" = "success" ]; then
             echo "Native AOT publish succeeded -- see the run/warning-check steps above for the full result."
           else
             echo "::warning::Native AOT publish failed -- expected for now. EF Core's NativeAOT support is officially experimental (https://learn.microsoft.com/ef/core/performance/nativeaot-and-precompiled-queries); see #53 for the specific upstream bugs hit. This step is informational, not a merge gate."
