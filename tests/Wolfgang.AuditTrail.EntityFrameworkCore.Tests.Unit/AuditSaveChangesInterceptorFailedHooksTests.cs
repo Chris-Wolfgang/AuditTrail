@@ -65,10 +65,10 @@ public class AuditSaveChangesInterceptorFailedHooksTests
         ctx.Customers.Add(new Customer { Name = "Trigger", Email = "t@example.com" });
         Assert.ThrowsAny<Exception>(() => ctx.SaveChanges());
 
-        foreach (var entry in ctx.ChangeTracker.Entries().ToList())
-        {
-            entry.State = EntityState.Detached;
-        }
+        // Unlike the async version above, a throwing sync SaveChanges leaves
+        // nothing tracked here (verified: ChangeTracker.Entries() is empty at
+        // this point) -- no detach loop needed.
+        Assert.Empty(ctx.ChangeTracker.Entries());
 
         fixture.Options.ValueSerializer = new Wolfgang.AuditTrail.Serializers.StringAuditValueSerializer();
         ctx.Customers.Add(new Customer { Name = "Recovered", Email = "r@example.com" });

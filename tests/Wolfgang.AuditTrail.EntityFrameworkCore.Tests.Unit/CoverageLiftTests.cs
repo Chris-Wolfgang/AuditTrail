@@ -222,6 +222,40 @@ public class CoverageLiftTests
 
 
 
+    // ── AbortAudit (sync) exception-during-rollback ────────────────────────
+    // The sync mirror of the test above: AbortAudit's own catch block is hit
+    // when the SYNC ownedTx.Rollback() throws (SaveChanges, not
+    // SaveChangesAsync, uses this path).
+
+    [Fact]
+    public void AbortAudit_swallows_rollback_exception()
+    {
+        using var fixture = new InterceptorFixture();
+        using var ctx = fixture.CreateContext();
+
+        var throwingTx = new ThrowingTransaction();
+        ctx.SetItem("Wolfgang.AuditTrail.OwnedTransaction", throwingTx);
+
+        var sut = new AuditSaveChangesInterceptor(fixture.UserProvider, fixture.Options);
+
+        var errorData = new DbContextErrorEventData(
+            eventDefinition:  null!,
+            messageGenerator: static (_, _) => string.Empty,
+            context:          ctx,
+            exception:        new InvalidOperationException("simulated user-pass failure"));
+
+        // SaveChangesFailed → AbortAudit → throwingTx.Rollback throws →
+        // catch swallows → finally disposes. The interceptor must not
+        // propagate the rollback exception.
+        sut.SaveChangesFailed(errorData);
+
+        Assert.True(throwingTx.RollbackAttempted);
+        Assert.True(throwingTx.Disposed);
+        Assert.Null(ctx.GetItem<IDbContextTransaction>("Wolfgang.AuditTrail.OwnedTransaction"));
+    }
+
+
+
     /// <summary>Minimal IDbContextTransaction that throws on rollback.</summary>
     private sealed class ThrowingTransaction : IDbContextTransaction
     {
@@ -230,6 +264,11 @@ public class CoverageLiftTests
 
         public Guid TransactionId { get; } = Guid.NewGuid();
 
+        // This fake only ever appears in abort/rollback scenarios (AbortAudit/
+        // AbortAuditAsync never call Commit -- that's a separate, already-
+        // covered success path using a real transaction). Commit/CommitAsync
+        // exist solely as a "should never happen" guard.
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "Dead by design -- AbortAudit/AbortAuditAsync never call Commit.")]
         public void Commit()  => throw new NotSupportedException();
         public void Rollback()
         {
@@ -237,6 +276,7 @@ public class CoverageLiftTests
             throw new InvalidOperationException("simulated rollback failure");
         }
 
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "Dead by design -- AbortAudit/AbortAuditAsync never call Commit.")]
         public Task CommitAsync(CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
