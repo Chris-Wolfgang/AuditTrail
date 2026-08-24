@@ -127,6 +127,17 @@ jobs:
           pattern: results-*
           merge-multiple: true
 
+      - name: Normalize line endings
+        run: |
+          set -euo pipefail
+          # The windows-x64 leg's PowerShell Out-File writes CRLF (it follows
+          # the OS newline convention); Linux/macOS write LF. Left alone,
+          # `diff` would show every line as changed on a CRLF file even when
+          # the content is identical -- a tooling artifact, not a real
+          # platform divergence. Strip \r from every file so the comparison
+          # is actually about test outcomes.
+          sed -i 's/\r$//' results-*.txt
+
       - name: Diff every platform against linux-x64
         run: |
           set -euo pipefail
