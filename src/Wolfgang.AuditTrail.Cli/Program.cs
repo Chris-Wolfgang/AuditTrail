@@ -27,6 +27,16 @@ internal class Program
 {
     private static async Task<int> Main(string[] args)
     {
+        // Wired through to OnExecuteAsync's CancellationToken parameter (McMaster's
+        // hosting integration binds it) so Ctrl+C during a long-running migration
+        // is observable instead of the process just being killed mid-write.
+        using var cancellation = new CancellationTokenSource();
+        Console.CancelKeyPress += (_, e) =>
+        {
+            e.Cancel = true; // let the app observe cancellation instead of dying immediately
+            cancellation.Cancel();
+        };
+
         try
         {
             return await new HostBuilder()
@@ -43,7 +53,7 @@ internal class Program
                         .AddSingleton<IReporter, ConsoleReporter>()
                         .AddSingleton<IMigrateRunner, SchemaMigrateRunner>();
                 })
-                .RunCommandLineApplicationAsync<Program>(args).ConfigureAwait(false);
+                .RunCommandLineApplicationAsync<Program>(args, cancellation.Token).ConfigureAwait(false);
         }
         catch (Exception e)
         {

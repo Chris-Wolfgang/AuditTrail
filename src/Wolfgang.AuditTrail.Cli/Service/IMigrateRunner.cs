@@ -11,5 +11,5 @@ namespace Wolfgang.AuditTrail.Cli.Service;
 /// </summary>
 internal interface IMigrateRunner
 {
-    Task RunAsync(MigrateOptions options, IConsole console);
+    Task RunAsync(MigrateOptions options, IConsole console, CancellationToken cancellationToken);
 }
