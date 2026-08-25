@@ -75,14 +75,7 @@ public sealed class AuditMigrationsDbContext : DbContext
         // Version-tracking row. Single-row table; key is the constant 1.
         modelBuilder.Entity<AuditSchemaVersion>(b =>
         {
-            if (!string.IsNullOrWhiteSpace(Options.Schema))
-            {
-                b.ToTable(AuditSchemaConstants.VersionTableName, Options.Schema);
-            }
-            else
-            {
-                b.ToTable(AuditSchemaConstants.VersionTableName);
-            }
+            b.ToTable(AuditSchemaConstants.VersionTableName, string.IsNullOrWhiteSpace(Options.Schema) ? null : Options.Schema);
             b.HasKey(v => v.Id);
             b.Property(v => v.Id).ValueGeneratedNever();
             b.Property(v => v.Version).IsRequired();

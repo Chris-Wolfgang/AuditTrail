@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Wolfgang.AuditTrail.Entities;
 using Wolfgang.AuditTrail.Internal;
-using Wolfgang.AuditTrail.Serializers;
 
 namespace Wolfgang.AuditTrail;
 
@@ -110,11 +109,7 @@ public abstract class AuditingDbContext : DbContext
         _auditOptions = auditOptions ?? throw new ArgumentNullException(nameof(auditOptions));
         _bulkWriter = bulkWriter;
 
-        // Default the serializers so direct, non-DI construction works with a plain
-        // `new AuditOptions()` (unit-test context factories, IDesignTimeDbContextFactory,
-        // console spikes) — mirrors what AddEfCoreAuditing wires up. See #185.
-        _auditOptions.ValueSerializer ??= new StringAuditValueSerializer();
-        _auditOptions.EntityKeySerializer ??= new PipeDelimitedEntityKeySerializer();
+        _auditOptions.EnsureDefaultSerializers();
     }
 
 
