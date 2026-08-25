@@ -55,7 +55,8 @@ internal class Migrate
     (
         IConsole console,
         ILogger<Migrate> logger,
-        IMigrateRunner runner
+        IMigrateRunner runner,
+        CancellationToken cancellationToken
     )
     {
         logger.LogDebug("Starting {Command}", GetType().Name);
@@ -68,7 +69,7 @@ internal class Migrate
                 return ExitCode.ApplicationError;
             }
 
-            await runner.RunAsync(options, console).ConfigureAwait(false);
+            await runner.RunAsync(options, console, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception e)
         {

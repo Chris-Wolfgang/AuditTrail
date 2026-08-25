@@ -25,7 +25,7 @@ namespace Wolfgang.AuditTrail.Cli.Service;
 [ExcludeFromCodeCoverage] // Real EF Core + provider connection. Exercised by integration tests (Testcontainers).
 internal sealed class SchemaMigrateRunner : IMigrateRunner
 {
-    public async Task RunAsync(MigrateOptions options, IConsole console)
+    public async Task RunAsync(MigrateOptions options, IConsole console, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(console);
@@ -59,7 +59,7 @@ internal sealed class SchemaMigrateRunner : IMigrateRunner
         var context = new AuditMigrationsDbContext(dbContextOptions, auditOptions);
         await using var configured = context.ConfigureAwait(false);
         var script = await AuditSchemaMigrator
-            .RunAsync(context, options.DryRun)
+            .RunAsync(context, options.DryRun, cancellationToken)
             .ConfigureAwait(false);
 
 #pragma warning disable CA1849, VSTHRD103

@@ -180,8 +180,21 @@ internal static class AuditCapture
     {
         var user = userProvider.GetCurrentUser();
         var auditedAt = DateTime.UtcNow;
-        var keySerializer = options.EntityKeySerializer!;
-        var valueSerializer = options.ValueSerializer!;
+
+        // AuditingDbContext / AuditSaveChangesInterceptor default these on
+        // construction (EnsureDefaultSerializers), so they're only null here if
+        // a caller mutated the shared AuditOptions instance back to null after
+        // registration -- surface that clearly rather than an unexplained NRE.
+        var keySerializer = options.EntityKeySerializer
+            ?? throw new InvalidOperationException(
+                "AuditOptions.EntityKeySerializer was null when building audit headers. " +
+                "It's defaulted to PipeDelimitedEntityKeySerializer at construction time -- " +
+                "something set it back to null on the shared AuditOptions instance afterward.");
+        var valueSerializer = options.ValueSerializer
+            ?? throw new InvalidOperationException(
+                "AuditOptions.ValueSerializer was null when building audit headers. " +
+                "It's defaulted to StringAuditValueSerializer at construction time -- " +
+                "something set it back to null on the shared AuditOptions instance afterward.");
         var headers = new List<AuditHeader>(pending.Count);
 
         foreach (var entry in pending)

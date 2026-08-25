@@ -23,7 +23,7 @@ public class MigrateTests
         runner ??= new CapturingMigrateRunner();
         var console = new StringConsole();
 
-        var exit = await migrate.OnExecuteAsync(console, NullLogger<Migrate>.Instance, runner);
+        var exit = await migrate.OnExecuteAsync(console, NullLogger<Migrate>.Instance, runner, CancellationToken.None);
 
         return (exit, runner, console);
     }
