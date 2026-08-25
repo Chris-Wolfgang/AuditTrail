@@ -7,7 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-_(empty — open this section as work for the next release begins.)_
+### Added
+
+- **Provider-neutral bulk-insert abstraction** — `IAuditBulkWriter` and
+  `AuditOptions.BulkInsertRowThreshold` let a provider-specific fast path
+  (e.g. PostgreSQL `COPY`) bypass EF Core's per-entity insert for large audit
+  batches. No concrete implementation ships yet; the core package stays
+  provider-neutral, and every save falls back to the standard EF Core insert
+  path when no writer is registered.
+  ([#148](https://github.com/Chris-Wolfgang/AuditTrail/issues/148))
+
+### Internal (no consumer impact)
+
+- Test-assembly code coverage is now instrumented and gated toward 100% on
+  unit test classes, not just `src/`.
+  ([#232](https://github.com/Chris-Wolfgang/AuditTrail/issues/232))
+- Cross-platform differential testing (Linux/macOS/Windows × x64/ARM64) for
+  `Tests.Unit`. ([#48](https://github.com/Chris-Wolfgang/AuditTrail/issues/48))
+- Native AOT / trim compatibility smoke test, non-blocking pending an
+  upstream EF Core Native AOT limitation.
+  ([#53](https://github.com/Chris-Wolfgang/AuditTrail/issues/53))
+- Coyote systematic concurrency testing over the schema installer's
+  first-time-install path.
+  ([#46](https://github.com/Chris-Wolfgang/AuditTrail/issues/46))
+- Shadow-workload testing replaying mixed-traffic scenarios against the
+  current source vs. the last-published release baseline.
+  ([#43](https://github.com/Chris-Wolfgang/AuditTrail/issues/43))
+- Per-PR benchmark regression gate — runs the benchmark suite on a PR's HEAD
+  and its merge-base, posts a delta table, and fails on unacknowledged
+  regressions. ([#64](https://github.com/Chris-Wolfgang/AuditTrail/issues/64))
+- XML-doc example-rot detection — every `<example><code>` block in the
+  public API's doc comments compiles against the current API on every PR.
+  ([#52](https://github.com/Chris-Wolfgang/AuditTrail/issues/52))
 
 ## [0.2.1] — 2026-07-24
 
@@ -151,4 +182,4 @@ source projects; tests cover net462 → net10.0 inclusive.
 
 ---
 
-[Unreleased]: https://github.com/Chris-Wolfgang/AuditTrail/compare/initial-dev...HEAD
+[Unreleased]: https://github.com/Chris-Wolfgang/AuditTrail/compare/v0.2.1...HEAD
