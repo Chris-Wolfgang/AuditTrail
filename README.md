@@ -118,10 +118,11 @@ await ctx.SaveChangesAsync();
 
 EF Core's retrying execution strategies (e.g. `SqlServerRetryingExecutionStrategy` from `EnableRetryOnFailure`) refuse user-initiated transactions opened outside `strategy.ExecuteAsync(...)`. Model 1 handles this correctly because the base class owns the strategy wrap; Model 2's interceptor cannot, and throws a clear `InvalidOperationException` at the first save pointing you back at Model 1. If you're on Azure SQL or any other connection with retry enabled, derive from `AuditingDbContext`.
 
-Two end-to-end samples ship in [`examples/`](./examples):
+Three end-to-end samples ship in [`examples/`](./examples):
 
 - [Console](./examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.Console) — minimal SQLite demo that prints the audit history.
 - [Web API](./examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.WebApi) — ASP.NET Core minimal API showing the on-behalf-of pattern (service account as `UserId`, authenticated human as `OnBehalfOfUserId`).
+- [AdventureWorks](./examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.AdventureWorks) — SQL Server demo (via Testcontainers) against the well-known AdventureWorks sample schema, covering Insert/Update and a secondary-row add-then-remove scenario.
 
 ---
 
@@ -139,6 +140,7 @@ Two end-to-end samples ship in [`examples/`](./examples):
 | **On-behalf-of user identity** | `AuditHeader.UserId` records the service account; `OnBehalfOfUserId` records the authenticated human (web scenarios). |
 | **Configurable delete capture** | `CaptureDeletedValues = false` (default) writes header only on Delete; `true` writes pre-delete column values for forensic audits. |
 | **Same TransactionId per save** | All header rows produced by a single `SaveChanges` share a `Guid` so consumers can group "what changed together". |
+| **Optional bulk-insert fast path** | `IAuditBulkWriter` + `AuditOptions.BulkInsertRowThreshold` let a provider-specific writer bypass EF Core's per-entity insert above a row threshold. No concrete writer ships yet — every save falls back to the standard insert path when none is registered. |
 
 ---
 
@@ -160,11 +162,17 @@ See each package's NuGet page for the authoritative per-TFM compatibility matrix
 
 ## 🧪 Testing
 
-Three test projects + the shipped TestKit contract base:
+Ten test projects + the shipped TestKit contract base, spanning unit, integration, and specialty suites:
 
 - **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit`** — SQLite in-memory, fast, runs on every PR.
+- **`tests/Wolfgang.AuditTrail.Cli.Tests.Unit`** — CLI command/option parsing and error-path coverage.
 - **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration`** — Testcontainers against SQL Server 2022, PostgreSQL 16, MySQL 8.0. Opt-in via `RunIntegrationTests=true`; the dedicated [`integration.yaml`](./.github/workflows/integration.yaml) workflow runs them on Linux with Docker pre-installed.
+- **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration`** — schema-installer/migrator behavior against real provider containers.
 - **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Smoke`** — end-to-end order-lifecycle scenario validating history reconstruction.
+- **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Fuzz`** — FsCheck property-based fuzzing over the serializers, scheduled continuously.
+- **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Concurrency`** — Coyote systematic concurrency testing over the schema installer's first-time-install path.
+- **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.DocExamples`** — compiles every `<example><code>` block in the public API's XML docs against the current API on every PR.
+- **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke`** (+ `.AotSmoke.Setup`) — Native AOT publish-and-run smoke test.
 - **`src/Wolfgang.AuditTrail.TestKit.Xunit`** — shipped NuGet package containing `AuditValueSerializerContractTests<TSut>`. Inherit + provide `CreateSut()` and you get FsCheck-powered property tests plus boundary-value theories for every supported CLR type.
 
 ```bash

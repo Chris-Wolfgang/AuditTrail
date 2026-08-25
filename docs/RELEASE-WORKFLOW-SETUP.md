@@ -15,19 +15,16 @@ The release workflow triggers when you **publish a GitHub Release** and implemen
 
 Complete the following one-time setup so that the workflow can publish releases:
 
-### Add NuGet API Key Secret
+### Configure NuGet.org Trusted Publishing (OIDC)
 
-**Location:** Settings → Secrets and variables → Actions → New repository secret
+This repo does **not** use a long-lived `NUGET_API_KEY` secret. `publish-nuget` authenticates via [NuGet.org Trusted Publishing](https://learn.microsoft.com/nuget/nuget-org/trusted-publishing) — `NuGet/login@v1` exchanges this workflow run's GitHub OIDC token for a short-lived push token at publish time, so there is no long-lived credential stored in the repo at all.
 
-1. Click **"New repository secret"**
-2. **Name:** `NUGET_API_KEY`
-3. **Value:** Your NuGet.org API key
-   - Get your key from [NuGet.org Account → API Keys](https://www.nuget.org/account/apikeys)
-   - Recommended scopes: **Push new packages and package versions**
-   - Set expiration date (recommended: 1 year)
-4. Click **"Add secret"**
+**One-time setup:**
 
-**What this does:** Allows the workflow to authenticate with NuGet.org and publish packages. The workflow validates this secret exists before attempting to publish.
+1. On [nuget.org](https://www.nuget.org/account/trustedpublishing), create a Trusted Publishing policy scoped to `Chris-Wolfgang/AuditTrail` and the `release.yaml` workflow.
+2. In the repo, go to Settings → Secrets and variables → Actions → **Variables** (not Secrets) and add `NUGET_USER` set to the nuget.org account username the policy above belongs to.
+
+**What this does:** `publish-nuget` reads `vars.NUGET_USER`, fails fast with a clear error if it's unset (*"vars.NUGET_USER is not set..."*), and otherwise calls `NuGet/login` to mint a push token scoped to this one run — nothing to rotate, nothing that outlives the job.
 
 ### Verify Branch Protection Rules
 
@@ -70,7 +67,7 @@ The workflow triggers automatically when the release is published.
 
 ### Expected Workflow Behavior
 
-1. **Job 1: validate-release** (3-10 minutes)
+1. **Job 1: validate-release** (3-10 minutes, Windows-only — see the note in Key Improvements below)
    - Runs all framework tests with coverage
    - Enforces 90% coverage threshold
    - Uploads coverage report
@@ -83,9 +80,17 @@ The workflow triggers automatically when the release is published.
    - ✅ Auto-passes if packages are valid
 
 3. **Job 3: publish-nuget** (1-2 minutes)
-   - Validates NUGET_API_KEY secret
-   - Publishes packages to NuGet.org automatically
-   - ✅ Auto-completes if secret is valid
+   - Fails fast if `vars.NUGET_USER` isn't set
+   - Exchanges this run's OIDC token for a short-lived NuGet.org push token via Trusted Publishing
+   - Publishes packages to NuGet.org
+   - ✅ Auto-completes if the variable is set and the Trusted Publishing policy is configured
+
+4. **Job 4: trigger-docs** (parallel with pack-and-validate, after validate-release)
+   - Calls `docfx.yaml` to build and deploy versioned API docs to `gh-pages`
+
+5. **Job 5: update-release-artifacts** (after publish-nuget)
+   - Attaches the packed `.nupkg`s and coverage report to the GitHub Release
+   - Generates the reproducible-build manifest (per-package SHA-256) and attests SLSA build provenance
 
 ### Monitoring the Workflow
 
@@ -95,14 +100,14 @@ The workflow triggers automatically when the release is published.
 
 ## Troubleshooting
 
-### "NUGET_API_KEY secret not configured" Error
+### "vars.NUGET_USER is not set" Error
 
-**Problem:** The `publish-nuget` job fails with secret validation error.
+**Problem:** The `publish-nuget` job fails immediately with this error.
 
 **Solution:**
-1. Verify the secret name is exactly `NUGET_API_KEY` (case-sensitive)
-2. Re-add the secret in Settings → Secrets → Actions
-3. Re-run the workflow from the Actions tab (do not re-publish the release)
+1. Add the `NUGET_USER` repository **variable** (Settings → Secrets and variables → Actions → Variables), not a secret — see [Configure NuGet.org Trusted Publishing](#configure-nugetorg-trusted-publishing-oidc) above.
+2. Confirm a matching Trusted Publishing policy exists on nuget.org for `Chris-Wolfgang/AuditTrail` / `release.yaml`.
+3. Re-run the workflow from the Actions tab (do not re-publish the release).
 
 ### Tests Fail on Specific Framework
 
@@ -189,9 +194,21 @@ Before creating a production GitHub Release (e.g., `v1.0.0`):
 ┌─────────────────────────────────────────────────────────────┐
 │  Job 3: publish-nuget (Windows)                             │
 │  • Download packages                                        │
-│  • Validate NUGET_API_KEY                                   │
-│  • Publish to NuGet.org automatically                       │
+│  • Exchange OIDC token for a NuGet.org push token            │
+│  • Publish to NuGet.org (Trusted Publishing)                 │
 └─────────────────────────────────────────────────────────────┘
+                            │
+              ┌─────────────┴─────────────┐
+              ▼                           ▼
+┌───────────────────────────┐  ┌───────────────────────────────┐
+│  Job 4: trigger-docs       │  │  Job 5: update-release-        │
+│  (after validate-release,  │  │  artifacts (after publish-     │
+│  runs in parallel with     │  │  nuget)                        │
+│  pack-and-validate)        │  │  • Attach packages + coverage  │
+│  • Build & deploy docs to  │  │    to the GitHub Release       │
+│    gh-pages via docfx.yaml │  │  • Reproducible-build manifest │
+│                             │  │  • SLSA provenance attestation │
+└───────────────────────────┘  └───────────────────────────────┘
 ```
 
 ## Key Improvements Over Previous Workflow
@@ -202,7 +219,7 @@ Before creating a production GitHub Release (e.g., `v1.0.0`):
 | **Code Coverage** | Not enforced | 90% threshold enforced |
 | **Package Validation** | None | Smoke test installation |
 | **Deployment** | Incomplete publish script | Automatic publishing after validation |
-| **Secret Validation** | None | Validates before publishing |
+| **Publish credential** | None | NuGet.org Trusted Publishing (OIDC) — no long-lived secret; fails fast if `vars.NUGET_USER` is unset |
 | **GitHub Releases** | Not used as trigger | Workflow triggered by published release |
 | **Build Efficiency** | Duplicate builds in each job | Build once per job with dependencies |
 | **Test Logging** | No logger parameter | Console logging with verbosity |
