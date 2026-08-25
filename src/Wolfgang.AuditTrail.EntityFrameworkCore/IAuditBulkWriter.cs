@@ -5,13 +5,14 @@ namespace Wolfgang.AuditTrail;
 
 /// <summary>
 /// Optional provider-specific fast path for writing a large batch of audit rows,
-/// bypassing EF Core's per-entity tracked-entity insert. Resolved from the context's
-/// internal service provider via <c>context.GetService&lt;IAuditBulkWriter&gt;()</c> —
-/// register a provider-specific implementation with
-/// <c>optionsBuilder.ReplaceService&lt;IAuditBulkWriter, TWriter&gt;()</c> or through DI.
-/// Consulted only when <see cref="AuditOptions.BulkInsertRowThreshold"/> is set and the
-/// pending header count meets or exceeds it; the standard EF Core insert path is used
-/// otherwise, including whenever no writer is registered.
+/// bypassing EF Core's per-entity tracked-entity insert. Register an implementation
+/// in DI as <see cref="IAuditBulkWriter"/> (e.g. <c>services.AddSingleton&lt;IAuditBulkWriter, TWriter&gt;()</c>)
+/// — <c>UseAuditing</c> and <see cref="AuditingDbContext"/>'s constructor both resolve
+/// it via <c>serviceProvider.GetService&lt;IAuditBulkWriter&gt;()</c> at registration
+/// time and pass it through as an ordinary constructor parameter. Consulted only when
+/// <see cref="AuditOptions.BulkInsertRowThreshold"/> is set and the pending header
+/// count meets or exceeds it; the standard EF Core insert path is used otherwise,
+/// including whenever no writer is registered.
 /// </summary>
 public interface IAuditBulkWriter
 {

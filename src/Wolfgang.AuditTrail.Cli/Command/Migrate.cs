@@ -19,20 +19,32 @@ internal class Migrate
     [Option("-c|--connection-string <CONN>", Description = "ADO.NET connection string for the target database. Mutually exclusive with --connection-string-env.")]
     public string? ConnectionString { get; set; }
 
+
+
     [Option("--connection-string-env <ENV_VAR>", Description = "Name of an environment variable holding the connection string. Use this instead of --connection-string to keep secrets out of shell history.")]
     public string? ConnectionStringEnv { get; set; }
+
+
 
     [Option("-p|--provider <PROVIDER>", Description = "Database provider: sqlserver | postgresql | mysql | sqlite. Auto-detected from the connection string when possible.")]
     public string? Provider { get; set; }
 
+
+
     [Option("--schema <SCHEMA>", Description = "Schema to install the audit tables under. Defaults to the provider's default (dbo for SQL Server, public for PostgreSQL, none for SQLite/MySQL).")]
     public string? Schema { get; set; }
+
+
 
     [Option("--header-table <NAME>", Description = "Override the audit-header table name (default: AuditHeader).")]
     public string HeaderTable { get; set; } = "AuditHeader";
 
+
+
     [Option("--detail-table <NAME>", Description = "Override the audit-detail table name (default: AuditDetail).")]
     public string DetailTable { get; set; } = "AuditDetail";
+
+
 
     [Option("--dry-run", Description = "Print the SQL that would be executed but do not apply it.")]
     public bool DryRun { get; set; }

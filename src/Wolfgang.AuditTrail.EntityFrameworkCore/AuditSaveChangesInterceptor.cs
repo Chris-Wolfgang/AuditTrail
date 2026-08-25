@@ -34,14 +34,15 @@ namespace Wolfgang.AuditTrail;
 /// disposes the owned transaction, and re-raises — no leak. Cancellation that
 /// fires later (during EF's own SQL execution between
 /// <c>SavingChangesAsync</c> and <c>SavedChangesAsync</c>) is handled via
-/// <c>SaveChangesFailedAsync</c> on EF Core 6 / pre-7-cancel-callback versions;
-/// on EF Core 7+ that routes through <c>SaveChangesCanceledAsync</c> instead,
-/// which this interceptor doesn't yet hook because that method isn't on the
-/// EF Core 6 <c>ISaveChangesInterceptor</c> surface. In that narrow window the
-/// owned transaction is disposed when the <see cref="DbContext"/> is.
-/// Inherit from <see cref="AuditingDbContext"/> for full cancellation
-/// robustness — it owns the <c>SaveChangesAsync</c> override and can clean up
-/// on every exit path.
+/// <c>SaveChangesFailedAsync</c> on the net6.0 target, where
+/// <c>SaveChangesCanceledAsync</c> isn't part of <c>ISaveChangesInterceptor</c>
+/// yet. On the net8.0 and net10.0 targets this interceptor also implements
+/// <c>SaveChangesCanceledAsync</c> (EF Core 7+), so that window is covered
+/// there too. Only on net6.0, in that narrow window, does the owned
+/// transaction fall back to being disposed when the <see cref="DbContext"/>
+/// is. Inherit from <see cref="AuditingDbContext"/> if you need that net6.0
+/// gap closed too — it owns the <c>SaveChangesAsync</c> override and can
+/// clean up on every exit path regardless of target framework.
 /// </para>
 /// <para>
 /// <strong>acceptAllChangesOnSuccess caveat.</strong> The interceptor does not
