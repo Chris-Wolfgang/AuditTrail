@@ -105,8 +105,15 @@ jobs:
       - name: Run multi-framework tests with coverage
         shell: pwsh
         run: |
-          $testProjects = Get-ChildItem -Path './tests' -Recurse -Filter '*Test*.csproj'
-          
+          # Matches pr.yaml's Stage 2 discovery exactly (*.csproj/*.vbproj/*.fsproj,
+          # no name filter) -- the old '*Test*.csproj' filter silently skipped any
+          # project under ./tests whose name doesn't contain "Test" (e.g. the
+          # AotSmoke / AotSmoke.Setup projects), which `dotnet test` would gate on
+          # here at release time but pr.yaml already gates on per-PR. Confirmed
+          # `dotnet test` no-ops cleanly (exit 0) against a non-test-framework
+          # project like AotSmoke.csproj, so widening this is safe.
+          $testProjects = @(Get-ChildItem -Path './tests/*' -Recurse -File -Include '*.csproj','*.vbproj','*.fsproj')
+
           if ($testProjects.Count -eq 0) {
             Write-Error "❌ No test projects found - release requires tests to validate quality"
             exit 1
@@ -345,10 +352,47 @@ jobs:
           name: release-coverage
           path: CoverageReport/
 
+  # pr.yaml's secrets-scan (gitleaks) only runs on the pull_request_target
+  # event -- never re-run on push-to-main or here at release time. A secret
+  # introduced by the merge itself (conflict resolution, an admin-bypass
+  # merge of a protected-file-split PR) would never be scanned again before
+  # this pipeline packs and publishes. Re-scan the actual tagged commit here,
+  # gating pack-and-validate below, so nothing with a leaked secret reaches
+  # NuGet.org.
+  secrets-scan-release:
+    name: "Secrets Scan (gitleaks)"
+    runs-on: ubuntu-latest
+    if: github.repository != 'Chris-Wolfgang/repo-template'
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        # Same pinned-version + checksum-verified download as pr.yaml's
+        # secrets-scan job -- see that job's comment for the rationale
+        # (gitleaks-action@v2 doesn't support the events this repo uses).
+        run: |
+          GITLEAKS_VERSION="8.24.0"
+          GITLEAKS_SHA256="cb49b7de5ee986510fe8666ca0273a6cc15eb82571f2f14832c9e8920751f3a4"
+          mkdir -p "$HOME/.local/bin"
+          TARBALL="$(mktemp)"
+          curl -sSfL -o "$TARBALL" "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  ${TARBALL}" | sha256sum -c - || { echo "Checksum verification failed!"; exit 1; }
+          tar xzf "$TARBALL" -C "$HOME/.local/bin" gitleaks
+          rm -f "$TARBALL"
+          export PATH="$HOME/.local/bin:$PATH"
+          gitleaks detect --source . --verbose --redact
+        shell: bash
+
   # Pack and validate NuGet package
   pack-and-validate:
     name: Pack & Validate NuGet
-    needs: validate-release
+    needs: [validate-release, secrets-scan-release]
     runs-on: windows-latest
     outputs:
       has-packages: ${{ steps.check-packages.outputs.has-packages }}

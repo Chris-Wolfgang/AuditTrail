@@ -12,8 +12,16 @@ on:
   push:
     branches: [ main ]
 
-# Top-level least privilege; the analysis job widens only what it needs.
+# read-all is broader than this repo's usual contents:read top-level default
+# (it also grants read on issues/PRs/actions/etc.) -- required by the
+# upstream Scorecard action itself, which inspects those signals to compute
+# several checks (e.g. Branch-Protection, Code-Review). The analysis job
+# below only widens what it additionally needs to WRITE.
 permissions: read-all
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analysis:
