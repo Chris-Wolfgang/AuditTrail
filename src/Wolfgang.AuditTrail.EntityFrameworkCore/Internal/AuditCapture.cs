@@ -86,7 +86,7 @@ internal static class AuditCapture
         var keyProperties = entry.Metadata.FindPrimaryKey()?.Properties;
         var keyValuesBeforeSave = keyProperties is null
             ? (IReadOnlyList<object?>)Array.Empty<object?>()
-            : keyProperties.Select(p => entry.Property(p.Name).CurrentValue).ToList();
+            : ReadKeyValues(entry, keyProperties);
 
         return new PendingAuditEntry
         {
@@ -344,40 +344,21 @@ internal static class AuditCapture
     /// </summary>
     private static PendingAuditValue? CapturePropertyValue(PropertyEntry property, AuditOperation operation)
     {
-        switch (operation)
+        return operation switch
         {
-            case AuditOperation.Insert:
-                return new PendingAuditValue
-                {
-                    ColumnName   = GetMappedColumnName(property),
-                    ClrType      = property.Metadata.ClrType,
-                    PropertyName = property.Metadata.Name,
-                    Value        = property.CurrentValue,
-                };
+            AuditOperation.Insert => Build(property, property.CurrentValue),
+            AuditOperation.Update => property.IsModified ? Build(property, property.CurrentValue) : null,
+            AuditOperation.Delete => Build(property, property.OriginalValue),
+            _ => null,
+        };
 
-            case AuditOperation.Update:
-                return property.IsModified
-                    ? new PendingAuditValue
-                    {
-                        ColumnName   = GetMappedColumnName(property),
-                        ClrType      = property.Metadata.ClrType,
-                        PropertyName = property.Metadata.Name,
-                        Value        = property.CurrentValue,
-                    }
-                    : null;
-
-            case AuditOperation.Delete:
-                return new PendingAuditValue
-                {
-                    ColumnName   = GetMappedColumnName(property),
-                    ClrType      = property.Metadata.ClrType,
-                    PropertyName = property.Metadata.Name,
-                    Value        = property.OriginalValue,
-                };
-
-            default:
-                return null;
-        }
+        static PendingAuditValue Build(PropertyEntry property, object? value) => new()
+        {
+            ColumnName   = GetMappedColumnName(property),
+            ClrType      = property.Metadata.ClrType,
+            PropertyName = property.Metadata.Name,
+            Value        = value,
+        };
     }
 
 
@@ -415,13 +396,13 @@ internal static class AuditCapture
     private static IReadOnlyList<object?> ResolvePostSaveKey(PendingAuditEntry entry)
     {
         var keyProperties = entry.Entry.Metadata.FindPrimaryKey()?.Properties;
-        if (keyProperties is null)
-        {
-            return entry.KeyValuesBeforeSave;
-        }
-
-        return keyProperties
-            .Select(p => entry.Entry.Property(p.Name).CurrentValue)
-            .ToList();
+        return keyProperties is null
+            ? entry.KeyValuesBeforeSave
+            : ReadKeyValues(entry.Entry, keyProperties);
     }
+
+
+
+    private static IReadOnlyList<object?> ReadKeyValues(EntityEntry entry, IReadOnlyList<IProperty> keyProperties)
+        => keyProperties.Select(p => entry.Property(p.Name).CurrentValue).ToList();
 }

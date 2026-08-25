@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage;
 using Wolfgang.AuditTrail.Entities;
 using Wolfgang.AuditTrail.Internal;
-using Wolfgang.AuditTrail.Serializers;
 
 namespace Wolfgang.AuditTrail;
 
@@ -136,10 +135,7 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
         _options = options ?? throw new ArgumentNullException(nameof(options));
         _bulkWriter = bulkWriter;
 
-        // Default the serializers so direct, non-DI construction works with a plain
-        // `new AuditOptions()` — mirrors what AddEfCoreAuditing wires up. See #185.
-        _options.ValueSerializer ??= new StringAuditValueSerializer();
-        _options.EntityKeySerializer ??= new PipeDelimitedEntityKeySerializer();
+        _options.EnsureDefaultSerializers();
     }
 
 
