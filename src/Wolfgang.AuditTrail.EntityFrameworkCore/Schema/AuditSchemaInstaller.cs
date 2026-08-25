@@ -40,6 +40,7 @@ public sealed class AuditSchemaInstaller
     /// let the consumer's migration pipeline handle the audit tables alongside its own.
     /// </para>
     /// </remarks>
+    /// <exception cref="ArgumentNullException">If <paramref name="context"/> is null.</exception>
     // S1133: yes, this is deprecated — that's the contract. Removal happens at
     // the next MAJOR; until then we keep the obsolete API alive so callers
     // get the warning instead of a hard break.
@@ -57,7 +58,7 @@ public sealed class AuditSchemaInstaller
     /// production.
     /// </summary>
     /// <exception cref="ArgumentNullException">If <paramref name="context"/> is null.</exception>
-    /// <exception cref="ArgumentException">If the configured schema or table names are null or whitespace.</exception>
+    /// <exception cref="ArgumentException">If the configured header or detail table name is null or whitespace. A null or whitespace <see cref="AuditOptions.Schema"/> does not throw — it's treated as "no schema".</exception>
     /// <exception cref="InvalidOperationException">If the configured schema or table names contain characters that would be unsafe to interpolate into raw SQL.</exception>
     public async Task DropTablesAsync(DbContext context, CancellationToken cancellationToken = default)
     {

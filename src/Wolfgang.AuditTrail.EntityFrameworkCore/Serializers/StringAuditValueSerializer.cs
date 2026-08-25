@@ -17,7 +17,7 @@ namespace Wolfgang.AuditTrail.Serializers;
 ///   <item><description><see cref="Guid"/> uses the <c>"D"</c> format (32 digits separated by hyphens).</description></item>
 ///   <item><description><see cref="bool"/> renders as <c>True</c> / <c>False</c>.</description></item>
 ///   <item><description><c>byte[]</c> is base64-encoded.</description></item>
-///   <item><description>Enums use <see cref="Enum.ToString()"/> (the symbolic name); the discriminator records the enum's full type name.</description></item>
+///   <item><description>Enums use <see cref="Enum.ToString()"/> (the symbolic name); the discriminator records the enum's assembly-qualified type name (not the bare full type name — <c>Type.GetType</c> can't resolve a bare full name for a consumer-assembly enum).</description></item>
 ///   <item><description><c>null</c> writes SQL <c>NULL</c>; the discriminator still records the declared CLR type.</description></item>
 /// </list>
 /// </remarks>
@@ -70,7 +70,7 @@ public sealed class StringAuditValueSerializer : IAuditValueSerializer
             DateTimeOffset dto => dto.ToString("o", CultureInfo.InvariantCulture),
             byte[] bytes => Convert.ToBase64String(bytes),
             IFormattable formattable => formattable.ToString(format: null, CultureInfo.InvariantCulture),
-            _ => value.ToString(),
+            _ => value.ToString() ?? string.Empty,
         };
     }
 
