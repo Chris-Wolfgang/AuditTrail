@@ -2,10 +2,12 @@
 
   <PropertyGroup>
     <!--
-      Targets net8.0 + EF Core 8.x because that's the most recent LTS where all
-      three providers (SQL Server, Npgsql, Pomelo MySQL) have stable releases.
-      Pomelo lags EF Core by one major; flip to net10.0 / EF Core 10 once Pomelo
-      ships a 10.x stable.
+      Targets net8.0 (the TFM), but the provider PackageReferences below pin
+      EF Core 9.x, the most recent line where all three providers (SQL
+      Server, Npgsql, Pomelo MySQL) have stable releases. Pomelo lags EF Core
+      by one major; flip to net10.0 / EF Core 10 once Pomelo ships a 10.x
+      stable. The net8.0 TFM keeps this project runnable without requiring
+      the newer SDK the net10.0-only projects need.
     -->
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
