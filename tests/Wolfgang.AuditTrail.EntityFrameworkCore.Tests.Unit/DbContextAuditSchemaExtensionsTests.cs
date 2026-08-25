@@ -79,6 +79,7 @@ public sealed class DbContextAuditSchemaExtensionsTests : IDisposable
         await using var verify = CreateContext();
         var ex = await Record.ExceptionAsync(async () => await verify.Set<AuditHeader>().ToListAsync());
         Assert.NotNull(ex);
+        Assert.Contains("no such table", ex.Message, StringComparison.OrdinalIgnoreCase);
     }
 
 

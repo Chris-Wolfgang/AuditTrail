@@ -35,11 +35,13 @@ public class AuditSchemaInstallerDropTests
             await installer.DropTablesAsync(context);
         }
 
-        // After drop, the table is gone — selecting from it should throw.
+        // After drop, the table is gone — selecting from it should throw SQLite's
+        // "no such table" (same pattern TableNotFoundIndicators matches on).
         await using var verify = fixture.CreateContext();
         var ex = await Record.ExceptionAsync(async () =>
             await verify.Set<AuditHeader>().ToListAsync());
         Assert.NotNull(ex);
+        Assert.Contains("no such table", ex.Message, StringComparison.OrdinalIgnoreCase);
     }
 
 
