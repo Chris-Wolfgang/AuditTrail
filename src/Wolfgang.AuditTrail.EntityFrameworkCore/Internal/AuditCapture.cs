@@ -27,10 +27,13 @@ internal static class AuditCapture
         AuditOptions options
     )
     {
-        var entries = context.ChangeTracker.Entries().ToList();
-        var pending = new List<PendingAuditEntry>(entries.Count);
+        var pending = new List<PendingAuditEntry>();
 
-        foreach (var entry in entries)
+        // Enumerated directly (no intermediate .ToList()) -- this runs on every
+        // SaveChanges/SaveChangesAsync call, including ones with no audit-relevant
+        // work, so the extra full-array copy of the change tracker's live entry
+        // set isn't worth it just for a capacity hint.
+        foreach (var entry in context.ChangeTracker.Entries())
         {
             var captured = TryCaptureEntry(entry, options);
             if (captured is not null)
@@ -272,7 +275,11 @@ internal static class AuditCapture
             return Array.Empty<PendingAuditValue>();
         }
 
-        var values = new List<PendingAuditValue>();
+        // entry.CurrentValues.Properties is already a materialized IReadOnlyList
+        // on EF Core's side, so .Count here is O(1) -- a safe upper-bound
+        // capacity hint (actual count is <= this, since PK/[NotAudited]
+        // properties get filtered out below) at no extra enumeration cost.
+        var values = new List<PendingAuditValue>(entry.CurrentValues.Properties.Count);
         foreach (var property in entry.Properties)
         {
             var propInfo = property.Metadata.PropertyInfo;
@@ -298,6 +305,16 @@ internal static class AuditCapture
 
 
 
+    // IProperty metadata objects are stable for the lifetime of a DbContext
+    // type's compiled model (EF Core caches and shares the compiled model
+    // across instances of the same context type/options), so the resolved
+    // column name is safe to cache keyed on the IProperty reference itself
+    // rather than re-deriving it via StoreObjectIdentifier on every changed
+    // column of every save. ConcurrentDictionary: DbContext instances of the
+    // same type can run this concurrently across threads (e.g. concurrent
+    // web requests).
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<IProperty, string> ColumnNameCache = new();
+
     /// <summary>
     /// Returns the database column name EF Core mapped the property to, honouring
     /// <c>[Column]</c> / <c>HasColumnName(...)</c> overrides. Falls back to the
@@ -305,6 +322,9 @@ internal static class AuditCapture
     /// (e.g. owned-entity edge cases), matching pre-fix behaviour.
     /// </summary>
     private static string GetMappedColumnName(PropertyEntry property)
+        => ColumnNameCache.GetOrAdd(property.Metadata, static metadata => ResolveMappedColumnName(metadata));
+
+    private static string ResolveMappedColumnName(IProperty metadata)
     {
         // Use the StoreObjectIdentifier overload (available net6+ and not
         // obsolete) — the parameterless GetColumnName() was marked obsolete
@@ -315,23 +335,23 @@ internal static class AuditCapture
         // DeclaringType (returns ITypeBase) which the conditional below picks
         // depending on TFM.
 #if NET8_0_OR_GREATER
-        if (property.Metadata.DeclaringType is IEntityType entityType)
+        if (metadata.DeclaringType is IEntityType entityType)
 #else
-        var entityType = property.Metadata.DeclaringEntityType;
+        var entityType = metadata.DeclaringEntityType;
         if (entityType is not null)
 #endif
         {
             var storeObject = StoreObjectIdentifier.Create(entityType, StoreObjectType.Table);
             if (storeObject is not null)
             {
-                var name = property.Metadata.GetColumnName(storeObject.Value);
+                var name = metadata.GetColumnName(storeObject.Value);
                 if (!string.IsNullOrEmpty(name))
                 {
                     return name;
                 }
             }
         }
-        return property.Metadata.Name;
+        return metadata.Name;
     }
 
 
