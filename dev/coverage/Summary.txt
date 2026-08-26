@@ -1,24 +1,24 @@
 Summary
-  Generated on: 08/26/2026 - 00:38:22
-  Coverage date: 08/26/2026 - 00:38:20
+  Generated on: 08/26/2026 - 13:26:05
+  Coverage date: 08/26/2026 - 13:26:02
   Parser: Cobertura
   Assemblies: 3
-  Classes: 28
-  Files: 28
-  Line coverage: 98.9%
-  Covered lines: 866
-  Uncovered lines: 9
-  Coverable lines: 875
-  Total lines: 2936
-  Branch coverage: 90.1% (366 of 406)
-  Covered branches: 366
-  Total branches: 406
-  Method coverage: 100% (156 of 156)
-  Full method coverage: 94.8% (148 of 156)
-  Covered methods: 156
-  Fully covered methods: 148
-  Total methods: 156
-  Tag: 244_32915844601
+  Classes: 29
+  Files: 29
+  Line coverage: 99.2%
+  Covered lines: 890
+  Uncovered lines: 7
+  Coverable lines: 897
+  Total lines: 3204
+  Branch coverage: 90.1% (375 of 416)
+  Covered branches: 375
+  Total branches: 416
+  Method coverage: 100% (167 of 167)
+  Full method coverage: 96.4% (161 of 167)
+  Covered methods: 167
+  Fully covered methods: 161
+  Total methods: 167
+  Tag: 248_32974102222
 
 Wolfgang.AuditTrail.Abstractions                                            100%
   Wolfgang.AuditTrail.AuditOptions                                          100%
@@ -27,11 +27,12 @@ Wolfgang.AuditTrail.Abstractions                                            100%
   Wolfgang.AuditTrail.Entities.AuditDetail                                  100%
   Wolfgang.AuditTrail.Entities.AuditHeader                                  100%
 
-Wolfgang.AuditTrail.EntityFrameworkCore                                    98.9%
-  Wolfgang.AuditTrail.AuditingDbContext                                    97.4%
-  Wolfgang.AuditTrail.AuditSaveChangesInterceptor                          99.4%
+Wolfgang.AuditTrail.EntityFrameworkCore                                    99.2%
+  Wolfgang.AuditTrail.AuditingDbContext                                    97.5%
+  Wolfgang.AuditTrail.AuditSaveChangesInterceptor                           100%
   Wolfgang.AuditTrail.DbContextOptionsBuilderExtensions                     100%
-  Wolfgang.AuditTrail.Internal.AuditCapture                                95.9%
+  Wolfgang.AuditTrail.Internal.AuditCapture                                97.2%
+  Wolfgang.AuditTrail.Internal.AuditOptionsDefaultsExtensions               100%
   Wolfgang.AuditTrail.Internal.ColumnValueWriter                            100%
   Wolfgang.AuditTrail.Internal.DbContextItemBag                             100%
   Wolfgang.AuditTrail.Internal.PendingAuditEntry                            100%
