@@ -37,6 +37,19 @@ references:
   commentId: T:Wolfgang.AuditTrail.AuditOptions
   fullName: Wolfgang.AuditTrail.AuditOptions
   nameWithType: AuditOptions
+- uid: Wolfgang.AuditTrail.AuditOptions.BulkInsertRowThreshold
+  name: BulkInsertRowThreshold
+  href: api/Wolfgang.AuditTrail.AuditOptions.html#Wolfgang_AuditTrail_AuditOptions_BulkInsertRowThreshold
+  commentId: P:Wolfgang.AuditTrail.AuditOptions.BulkInsertRowThreshold
+  fullName: Wolfgang.AuditTrail.AuditOptions.BulkInsertRowThreshold
+  nameWithType: AuditOptions.BulkInsertRowThreshold
+- uid: Wolfgang.AuditTrail.AuditOptions.BulkInsertRowThreshold*
+  name: BulkInsertRowThreshold
+  href: api/Wolfgang.AuditTrail.AuditOptions.html#Wolfgang_AuditTrail_AuditOptions_BulkInsertRowThreshold_
+  commentId: Overload:Wolfgang.AuditTrail.AuditOptions.BulkInsertRowThreshold
+  isSpec: "True"
+  fullName: Wolfgang.AuditTrail.AuditOptions.BulkInsertRowThreshold
+  nameWithType: AuditOptions.BulkInsertRowThreshold
 - uid: Wolfgang.AuditTrail.AuditOptions.CaptureDeletedValues
   name: CaptureDeletedValues
   href: api/Wolfgang.AuditTrail.AuditOptions.html#Wolfgang_AuditTrail_AuditOptions_CaptureDeletedValues
@@ -130,6 +143,15 @@ references:
   fullName.vb: Wolfgang.AuditTrail.AuditSaveChangesInterceptor.New(Wolfgang.AuditTrail.IAuditUserProvider, Wolfgang.AuditTrail.AuditOptions)
   nameWithType: AuditSaveChangesInterceptor.AuditSaveChangesInterceptor(IAuditUserProvider, AuditOptions)
   nameWithType.vb: AuditSaveChangesInterceptor.New(IAuditUserProvider, AuditOptions)
+- uid: Wolfgang.AuditTrail.AuditSaveChangesInterceptor.#ctor(Wolfgang.AuditTrail.IAuditUserProvider,Wolfgang.AuditTrail.AuditOptions,Wolfgang.AuditTrail.IAuditBulkWriter)
+  name: AuditSaveChangesInterceptor(IAuditUserProvider, AuditOptions, IAuditBulkWriter?)
+  href: api/Wolfgang.AuditTrail.AuditSaveChangesInterceptor.html#Wolfgang_AuditTrail_AuditSaveChangesInterceptor__ctor_Wolfgang_AuditTrail_IAuditUserProvider_Wolfgang_AuditTrail_AuditOptions_Wolfgang_AuditTrail_IAuditBulkWriter_
+  commentId: M:Wolfgang.AuditTrail.AuditSaveChangesInterceptor.#ctor(Wolfgang.AuditTrail.IAuditUserProvider,Wolfgang.AuditTrail.AuditOptions,Wolfgang.AuditTrail.IAuditBulkWriter)
+  name.vb: New(IAuditUserProvider, AuditOptions, IAuditBulkWriter)
+  fullName: Wolfgang.AuditTrail.AuditSaveChangesInterceptor.AuditSaveChangesInterceptor(Wolfgang.AuditTrail.IAuditUserProvider, Wolfgang.AuditTrail.AuditOptions, Wolfgang.AuditTrail.IAuditBulkWriter?)
+  fullName.vb: Wolfgang.AuditTrail.AuditSaveChangesInterceptor.New(Wolfgang.AuditTrail.IAuditUserProvider, Wolfgang.AuditTrail.AuditOptions, Wolfgang.AuditTrail.IAuditBulkWriter)
+  nameWithType: AuditSaveChangesInterceptor.AuditSaveChangesInterceptor(IAuditUserProvider, AuditOptions, IAuditBulkWriter?)
+  nameWithType.vb: AuditSaveChangesInterceptor.New(IAuditUserProvider, AuditOptions, IAuditBulkWriter)
 - uid: Wolfgang.AuditTrail.AuditSaveChangesInterceptor.#ctor*
   name: AuditSaveChangesInterceptor
   href: api/Wolfgang.AuditTrail.AuditSaveChangesInterceptor.html#Wolfgang_AuditTrail_AuditSaveChangesInterceptor__ctor_
@@ -347,6 +369,15 @@ references:
   fullName.vb: Wolfgang.AuditTrail.AuditingDbContext.New(Microsoft.EntityFrameworkCore.DbContextOptions, Wolfgang.AuditTrail.IAuditUserProvider, Wolfgang.AuditTrail.AuditOptions)
   nameWithType: AuditingDbContext.AuditingDbContext(DbContextOptions, IAuditUserProvider, AuditOptions)
   nameWithType.vb: AuditingDbContext.New(DbContextOptions, IAuditUserProvider, AuditOptions)
+- uid: Wolfgang.AuditTrail.AuditingDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions,Wolfgang.AuditTrail.IAuditUserProvider,Wolfgang.AuditTrail.AuditOptions,Wolfgang.AuditTrail.IAuditBulkWriter)
+  name: AuditingDbContext(DbContextOptions, IAuditUserProvider, AuditOptions, IAuditBulkWriter?)
+  href: api/Wolfgang.AuditTrail.AuditingDbContext.html#Wolfgang_AuditTrail_AuditingDbContext__ctor_Microsoft_EntityFrameworkCore_DbContextOptions_Wolfgang_AuditTrail_IAuditUserProvider_Wolfgang_AuditTrail_AuditOptions_Wolfgang_AuditTrail_IAuditBulkWriter_
+  commentId: M:Wolfgang.AuditTrail.AuditingDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions,Wolfgang.AuditTrail.IAuditUserProvider,Wolfgang.AuditTrail.AuditOptions,Wolfgang.AuditTrail.IAuditBulkWriter)
+  name.vb: New(DbContextOptions, IAuditUserProvider, AuditOptions, IAuditBulkWriter)
+  fullName: Wolfgang.AuditTrail.AuditingDbContext.AuditingDbContext(Microsoft.EntityFrameworkCore.DbContextOptions, Wolfgang.AuditTrail.IAuditUserProvider, Wolfgang.AuditTrail.AuditOptions, Wolfgang.AuditTrail.IAuditBulkWriter?)
+  fullName.vb: Wolfgang.AuditTrail.AuditingDbContext.New(Microsoft.EntityFrameworkCore.DbContextOptions, Wolfgang.AuditTrail.IAuditUserProvider, Wolfgang.AuditTrail.AuditOptions, Wolfgang.AuditTrail.IAuditBulkWriter)
+  nameWithType: AuditingDbContext.AuditingDbContext(DbContextOptions, IAuditUserProvider, AuditOptions, IAuditBulkWriter?)
+  nameWithType.vb: AuditingDbContext.New(DbContextOptions, IAuditUserProvider, AuditOptions, IAuditBulkWriter)
 - uid: Wolfgang.AuditTrail.AuditingDbContext.#ctor*
   name: AuditingDbContext
   href: api/Wolfgang.AuditTrail.AuditingDbContext.html#Wolfgang_AuditTrail_AuditingDbContext__ctor_
@@ -660,6 +691,57 @@ references:
   isSpec: "True"
   fullName: Wolfgang.AuditTrail.Entities.AuditHeader.UserId
   nameWithType: AuditHeader.UserId
+- uid: Wolfgang.AuditTrail.IAuditBulkWriter
+  name: IAuditBulkWriter
+  href: api/Wolfgang.AuditTrail.IAuditBulkWriter.html
+  commentId: T:Wolfgang.AuditTrail.IAuditBulkWriter
+  fullName: Wolfgang.AuditTrail.IAuditBulkWriter
+  nameWithType: IAuditBulkWriter
+- uid: Wolfgang.AuditTrail.IAuditBulkWriter.CanHandle(Microsoft.EntityFrameworkCore.DbContext)
+  name: CanHandle(DbContext)
+  href: api/Wolfgang.AuditTrail.IAuditBulkWriter.html#Wolfgang_AuditTrail_IAuditBulkWriter_CanHandle_Microsoft_EntityFrameworkCore_DbContext_
+  commentId: M:Wolfgang.AuditTrail.IAuditBulkWriter.CanHandle(Microsoft.EntityFrameworkCore.DbContext)
+  fullName: Wolfgang.AuditTrail.IAuditBulkWriter.CanHandle(Microsoft.EntityFrameworkCore.DbContext)
+  nameWithType: IAuditBulkWriter.CanHandle(DbContext)
+- uid: Wolfgang.AuditTrail.IAuditBulkWriter.CanHandle*
+  name: CanHandle
+  href: api/Wolfgang.AuditTrail.IAuditBulkWriter.html#Wolfgang_AuditTrail_IAuditBulkWriter_CanHandle_
+  commentId: Overload:Wolfgang.AuditTrail.IAuditBulkWriter.CanHandle
+  isSpec: "True"
+  fullName: Wolfgang.AuditTrail.IAuditBulkWriter.CanHandle
+  nameWithType: IAuditBulkWriter.CanHandle
+- uid: Wolfgang.AuditTrail.IAuditBulkWriter.Write(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IReadOnlyList{Wolfgang.AuditTrail.Entities.AuditHeader})
+  name: Write(DbContext, IReadOnlyList<AuditHeader>)
+  href: api/Wolfgang.AuditTrail.IAuditBulkWriter.html#Wolfgang_AuditTrail_IAuditBulkWriter_Write_Microsoft_EntityFrameworkCore_DbContext_System_Collections_Generic_IReadOnlyList_Wolfgang_AuditTrail_Entities_AuditHeader__
+  commentId: M:Wolfgang.AuditTrail.IAuditBulkWriter.Write(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IReadOnlyList{Wolfgang.AuditTrail.Entities.AuditHeader})
+  name.vb: Write(DbContext, IReadOnlyList(Of AuditHeader))
+  fullName: Wolfgang.AuditTrail.IAuditBulkWriter.Write(Microsoft.EntityFrameworkCore.DbContext, System.Collections.Generic.IReadOnlyList<Wolfgang.AuditTrail.Entities.AuditHeader>)
+  fullName.vb: Wolfgang.AuditTrail.IAuditBulkWriter.Write(Microsoft.EntityFrameworkCore.DbContext, System.Collections.Generic.IReadOnlyList(Of Wolfgang.AuditTrail.Entities.AuditHeader))
+  nameWithType: IAuditBulkWriter.Write(DbContext, IReadOnlyList<AuditHeader>)
+  nameWithType.vb: IAuditBulkWriter.Write(DbContext, IReadOnlyList(Of AuditHeader))
+- uid: Wolfgang.AuditTrail.IAuditBulkWriter.Write*
+  name: Write
+  href: api/Wolfgang.AuditTrail.IAuditBulkWriter.html#Wolfgang_AuditTrail_IAuditBulkWriter_Write_
+  commentId: Overload:Wolfgang.AuditTrail.IAuditBulkWriter.Write
+  isSpec: "True"
+  fullName: Wolfgang.AuditTrail.IAuditBulkWriter.Write
+  nameWithType: IAuditBulkWriter.Write
+- uid: Wolfgang.AuditTrail.IAuditBulkWriter.WriteAsync(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IReadOnlyList{Wolfgang.AuditTrail.Entities.AuditHeader},System.Threading.CancellationToken)
+  name: WriteAsync(DbContext, IReadOnlyList<AuditHeader>, CancellationToken)
+  href: api/Wolfgang.AuditTrail.IAuditBulkWriter.html#Wolfgang_AuditTrail_IAuditBulkWriter_WriteAsync_Microsoft_EntityFrameworkCore_DbContext_System_Collections_Generic_IReadOnlyList_Wolfgang_AuditTrail_Entities_AuditHeader__System_Threading_CancellationToken_
+  commentId: M:Wolfgang.AuditTrail.IAuditBulkWriter.WriteAsync(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IReadOnlyList{Wolfgang.AuditTrail.Entities.AuditHeader},System.Threading.CancellationToken)
+  name.vb: WriteAsync(DbContext, IReadOnlyList(Of AuditHeader), CancellationToken)
+  fullName: Wolfgang.AuditTrail.IAuditBulkWriter.WriteAsync(Microsoft.EntityFrameworkCore.DbContext, System.Collections.Generic.IReadOnlyList<Wolfgang.AuditTrail.Entities.AuditHeader>, System.Threading.CancellationToken)
+  fullName.vb: Wolfgang.AuditTrail.IAuditBulkWriter.WriteAsync(Microsoft.EntityFrameworkCore.DbContext, System.Collections.Generic.IReadOnlyList(Of Wolfgang.AuditTrail.Entities.AuditHeader), System.Threading.CancellationToken)
+  nameWithType: IAuditBulkWriter.WriteAsync(DbContext, IReadOnlyList<AuditHeader>, CancellationToken)
+  nameWithType.vb: IAuditBulkWriter.WriteAsync(DbContext, IReadOnlyList(Of AuditHeader), CancellationToken)
+- uid: Wolfgang.AuditTrail.IAuditBulkWriter.WriteAsync*
+  name: WriteAsync
+  href: api/Wolfgang.AuditTrail.IAuditBulkWriter.html#Wolfgang_AuditTrail_IAuditBulkWriter_WriteAsync_
+  commentId: Overload:Wolfgang.AuditTrail.IAuditBulkWriter.WriteAsync
+  isSpec: "True"
+  fullName: Wolfgang.AuditTrail.IAuditBulkWriter.WriteAsync
+  nameWithType: IAuditBulkWriter.WriteAsync
 - uid: Wolfgang.AuditTrail.IAuditEntityKeySerializer
   name: IAuditEntityKeySerializer
   href: api/Wolfgang.AuditTrail.IAuditEntityKeySerializer.html

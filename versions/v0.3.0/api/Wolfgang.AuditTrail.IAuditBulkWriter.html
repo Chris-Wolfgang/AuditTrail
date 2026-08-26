@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IAuditBulkWriter | Wolfgang.AuditTrail Documentation </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IAuditBulkWriter | Wolfgang.AuditTrail Documentation ">
+      
+      <meta name="description" content="Optional provider-specific fast path for writing a large batch of audit rows, bypassing EF Core&#39;s per-entity tracked-entity insert. Register an implementation in DI as  (e.g. services.AddSingleton&amp;lt;IAuditBulkWriter, TWriter&amp;gt;()) — UseAuditing and &#39;s constructor both resolve it via serviceProvider.GetService&amp;lt;IAuditBulkWriter&amp;gt;() at registration time and pass it through as an ordinary constructor parameter. Consulted only when  is set and the pending header count meets or exceeds it; the standard EF Core insert path is used otherwise, including whenever no writer is registered.">
+      <link rel="icon" href="../favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/AuditTrail/new/v0.3.0/apiSpec/new?filename=Wolfgang_AuditTrail_IAuditBulkWriter.md&amp;value=---%0Auid%3A%20Wolfgang.AuditTrail.IAuditBulkWriter%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Wolfgang.AuditTrail">
+            Wolfgang.AuditTrail
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+
+      <div class="content">
+        <div class="actionbar">
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Wolfgang.AuditTrail.IAuditBulkWriter">
+
+
+
+  <h1 id="Wolfgang_AuditTrail_IAuditBulkWriter" data-uid="Wolfgang.AuditTrail.IAuditBulkWriter" class="text-break">
+Interface IAuditBulkWriter  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.3.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L17"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Wolfgang.html">Wolfgang</a>.<a class="xref" href="Wolfgang.AuditTrail.html">AuditTrail</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Wolfgang.AuditTrail.EntityFrameworkCore.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Optional provider-specific fast path for writing a large batch of audit rows,
+bypassing EF Core's per-entity tracked-entity insert. Register an implementation
+in DI as <a class="xref" href="Wolfgang.AuditTrail.IAuditBulkWriter.html">IAuditBulkWriter</a> (e.g. <code>services.AddSingleton&lt;IAuditBulkWriter, TWriter&gt;()</code>)
+— <code>UseAuditing</code> and <a class="xref" href="Wolfgang.AuditTrail.AuditingDbContext.html">AuditingDbContext</a>'s constructor both resolve
+it via <code>serviceProvider.GetService&lt;IAuditBulkWriter&gt;()</code> at registration
+time and pass it through as an ordinary constructor parameter. Consulted only when
+<a class="xref" href="Wolfgang.AuditTrail.AuditOptions.html#Wolfgang_AuditTrail_AuditOptions_BulkInsertRowThreshold">BulkInsertRowThreshold</a> is set and the pending header
+count meets or exceeds it; the standard EF Core insert path is used otherwise,
+including whenever no writer is registered.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IAuditBulkWriter</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Wolfgang_AuditTrail_IAuditBulkWriter_CanHandle_" data-uid="Wolfgang.AuditTrail.IAuditBulkWriter.CanHandle*"></a>
+
+  <h3 id="Wolfgang_AuditTrail_IAuditBulkWriter_CanHandle_Microsoft_EntityFrameworkCore_DbContext_" data-uid="Wolfgang.AuditTrail.IAuditBulkWriter.CanHandle(Microsoft.EntityFrameworkCore.DbContext)">
+  CanHandle(DbContext)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.3.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns <code>true</code> if this writer can handle bulk-inserting audit rows for
+<code class="paramref">context</code> (typically a check against the active provider).
+Consulted before every bulk-insert attempt — a <code>false</code> result falls back
+to the standard EF Core insert path for that save.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool CanHandle(DbContext context)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.entityframeworkcore.dbcontext">DbContext</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_AuditTrail_IAuditBulkWriter_Write_" data-uid="Wolfgang.AuditTrail.IAuditBulkWriter.Write*"></a>
+
+  <h3 id="Wolfgang_AuditTrail_IAuditBulkWriter_Write_Microsoft_EntityFrameworkCore_DbContext_System_Collections_Generic_IReadOnlyList_Wolfgang_AuditTrail_Entities_AuditHeader__" data-uid="Wolfgang.AuditTrail.IAuditBulkWriter.Write(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IReadOnlyList{Wolfgang.AuditTrail.Entities.AuditHeader})">
+  Write(DbContext, IReadOnlyList&lt;AuditHeader&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.3.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Synchronous counterpart to <a class="xref" href="Wolfgang.AuditTrail.IAuditBulkWriter.html#Wolfgang_AuditTrail_IAuditBulkWriter_WriteAsync_Microsoft_EntityFrameworkCore_DbContext_System_Collections_Generic_IReadOnlyList_Wolfgang_AuditTrail_Entities_AuditHeader__System_Threading_CancellationToken_">WriteAsync(DbContext, IReadOnlyList&lt;AuditHeader&gt;, CancellationToken)</a>, used by the sync
+<code>SaveChanges</code> path.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Write(DbContext context, IReadOnlyList&lt;AuditHeader&gt; headers)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.entityframeworkcore.dbcontext">DbContext</a></dt>
+    <dd></dd>
+    <dt><code>headers</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Wolfgang.AuditTrail.Entities.AuditHeader.html">AuditHeader</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="Wolfgang_AuditTrail_IAuditBulkWriter_WriteAsync_" data-uid="Wolfgang.AuditTrail.IAuditBulkWriter.WriteAsync*"></a>
+
+  <h3 id="Wolfgang_AuditTrail_IAuditBulkWriter_WriteAsync_Microsoft_EntityFrameworkCore_DbContext_System_Collections_Generic_IReadOnlyList_Wolfgang_AuditTrail_Entities_AuditHeader__System_Threading_CancellationToken_" data-uid="Wolfgang.AuditTrail.IAuditBulkWriter.WriteAsync(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IReadOnlyList{Wolfgang.AuditTrail.Entities.AuditHeader},System.Threading.CancellationToken)">
+  WriteAsync(DbContext, IReadOnlyList&lt;AuditHeader&gt;, CancellationToken)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.3.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes <code class="paramref">headers</code> (each with its <a class="xref" href="Wolfgang.AuditTrail.Entities.AuditHeader.html#Wolfgang_AuditTrail_Entities_AuditHeader_Details">Details</a>
+already populated) directly to the database, within <code class="paramref">context</code>'s
+current transaction. Must not use <code>context.Add</code> or otherwise touch the
+change tracker — the caller does not run a subsequent save for these entities.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task WriteAsync(DbContext context, IReadOnlyList&lt;AuditHeader&gt; headers, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.entityframeworkcore.dbcontext">DbContext</a></dt>
+    <dd></dd>
+    <dt><code>headers</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Wolfgang.AuditTrail.Entities.AuditHeader.html">AuditHeader</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.3.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L17" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Made with DocFX <script>(function(){var r='/';if(window.location.hostname.endsWith('.github.io')){var s=window.location.pathname.split('/').filter(Boolean);if(s.length)r='/'+s[0]+'/';}var t=document.createElement('script');t.src=r+'public/version-picker.js';t.async=true;document.head.appendChild(t);})();</script>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

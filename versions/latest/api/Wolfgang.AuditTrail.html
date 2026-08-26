@@ -142,6 +142,19 @@ Structs
 Interfaces
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="Wolfgang.AuditTrail.IAuditBulkWriter.html">IAuditBulkWriter</a></dt>
+      <dd><p>Optional provider-specific fast path for writing a large batch of audit rows,
+bypassing EF Core's per-entity tracked-entity insert. Register an implementation
+in DI as <a class="xref" href="Wolfgang.AuditTrail.IAuditBulkWriter.html">IAuditBulkWriter</a> (e.g. <code>services.AddSingleton&lt;IAuditBulkWriter, TWriter&gt;()</code>)
+— <code>UseAuditing</code> and <a class="xref" href="Wolfgang.AuditTrail.AuditingDbContext.html">AuditingDbContext</a>'s constructor both resolve
+it via <code>serviceProvider.GetService&lt;IAuditBulkWriter&gt;()</code> at registration
+time and pass it through as an ordinary constructor parameter. Consulted only when
+<a class="xref" href="Wolfgang.AuditTrail.AuditOptions.html#Wolfgang_AuditTrail_AuditOptions_BulkInsertRowThreshold">BulkInsertRowThreshold</a> is set and the pending header
+count meets or exceeds it; the standard EF Core insert path is used otherwise,
+including whenever no writer is registered.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="Wolfgang.AuditTrail.IAuditEntityKeySerializer.html">IAuditEntityKeySerializer</a></dt>
       <dd><p>Serializes an entity's primary key value(s) into the string stored in
 <code>AuditHeader.EntityKey</code>.</p>

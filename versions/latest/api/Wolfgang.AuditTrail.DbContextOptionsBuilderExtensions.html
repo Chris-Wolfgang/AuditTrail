@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/AuditTrail/new/v0.2.1/apiSpec/new?filename=Wolfgang_AuditTrail_DbContextOptionsBuilderExtensions.md&amp;value=---%0Auid%3A%20Wolfgang.AuditTrail.DbContextOptionsBuilderExtensions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/AuditTrail/new/v0.3.0/apiSpec/new?filename=Wolfgang_AuditTrail_DbContextOptionsBuilderExtensions.md&amp;value=---%0Auid%3A%20Wolfgang.AuditTrail.DbContextOptionsBuilderExtensions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -75,7 +75,7 @@
 
 
   <h1 id="Wolfgang_AuditTrail_DbContextOptionsBuilderExtensions" data-uid="Wolfgang.AuditTrail.DbContextOptionsBuilderExtensions" class="text-break">
-Class DbContextOptionsBuilderExtensions  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.2.1/src/Wolfgang.AuditTrail.EntityFrameworkCore/DbContextOptionsBuilderExtensions.cs/#L12"><i class="bi bi-code-slash"></i></a>
+Class DbContextOptionsBuilderExtensions  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.3.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/DbContextOptionsBuilderExtensions.cs/#L12"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -144,7 +144,7 @@ Class DbContextOptionsBuilderExtensions  <a class="header-action link-secondary"
 
   <h3 id="Wolfgang_AuditTrail_DbContextOptionsBuilderExtensions_UseAuditing_Microsoft_EntityFrameworkCore_DbContextOptionsBuilder_System_IServiceProvider_" data-uid="Wolfgang.AuditTrail.DbContextOptionsBuilderExtensions.UseAuditing(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder,System.IServiceProvider)">
   UseAuditing(DbContextOptionsBuilder, IServiceProvider)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.2.1/src/Wolfgang.AuditTrail.EntityFrameworkCore/DbContextOptionsBuilderExtensions.cs/#L62"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.3.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/DbContextOptionsBuilderExtensions.cs/#L71"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Registers the audit save-changes interceptor on this
@@ -167,7 +167,9 @@ from <a class="xref" href="Wolfgang.AuditTrail.AuditingDbContext.html">AuditingD
     <dt><code>serviceProvider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iserviceprovider">IServiceProvider</a></dt>
     <dd><p>The DI service provider; must already contain <a class="xref" href="Wolfgang.AuditTrail.AuditOptions.html">AuditOptions</a>
 and <a class="xref" href="Wolfgang.AuditTrail.IAuditUserProvider.html">IAuditUserProvider</a> (register them via
-<code>services.AddEfCoreAuditing&lt;TUserProvider&gt;()</code>).</p>
+<code>services.AddEfCoreAuditing&lt;TUserProvider&gt;()</code>). An <a class="xref" href="Wolfgang.AuditTrail.IAuditBulkWriter.html">IAuditBulkWriter</a>
+is picked up automatically if one is registered (e.g. by a provider integration
+package) — optional, absent by default.</p>
 </dd>
   </dl>
 
@@ -183,6 +185,24 @@ and <a class="xref" href="Wolfgang.AuditTrail.IAuditUserProvider.html">IAuditUse
 
 
 
+  <h4 class="section" id="Wolfgang_AuditTrail_DbContextOptionsBuilderExtensions_UseAuditing_Microsoft_EntityFrameworkCore_DbContextOptionsBuilder_System_IServiceProvider__examples">Examples</h4>
+  <pre><code class="lang-csharp">public class AppDbContext : IdentityDbContext&lt;AppUser&gt;
+{
+    private readonly AuditOptions _auditOptions;
+    public AppDbContext(DbContextOptions options, AuditOptions auditOptions)
+        : base(options) =&gt; _auditOptions = auditOptions;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyAuditing(_auditOptions);  // &lt;-- required
+    }
+}
+
+public class AppUser : IdentityUser
+{
+}</code></pre>
+
 
   <h4 class="section" id="Wolfgang_AuditTrail_DbContextOptionsBuilderExtensions_UseAuditing_Microsoft_EntityFrameworkCore_DbContextOptionsBuilder_System_IServiceProvider__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
@@ -197,23 +217,13 @@ model" exception when the interceptor tries to <code>Add</code> the
 <a class="xref" href="Wolfgang.AuditTrail.Entities.AuditHeader.html">AuditHeader</a> / <a class="xref" href="Wolfgang.AuditTrail.Entities.AuditDetail.html">AuditDetail</a>
 entities.
 </p>
-<p>Minimal correct wiring:</p>
-<pre><code class="lang-csharp">services.AddEfCoreAuditing&lt;MyUserProvider&gt;();
-services.AddDbContext&lt;AppDbContext&gt;((sp, opts) =&gt; opts
-    .UseSqlServer(connStr)
-    .UseAuditing(sp));
-<p>public class AppDbContext : IdentityDbContext&lt;AppUser&gt;
-{
-private readonly AuditOptions _auditOptions;
-public AppDbContext(DbContextOptions options, AuditOptions auditOptions)
-: base(options) =&gt; _auditOptions = auditOptions;</p>
-<pre><code>protected override void OnModelCreating(ModelBuilder modelBuilder)
-{
-    base.OnModelCreating(modelBuilder);
-    modelBuilder.ApplyAuditing(_auditOptions);  // &lt;-- required
-}
-</code></pre>
-<p>}</p></code></pre>
+<p>
+Register the options and user provider first via
+<code>services.AddEfCoreAuditing&lt;TUserProvider&gt;()</code>, then call
+<code>UseAuditing</code> when registering the context — see that method's own
+example for the DI registration side. The derived context itself must
+still apply the model mappings, shown below.
+</p>
 </div>
 
 
@@ -223,7 +233,7 @@ public AppDbContext(DbContextOptions options, AuditOptions auditOptions)
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.2.1/src/Wolfgang.AuditTrail.EntityFrameworkCore/DbContextOptionsBuilderExtensions.cs/#L12" class="edit-link">Edit this page</a>
+          <a href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.3.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/DbContextOptionsBuilderExtensions.cs/#L12" class="edit-link">Edit this page</a>
         </div>
 
 
