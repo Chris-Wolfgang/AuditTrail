@@ -5,6 +5,8 @@ Wolfgang.AuditTrail.AuditOperation.Insert = 73 -> Wolfgang.AuditTrail.AuditOpera
 Wolfgang.AuditTrail.AuditOperation.Update = 85 -> Wolfgang.AuditTrail.AuditOperation
 Wolfgang.AuditTrail.AuditOptions
 Wolfgang.AuditTrail.AuditOptions.AuditOptions() -> void
+Wolfgang.AuditTrail.AuditOptions.BulkInsertRowThreshold.get -> int?
+Wolfgang.AuditTrail.AuditOptions.BulkInsertRowThreshold.set -> void
 Wolfgang.AuditTrail.AuditOptions.CaptureDeletedValues.get -> bool
 Wolfgang.AuditTrail.AuditOptions.CaptureDeletedValues.set -> void
 Wolfgang.AuditTrail.AuditOptions.DetailTableName.get -> string!

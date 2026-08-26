@@ -1,7 +1,1 @@
 #nullable enable
-Wolfgang.AuditTrail.IAuditBulkWriter
-Wolfgang.AuditTrail.IAuditBulkWriter.CanHandle(Microsoft.EntityFrameworkCore.DbContext! context) -> bool
-Wolfgang.AuditTrail.IAuditBulkWriter.Write(Microsoft.EntityFrameworkCore.DbContext! context, System.Collections.Generic.IReadOnlyList<Wolfgang.AuditTrail.Entities.AuditHeader!>! headers) -> void
-Wolfgang.AuditTrail.IAuditBulkWriter.WriteAsync(Microsoft.EntityFrameworkCore.DbContext! context, System.Collections.Generic.IReadOnlyList<Wolfgang.AuditTrail.Entities.AuditHeader!>! headers, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
-Wolfgang.AuditTrail.AuditSaveChangesInterceptor.AuditSaveChangesInterceptor(Wolfgang.AuditTrail.IAuditUserProvider! userProvider, Wolfgang.AuditTrail.AuditOptions! options, Wolfgang.AuditTrail.IAuditBulkWriter? bulkWriter) -> void
-Wolfgang.AuditTrail.AuditingDbContext.AuditingDbContext(Microsoft.EntityFrameworkCore.DbContextOptions! options, Wolfgang.AuditTrail.IAuditUserProvider! userProvider, Wolfgang.AuditTrail.AuditOptions! auditOptions, Wolfgang.AuditTrail.IAuditBulkWriter? bulkWriter) -> void

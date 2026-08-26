@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+_(empty — open this section as work for the next release begins.)_
+
+## [0.3.0] — 2026-08-25
+
+Minor release. Adds a provider-neutral bulk-insert abstraction (no concrete
+provider writer yet — see [#248](https://github.com/Chris-Wolfgang/AuditTrail/issues/248)
+for the tracked follow-up) and closes out a full internal code-review pass —
+CI security scoping, test-quality, and documentation-accuracy fixes. No
+breaking changes; a drop-in upgrade from 0.2.1.
+
 ### Added
 
 - **Provider-neutral bulk-insert abstraction** — `IAuditBulkWriter` and
@@ -16,6 +26,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   provider-neutral, and every save falls back to the standard EF Core insert
   path when no writer is registered.
   ([#148](https://github.com/Chris-Wolfgang/AuditTrail/issues/148))
+
+### Fixed
+
+- `audittrail migrate` now observes Ctrl+C during a long-running schema
+  migration instead of ignoring it — the CLI's cancellation token is wired
+  through to `AuditSchemaMigrator.RunAsync`, which already supported one but
+  was never given anything but the default.
 
 ### Internal (no consumer impact)
 
@@ -39,6 +56,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - XML-doc example-rot detection — every `<example><code>` block in the
   public API's doc comments compiles against the current API on every PR.
   ([#52](https://github.com/Chris-Wolfgang/AuditTrail/issues/52))
+- Full code-review pass: fixed documentation accuracy (README, release-process
+  docs, XML doc comments), simplified repeated internal patterns, reduced
+  allocations in the audit-capture hot path, tightened test assertions, and
+  fixed a security-scoping gap in the PR pipeline's static-analysis job
+  (it no longer holds an elevated token scope while building untrusted PR
+  code).
 
 ## [0.2.1] — 2026-07-24
 
@@ -182,4 +205,5 @@ source projects; tests cover net462 → net10.0 inclusive.
 
 ---
 
-[Unreleased]: https://github.com/Chris-Wolfgang/AuditTrail/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/Chris-Wolfgang/AuditTrail/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/Chris-Wolfgang/AuditTrail/compare/v0.2.1...v0.3.0
