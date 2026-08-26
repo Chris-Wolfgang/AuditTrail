@@ -128,8 +128,9 @@ public static class DocExampleCompiler
     // purpose matching engine (RunnerFactory/Runner) into THIS assembly, which coverlet
     // then counts as this project's own untested code and drags the coverage gate down.
     private static readonly Regex TypeDeclarationStart = new(
-        @"^\s*(public|internal|private|protected)?\s*(sealed\s+|abstract\s+|static\s+)?(partial\s+)?(class|record|struct|interface)\s+\w+",
-        RegexOptions.Multiline | RegexOptions.Compiled);
+        @"^\s*(?:public|internal|private|protected)?\s*(?:sealed\s+|abstract\s+|static\s+)?(?:partial\s+)?(?:class|record|struct|interface)\s+\w+",
+        RegexOptions.Multiline | RegexOptions.Compiled,
+        TimeSpan.FromMilliseconds(100));
 
 
     // Heuristic: a snippet whose first non-blank line looks like a type declaration is

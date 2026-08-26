@@ -27,7 +27,7 @@ using Wolfgang.AuditTrail.Schema;
 var dbPath = args.Length > 0 ? args[0] : Environment.GetEnvironmentVariable("AOT_SMOKE_DB_PATH");
 if (string.IsNullOrWhiteSpace(dbPath))
 {
-    Console.Error.WriteLine("Usage: AotSmoke.Setup <db-path> (or set AOT_SMOKE_DB_PATH)");
+    await Console.Error.WriteLineAsync("Usage: AotSmoke.Setup <db-path> (or set AOT_SMOKE_DB_PATH)").ConfigureAwait(false);
     return 1;
 }
 
@@ -41,7 +41,7 @@ try
 }
 catch (Exception ex)
 {
-    Console.Error.WriteLine($"AOT smoke setup: FAIL - {ex}");
+    await Console.Error.WriteLineAsync($"AOT smoke setup: FAIL - {ex}").ConfigureAwait(false);
     return 1;
 }
 

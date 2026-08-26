@@ -19,11 +19,11 @@ using Wolfgang.AuditTrail.Serializers;
 // not silently dropped.
 
 var outputPath = args.Length > 0 ? args[0] : "shadow-results.json";
-var iterations = args.Length > 1 && int.TryParse(args[1], out var n) ? n : 100;
+var iterations = args.Length > 1 && int.TryParse(args[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out var n) ? n : 100;
 const int WarmupIterations = 5;
 const int ConcurrentCallers = 20;
 
-var results = new Dictionary<string, ScenarioResult>();
+var results = new Dictionary<string, ScenarioResult>(StringComparer.Ordinal);
 
 results["SingleInsert"] = await MeasureAsync("SingleInsert", iterations, SingleInsertAsync).ConfigureAwait(false);
 results["BatchInsert50"] = await MeasureAsync("BatchInsert50", iterations, BatchInsert50Async).ConfigureAwait(false);
@@ -149,6 +149,8 @@ static void DeleteDatabase(string dbPath)
     }
     catch (IOException)
     {
+        // Best-effort cleanup of a per-scenario temp SQLite file; a locked
+        // handle from a slow-to-dispose connection is not worth failing the run over.
     }
 }
 
@@ -235,11 +237,11 @@ static async Task SyncSaveAsync()
         using var ctx = OpenContext(dbPath);
         ctx.Products.Add(new Product { Name = "Widget", Price = 9.99m });
 
-        // CA1849: this scenario's entire point is measuring the synchronous
+        // CA1849/S6966: this scenario's entire point is measuring the synchronous
         // SaveChanges() API path, not a bug to fix.
-#pragma warning disable CA1849
+#pragma warning disable CA1849, S6966
         ctx.SaveChanges();
-#pragma warning restore CA1849
+#pragma warning restore CA1849, S6966
     }
     finally
     {

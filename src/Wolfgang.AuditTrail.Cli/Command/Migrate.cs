@@ -180,8 +180,10 @@ internal class Migrate
 
 
 
+#pragma warning disable S125 // explanatory comment below reads as commented-out code to Sonar's heuristic
     // IConsole.Error is a synchronous TextWriter by design (McMaster.Extensions.CommandLineUtils);
     // there is no async CLI-error-output path to route through instead.
+#pragma warning restore S125
 #pragma warning disable CA1849, VSTHRD103, S6966
     private static void WriteError(IConsole console, string message) => console.Error.WriteLine(message);
 #pragma warning restore CA1849, VSTHRD103, S6966
