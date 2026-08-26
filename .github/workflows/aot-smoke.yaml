@@ -1,0 +1,168 @@
+name: AOT Smoke
+
+# Publishes a tiny consumer with Native AOT and runs the native binary,
+# proving that AuditingDbContext's SaveChanges -> audit-capture -> serialize
+# -> persist -> read-back path survives trimming and AOT compilation when
+# backed by Microsoft's still-EXPERIMENTAL EF Core NativeAOT recipe (compiled
+# model + precompiled-query C# interceptors):
+# https://learn.microsoft.com/ef/core/performance/nativeaot-and-precompiled-queries
+#
+# EF Core requires a compiled model under Native AOT -- runtime
+# OnModelCreating throws "Model building is not supported when publishing
+# with NativeAOT". A compiled model alone isn't enough, though: entity-
+# tracking machinery (e.g. RuntimeTypeBase.EmptyShadowValuesFactory) still
+# builds itself lazily via Expression.Compile on first use and throws the
+# same exception -- query precompilation generates the missing code ahead of
+# time instead, via C# interceptors (also experimental). Both the compiled
+# model and the interceptors are generated AUTOMATICALLY at `dotnet publish`
+# time by the Microsoft.EntityFrameworkCore.Tasks MSBuild integration
+# (referenced in the AotSmoke csproj) -- no separate `dotnet ef dbcontext
+# optimize` step needed; running that manually as well as relying on Tasks'
+# automatic pass caused a spurious "Dynamic LINQ queries are not supported"
+# failure, apparently from Tasks re-scanning the CLI-generated output.
+#
+# AotSmoke.Setup (never AOT) creates the SQLite schema and separately
+# verifies MigrateAuditSchemaAsync -- the migrations-diff pipeline is a
+# permanent, by-design gap under compiled models, not something AOT support
+# closes. A production app publishing with Native AOT installs/migrates its
+# schema out-of-band (this library's Wolfgang.AuditTrail.Cli `migrate`
+# command, itself never AOT-published) and only uses the compiled model for
+# runtime CRUD -- this workflow mirrors that split. Native AOT needs a C++
+# toolchain (clang + zlib), which is why this runs on Linux CI rather than as
+# a local check.
+#
+# NON-BLOCKING BY DESIGN (#53): the publish + run steps use
+# continue-on-error. Microsoft's own docs call this feature "highly
+# experimental... not yet suited for production use" and warn publishing
+# "currently reports a number of trimming and NativeAOT warnings, meaning
+# your application isn't fully guaranteed to run properly." In practice we
+# hit three distinct, reproducible bugs in EF Core 10.0.11's tooling, each
+# only surfacing after fixing the last: (1) .Include() on a one-to-many
+# navigation makes the query-precompilation interceptor generator emit C#
+# referencing undeclared `left`/`right` identifiers; (2) the
+# Microsoft.EntityFrameworkCore.Tasks MSBuild integration's automatic
+# publish-time precompilation pass conflicts with a prior manual `dotnet ef
+# dbcontext optimize --precompile-queries` run, producing a spurious
+# "Dynamic LINQ queries are not supported" failure; (3) that same Tasks
+# integration logs its own MSBuildWorkspace project-loading diagnostics --
+# including ones it itself labels "Warning" -- through MSBuild's error
+# channel unconditionally, failing the build on benign noise. This workflow
+# still runs on every PR so it keeps giving fresh signal (and will start
+# passing outright once upstream stabilizes), but it does not gate merges.
+
+on:
+  # NO `paths:` FILTER ON pull_request -- INTENTIONAL. If this is ever
+  # promoted to a required status check on main, a paths filter would let a
+  # PR that doesn't touch the filtered paths sit "Blocked" forever (the check
+  # never reports, it doesn't report "skipped"). See fleet precedent:
+  # ETL-SqlBulkCopy's aot-smoke.yaml and its own required-check history.
+  pull_request:
+    branches: [main, vNext]
+  push:
+    branches: [vNext]
+    paths:
+      - 'src/**'
+      - 'tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke/**'
+      - 'tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/**'
+      - '.github/workflows/aot-smoke.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aot-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  aot-smoke:
+    name: Publish & run Native AOT consumer
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: |
+            10.0.x
+
+      - name: Install Native AOT prerequisites
+        run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
+
+      - name: Restore
+        run: dotnet restore tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj
+
+      - name: Create schema and verify the schema migrator (non-AOT)
+        run: |
+          set -euo pipefail
+          dotnet run -c Release \
+            --project tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup.csproj \
+            -- "${{ runner.temp }}/aot-smoke.db"
+
+      - name: Publish Native AOT (linux-x64)
+        id: publish
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          # -r alone (no -p:PublishAot=true) is deliberate — see the csproj
+          # comment: PublishAot must stay a project-local, RID-conditioned
+          # property, not a global CLI override that cascades into the
+          # multi-targeted src/ ProjectReferences' outer builds.
+          dotnet publish tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.csproj \
+            -c Release -r linux-x64 -o aot-out 2>&1 | tee aot-publish.log
+
+      - name: Assert only the known EF Core warning appears
+        if: steps.publish.outcome == 'success'
+        run: |
+          set -euo pipefail
+          # Every MSBuild diagnostic line ends "... [/path/.../Wolfgang.AuditTrail...csproj]"
+          # regardless of which assembly produced it -- grepping the whole
+          # line for "Wolfgang.AuditTrail" would always match. Instead, match
+          # only where the DIAGNOSED type/member (immediately after "ILnnnn:")
+          # is in our namespace -- that's a real hit on our own code, not
+          # collateral from the trailing project-path suffix.
+          #
+          # AuditingDbContext.AuditingDbContext(...) is allowlisted: it fires
+          # solely from calling EF Core's own DbContext(DbContextOptions)
+          # constructor, which EF Core marks
+          # [RequiresUnreferencedCode]/[RequiresDynamicCode] unconditionally.
+          # Every DbContext subclass in existence trips this -- it is EF
+          # Core's own documented, permanent AOT limitation
+          # (https://aka.ms/efcore-docs-trimming), not something this
+          # project's code can avoid. Anything else matching is a real
+          # regression.
+          if grep -E 'IL[0-9]{4}: *Wolfgang\.AuditTrail\.' aot-publish.log \
+               | grep -v 'AuditingDbContext\.AuditingDbContext(' \
+               > unexpected-warnings.txt; then
+            echo "::error::Unexpected AOT/trim warnings from Wolfgang.AuditTrail code:"
+            cat unexpected-warnings.txt
+            exit 1
+          fi
+          echo "Only the known, allowlisted EF Core DbContext constructor warning appears (if any)."
+
+      - name: Run the native binary
+        if: steps.publish.outcome == 'success'
+        run: |
+          set -euo pipefail
+          ./aot-out/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke "${{ runner.temp }}/aot-smoke.db"
+          echo "Native AOT smoke exited $?."
+
+      - name: Report status
+        if: always()
+        env:
+          # zizmor: code injection via template expansion -- route the
+          # expression through env: instead of inlining ${{ }} into the
+          # script, matching this repo's existing convention (see #47's
+          # ${{ tag_name }} -> env: fix in release.yaml).
+          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+        run: |
+          if [ "$PUBLISH_OUTCOME" = "success" ]; then
+            echo "Native AOT publish succeeded -- see the run/warning-check steps above for the full result."
+          else
+            echo "::warning::Native AOT publish failed -- expected for now. EF Core's NativeAOT support is officially experimental (https://learn.microsoft.com/ef/core/performance/nativeaot-and-precompiled-queries); see #53 for the specific upstream bugs hit. This step is informational, not a merge gate."
+          fi
