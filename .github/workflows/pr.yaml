@@ -1289,9 +1289,17 @@ jobs:
     needs: detect-projects
     if: github.repository != 'Chris-Wolfgang/repo-template' && needs.detect-projects.outputs.has-projects == 'true'
     timeout-minutes: 20
+    # contents: read ONLY. This job checks out and builds the untrusted PR
+    # HEAD (see the ref: below) -- under pull_request_target that code does
+    # NOT get GitHub's automatic read-only token downgrade the way plain
+    # pull_request does, so any elevated permission granted here is live
+    # while attacker-controlled MSBuild targets / analyzers / source
+    # generators execute during restore+build. security-events: write (needed
+    # to upload the SARIF) is granted ONLY to inspectcode-upload-sarif below,
+    # a separate job that never checks out or executes PR code -- it only
+    # downloads the SARIF artifact this job produces and uploads it.
     permissions:
       contents: read
-      security-events: write   # required for upload-sarif
 
     steps:
       - name: Checkout code
@@ -1407,11 +1415,16 @@ jobs:
             --severity=WARNING \
             --no-build
 
-      - name: Upload SARIF to code scanning
+      # Artifact only -- the SARIF upload itself (which needs
+      # security-events: write) happens in the separate
+      # inspectcode-upload-sarif job below, which never touches PR code.
+      - name: Upload SARIF artifact
         if: always()
-        uses: github/codeql-action/upload-sarif@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v4.37.7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          sarif_file: inspect.sarif
+          name: inspectcode-sarif
+          path: inspect.sarif
+          if-no-files-found: error
 
       - name: Gate on error-severity findings
         # PowerShell (native on windows-latest) so we don't depend on jq
@@ -1434,3 +1447,30 @@ jobs:
             exit 1
           }
           Write-Host "✅ No error-severity InspectCode findings."
+
+  # Separate job so security-events: write is never live in the same job
+  # that builds/executes untrusted PR-head code (see the permissions
+  # comment on inspectcode above). This job only moves an already-produced
+  # SARIF file into code scanning -- no checkout, no PR code execution.
+  inspectcode-upload-sarif:
+    name: "Upload InspectCode SARIF"
+    runs-on: ubuntu-latest
+    needs: inspectcode
+    # Runs even if inspectcode's gate step failed, so findings still reach
+    # Security -> Code scanning on a failing PR, matching the previous
+    # behavior's `if: always()` on the upload step.
+    if: always() && needs.inspectcode.result != 'skipped'
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      security-events: write   # required for upload-sarif
+    steps:
+      - name: Download SARIF artifact
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6
+        with:
+          name: inspectcode-sarif
+
+      - name: Upload SARIF to code scanning
+        uses: github/codeql-action/upload-sarif@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v4.37.7
+        with:
+          sarif_file: inspect.sarif
