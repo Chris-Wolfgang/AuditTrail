@@ -174,6 +174,7 @@ public sealed class AuditSchemaMigratorTests : IDisposable
         var ex = await Record.ExceptionAsync(async () =>
             await context.Set<Entities.AuditHeader>().ToListAsync());
         Assert.NotNull(ex);
+        Assert.Contains("no such table", ex.Message, StringComparison.OrdinalIgnoreCase);
     }
 
 

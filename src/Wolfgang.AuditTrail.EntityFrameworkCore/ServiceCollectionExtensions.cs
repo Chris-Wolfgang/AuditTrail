@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Wolfgang.AuditTrail.Internal;
 using Wolfgang.AuditTrail.Serializers;
 
 namespace Wolfgang.AuditTrail;
@@ -26,6 +27,14 @@ public static class ServiceCollectionExtensions
     /// at every call site — audit rows are written atomically in the same
     /// transaction.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// services.AddEfCoreAuditing&lt;ExampleUserProvider&gt;(options =&gt;
+    /// {
+    ///     options.CaptureDeletedValues = true;
+    /// });
+    /// </code>
+    /// </example>
     public static IServiceCollection AddEfCoreAuditing<TUserProvider>
     (
         this IServiceCollection services,
@@ -42,8 +51,7 @@ public static class ServiceCollectionExtensions
         };
 
         configure?.Invoke(options);
-        options.ValueSerializer ??= new StringAuditValueSerializer();
-        options.EntityKeySerializer ??= new PipeDelimitedEntityKeySerializer();
+        options.EnsureDefaultSerializers();
 
         services.TryAddSingleton(options);
         services.TryAddScoped<IAuditUserProvider, TUserProvider>();

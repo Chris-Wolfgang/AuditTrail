@@ -27,10 +27,13 @@ internal static class AuditCapture
         AuditOptions options
     )
     {
-        var entries = context.ChangeTracker.Entries().ToList();
-        var pending = new List<PendingAuditEntry>(entries.Count);
+        var pending = new List<PendingAuditEntry>();
 
-        foreach (var entry in entries)
+        // Enumerated directly (no intermediate .ToList()) -- this runs on every
+        // SaveChanges/SaveChangesAsync call, including ones with no audit-relevant
+        // work, so the extra full-array copy of the change tracker's live entry
+        // set isn't worth it just for a capacity hint.
+        foreach (var entry in context.ChangeTracker.Entries())
         {
             var captured = TryCaptureEntry(entry, options);
             if (captured is not null)
@@ -86,7 +89,7 @@ internal static class AuditCapture
         var keyProperties = entry.Metadata.FindPrimaryKey()?.Properties;
         var keyValuesBeforeSave = keyProperties is null
             ? (IReadOnlyList<object?>)Array.Empty<object?>()
-            : keyProperties.Select(p => entry.Property(p.Name).CurrentValue).ToList();
+            : ReadKeyValues(entry, keyProperties);
 
         return new PendingAuditEntry
         {
@@ -103,12 +106,72 @@ internal static class AuditCapture
 
     /// <summary>
     /// Materializes <see cref="AuditHeader"/> + <see cref="AuditDetail"/> entities from
-    /// the pending snapshot and attaches them to <paramref name="context"/>. Caller is
-    /// responsible for calling <c>SaveChanges</c> afterwards.
+    /// the pending snapshot, then either bulk-writes them via <paramref name="bulkWriter"/>
+    /// (when applicable — see <see cref="TryGetBulkWriter"/>) or attaches them to
+    /// <paramref name="context"/> for the caller's subsequent <c>SaveChanges</c>. See
+    /// <see cref="AddAuditEntitiesAsync"/> for the async counterpart used by the async
+    /// save path.
     /// </summary>
     public static void AddAuditEntities
     (
         DbContext context,
+        List<PendingAuditEntry> pending,
+        IAuditUserProvider userProvider,
+        AuditOptions options,
+        Guid transactionId,
+        IAuditBulkWriter? bulkWriter
+    )
+    {
+        var headers = BuildHeaders(pending, userProvider, options, transactionId);
+
+        if (TryGetBulkWriter(context, options, bulkWriter, headers.Count, out var writer))
+        {
+            writer.Write(context, headers);
+            return;
+        }
+
+        foreach (var header in headers)
+        {
+            context.Add(header);
+        }
+    }
+
+
+
+    /// <summary>
+    /// Async counterpart to <see cref="AddAuditEntities"/> — awaits the bulk writer's
+    /// <see cref="IAuditBulkWriter.WriteAsync"/> instead of blocking on it, when a bulk
+    /// write applies. Otherwise identical.
+    /// </summary>
+    public static async Task AddAuditEntitiesAsync
+    (
+        DbContext context,
+        List<PendingAuditEntry> pending,
+        IAuditUserProvider userProvider,
+        AuditOptions options,
+        Guid transactionId,
+        IAuditBulkWriter? bulkWriter,
+        CancellationToken cancellationToken
+    )
+    {
+        var headers = BuildHeaders(pending, userProvider, options, transactionId);
+
+        if (TryGetBulkWriter(context, options, bulkWriter, headers.Count, out var writer))
+        {
+            await writer.WriteAsync(context, headers, cancellationToken).ConfigureAwait(false);
+            return;
+        }
+
+        foreach (var header in headers)
+        {
+            context.Add(header);
+        }
+    }
+
+
+
+    private static List<AuditHeader> BuildHeaders
+    (
         List<PendingAuditEntry> pending,
         IAuditUserProvider userProvider,
         AuditOptions options,
@@ -117,8 +180,22 @@ internal static class AuditCapture
     {
         var user = userProvider.GetCurrentUser();
         var auditedAt = DateTime.UtcNow;
-        var keySerializer = options.EntityKeySerializer!;
-        var valueSerializer = options.ValueSerializer!;
+
+        // AuditingDbContext / AuditSaveChangesInterceptor default these on
+        // construction (EnsureDefaultSerializers), so they're only null here if
+        // a caller mutated the shared AuditOptions instance back to null after
+        // registration -- surface that clearly rather than an unexplained NRE.
+        var keySerializer = options.EntityKeySerializer
+            ?? throw new InvalidOperationException(
+                "AuditOptions.EntityKeySerializer was null when building audit headers. " +
+                "It's defaulted to PipeDelimitedEntityKeySerializer at construction time -- " +
+                "something set it back to null on the shared AuditOptions instance afterward.");
+        var valueSerializer = options.ValueSerializer
+            ?? throw new InvalidOperationException(
+                "AuditOptions.ValueSerializer was null when building audit headers. " +
+                "It's defaulted to StringAuditValueSerializer at construction time -- " +
+                "something set it back to null on the shared AuditOptions instance afterward.");
+        var headers = new List<AuditHeader>(pending.Count);
 
         foreach (var entry in pending)
         {
@@ -149,13 +226,52 @@ internal static class AuditCapture
 
                 var detailValue = ResolveDetailValue(entry, changed);
 
-                var writer = new ColumnValueWriter(detail);
-                detail.ValueType = valueSerializer.Encode(detailValue, changed.ClrType, writer);
+                var columnWriter = new ColumnValueWriter(detail);
+                detail.ValueType = valueSerializer.Encode(detailValue, changed.ClrType, columnWriter);
                 header.Details.Add(detail);
             }
 
-            context.Add(header);
+            headers.Add(header);
         }
+
+        return headers;
+    }
+
+
+
+    // Bulk insert only applies when the caller opted in (BulkInsertRowThreshold set),
+    // the batch meets that threshold, a provider-specific writer was actually supplied,
+    // and that writer accepts the current context. Any missing piece falls back to the
+    // standard EF Core tracked-entity insert -- bulk insert is strictly an opt-in
+    // fast path, never a behavior change consumers didn't ask for.
+    private static bool TryGetBulkWriter
+    (
+        DbContext context,
+        AuditOptions options,
+        IAuditBulkWriter? candidate,
+        int headerCount,
+        [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out IAuditBulkWriter? writer
+    )
+    {
+        writer = null;
+
+        if (candidate is null)
+        {
+            return false;
+        }
+
+        if (options.BulkInsertRowThreshold is not { } threshold || headerCount < threshold)
+        {
+            return false;
+        }
+
+        if (!candidate.CanHandle(context))
+        {
+            return false;
+        }
+
+        writer = candidate;
+        return true;
     }
 
 
@@ -172,7 +288,11 @@ internal static class AuditCapture
             return Array.Empty<PendingAuditValue>();
         }
 
-        var values = new List<PendingAuditValue>();
+        // entry.CurrentValues.Properties is already a materialized IReadOnlyList
+        // on EF Core's side, so .Count here is O(1) -- a safe upper-bound
+        // capacity hint (actual count is <= this, since PK/[NotAudited]
+        // properties get filtered out below) at no extra enumeration cost.
+        var values = new List<PendingAuditValue>(entry.CurrentValues.Properties.Count);
         foreach (var property in entry.Properties)
         {
             var propInfo = property.Metadata.PropertyInfo;
@@ -198,6 +318,16 @@ internal static class AuditCapture
 
 
 
+    // IProperty metadata objects are stable for the lifetime of a DbContext
+    // type's compiled model (EF Core caches and shares the compiled model
+    // across instances of the same context type/options), so the resolved
+    // column name is safe to cache keyed on the IProperty reference itself
+    // rather than re-deriving it via StoreObjectIdentifier on every changed
+    // column of every save. ConcurrentDictionary: DbContext instances of the
+    // same type can run this concurrently across threads (e.g. concurrent
+    // web requests).
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<IProperty, string> ColumnNameCache = new();
+
     /// <summary>
     /// Returns the database column name EF Core mapped the property to, honouring
     /// <c>[Column]</c> / <c>HasColumnName(...)</c> overrides. Falls back to the
@@ -205,6 +335,9 @@ internal static class AuditCapture
     /// (e.g. owned-entity edge cases), matching pre-fix behaviour.
     /// </summary>
     private static string GetMappedColumnName(PropertyEntry property)
+        => ColumnNameCache.GetOrAdd(property.Metadata, static metadata => ResolveMappedColumnName(metadata));
+
+    private static string ResolveMappedColumnName(IProperty metadata)
     {
         // Use the StoreObjectIdentifier overload (available net6+ and not
         // obsolete) — the parameterless GetColumnName() was marked obsolete
@@ -215,23 +348,23 @@ internal static class AuditCapture
         // DeclaringType (returns ITypeBase) which the conditional below picks
         // depending on TFM.
 #if NET8_0_OR_GREATER
-        if (property.Metadata.DeclaringType is IEntityType entityType)
+        if (metadata.DeclaringType is IEntityType entityType)
 #else
-        var entityType = property.Metadata.DeclaringEntityType;
+        var entityType = metadata.DeclaringEntityType;
         if (entityType is not null)
 #endif
         {
             var storeObject = StoreObjectIdentifier.Create(entityType, StoreObjectType.Table);
             if (storeObject is not null)
             {
-                var name = property.Metadata.GetColumnName(storeObject.Value);
+                var name = metadata.GetColumnName(storeObject.Value);
                 if (!string.IsNullOrEmpty(name))
                 {
                     return name;
                 }
             }
         }
-        return property.Metadata.Name;
+        return metadata.Name;
     }
 
 
@@ -244,40 +377,21 @@ internal static class AuditCapture
     /// </summary>
     private static PendingAuditValue? CapturePropertyValue(PropertyEntry property, AuditOperation operation)
     {
-        switch (operation)
+        return operation switch
         {
-            case AuditOperation.Insert:
-                return new PendingAuditValue
-                {
-                    ColumnName   = GetMappedColumnName(property),
-                    ClrType      = property.Metadata.ClrType,
-                    PropertyName = property.Metadata.Name,
-                    Value        = property.CurrentValue,
-                };
+            AuditOperation.Insert => Build(property, property.CurrentValue),
+            AuditOperation.Update => property.IsModified ? Build(property, property.CurrentValue) : null,
+            AuditOperation.Delete => Build(property, property.OriginalValue),
+            _ => null,
+        };
 
-            case AuditOperation.Update:
-                return property.IsModified
-                    ? new PendingAuditValue
-                    {
-                        ColumnName   = GetMappedColumnName(property),
-                        ClrType      = property.Metadata.ClrType,
-                        PropertyName = property.Metadata.Name,
-                        Value        = property.CurrentValue,
-                    }
-                    : null;
-
-            case AuditOperation.Delete:
-                return new PendingAuditValue
-                {
-                    ColumnName   = GetMappedColumnName(property),
-                    ClrType      = property.Metadata.ClrType,
-                    PropertyName = property.Metadata.Name,
-                    Value        = property.OriginalValue,
-                };
-
-            default:
-                return null;
-        }
+        static PendingAuditValue Build(PropertyEntry property, object? value) => new()
+        {
+            ColumnName   = GetMappedColumnName(property),
+            ClrType      = property.Metadata.ClrType,
+            PropertyName = property.Metadata.Name,
+            Value        = value,
+        };
     }
 
 
@@ -315,13 +429,13 @@ internal static class AuditCapture
     private static IReadOnlyList<object?> ResolvePostSaveKey(PendingAuditEntry entry)
     {
         var keyProperties = entry.Entry.Metadata.FindPrimaryKey()?.Properties;
-        if (keyProperties is null)
-        {
-            return entry.KeyValuesBeforeSave;
-        }
-
-        return keyProperties
-            .Select(p => entry.Entry.Property(p.Name).CurrentValue)
-            .ToList();
+        return keyProperties is null
+            ? entry.KeyValuesBeforeSave
+            : ReadKeyValues(entry.Entry, keyProperties);
     }
+
+
+
+    private static IReadOnlyList<object?> ReadKeyValues(EntityEntry entry, IReadOnlyList<IProperty> keyProperties)
+        => keyProperties.Select(p => entry.Property(p.Name).CurrentValue).ToList();
 }

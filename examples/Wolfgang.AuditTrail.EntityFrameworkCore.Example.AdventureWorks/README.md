@@ -4,7 +4,7 @@ End-to-end demo of `Wolfgang.AuditTrail.EntityFrameworkCore` against a realistic
 
 1. **Update** — rename an employee (`Person.LastName`).
 2. **Update** — change their email (`EmailAddress.EmailAddress`).
-3. **Insert + Delete** — onboard then immediately offboard a contractor.
+3. **Insert + Delete** — add then immediately remove a secondary email address for that same person. (Uses `EmailAddress` rather than a second `Person` row — a stub `Person` insert would trip AdventureWorks's FK constraints.)
 
 The demo prints the resulting `AuditHeader` + `AuditDetail` rows so you can see exactly what the library captures against production-style data.
 
@@ -34,9 +34,9 @@ First run takes ~60–90 sec because it pulls the SQL Server image and restores 
   Before: ken0@adventure-works.com
   After:  ken.sanchez-smith@adventure-works.com
 
-👤  Onboarding then immediately offboarding a contractor...
-  Onboarded BusinessEntityID=99999
-  Offboarded BusinessEntityID=99999
+➕  Adding then immediately removing a secondary email...
+  Added secondary email id=105
+  Removed secondary email id=105
 
 📜 Audit history for affected rows:
 
@@ -46,12 +46,10 @@ First run takes ~60–90 sec because it pulls the SQL Server image and restores 
   [2026-05-18 02:14:31Z] UPDATE on EmailAddress key=1|1 by hr-admin@adventure-works.com
       EmailAddress = ken.sanchez-smith@adventure-works.com  (String)
 
-  [2026-05-18 02:14:31Z] INSERT on Person key=99999 by hr-admin@adventure-works.com
-      FirstName = Temp  (String)
-      LastName = Contractor  (String)
-      PersonType = GC  (String)
+  [2026-05-18 02:14:31Z] INSERT on EmailAddress key=1|105 by hr-admin@adventure-works.com
+      EmailAddress = ken.alt@adventure-works.com  (String)
 
-  [2026-05-18 02:14:31Z] DELETE on Person key=99999 by hr-admin@adventure-works.com
+  [2026-05-18 02:14:31Z] DELETE on EmailAddress key=1|105 by hr-admin@adventure-works.com
       (no detail rows — CaptureDeletedValues=false)
 
 ✅  Done — 4 audit rows captured atomically with the user data.
@@ -68,5 +66,5 @@ First run takes ~60–90 sec because it pulls the SQL Server image and restores 
 ## What this does NOT demonstrate (intentionally)
 
 - The auto-transaction interceptor model (the `AdventureWorksContext` derives from `AuditingDbContext` for simplicity). For an interceptor example see [the WebApi example](../Wolfgang.AuditTrail.EntityFrameworkCore.Example.WebApi).
-- `[NotAudited]` opt-out — the [Console example](../Wolfgang.AuditTrail.EntityFrameworkCore.Example.Console) covers that.
+- `[NotAudited]` opt-out — no example project currently demonstrates this; see the attribute's own XML doc in `Wolfgang.AuditTrail.Abstractions` for usage.
 - The `on-behalf-of` pattern — the [WebApi example](../Wolfgang.AuditTrail.EntityFrameworkCore.Example.WebApi) covers that.

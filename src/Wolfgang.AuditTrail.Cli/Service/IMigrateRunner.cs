@@ -6,11 +6,10 @@ namespace Wolfgang.AuditTrail.Cli.Service;
 
 
 /// <summary>
-/// Executes the <c>migrate</c> subcommand. v1 implementation is a stub that prints
-/// the pending work and exits; the real migration runner will land alongside the
-/// <c>Wolfgang.AuditTrail.EntityFrameworkCore.Migrations.*</c> packages in a follow-up PR.
+/// Executes the <c>migrate</c> subcommand. <see cref="SchemaMigrateRunner"/> is the
+/// real implementation, backed by <c>AuditSchemaMigrator</c>.
 /// </summary>
 internal interface IMigrateRunner
 {
-    Task RunAsync(MigrateOptions options, IConsole console);
+    Task RunAsync(MigrateOptions options, IConsole console, CancellationToken cancellationToken);
 }

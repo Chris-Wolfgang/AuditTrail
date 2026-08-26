@@ -4,6 +4,17 @@ namespace Wolfgang.AuditTrail;
 /// Configures how the audit interceptor captures changes and how the schema installer
 /// creates the audit tables.
 /// </summary>
+/// <remarks>
+/// When registered via <c>AddEfCoreAuditing</c>, this is a process-wide singleton
+/// shared by every scoped <c>DbContext</c>/interceptor instance. <see cref="ValueSerializer"/>
+/// and <see cref="EntityKeySerializer"/> are lazily defaulted (`??=`) by the first
+/// <c>AuditingDbContext</c> or <c>AuditSaveChangesInterceptor</c> constructed
+/// against this instance; that default-assignment is an unsynchronized check-then-write
+/// against the shared singleton. In practice every writer converges on a
+/// functionally-equivalent default instance, so this is benign, but it is not
+/// formally thread-safe — avoid mutating an already-registered <see cref="AuditOptions"/>
+/// after startup from application code.
+/// </remarks>
 public sealed class AuditOptions
 {
     /// <summary>
@@ -13,15 +24,21 @@ public sealed class AuditOptions
     /// </summary>
     public string? Schema { get; set; }
 
+
+
     /// <summary>
     /// Name of the header table. Defaults to <c>AuditHeader</c>.
     /// </summary>
     public string HeaderTableName { get; set; } = "AuditHeader";
 
+
+
     /// <summary>
     /// Name of the detail table. Defaults to <c>AuditDetail</c>.
     /// </summary>
     public string DetailTableName { get; set; } = "AuditDetail";
+
+
 
     /// <summary>
     /// When <c>true</c>, <see cref="AuditOperation.Delete"/> operations write detail
@@ -45,6 +62,8 @@ public sealed class AuditOptions
     /// </remarks>
     public bool CaptureDeletedValues { get; set; }
 
+
+
     /// <summary>
     /// The value serializer used by the interceptor to encode column values into
     /// detail rows, and (via the schema installer) to drive the detail table's column
@@ -54,6 +73,8 @@ public sealed class AuditOptions
     /// </summary>
     public IAuditValueSerializer? ValueSerializer { get; set; }
 
+
+
     /// <summary>
     /// The entity-key serializer used to render primary-key values into the
     /// <c>EntityKey</c> column on <c>AuditHeader</c>. When left <c>null</c> it defaults
@@ -62,4 +83,21 @@ public sealed class AuditOptions
     /// <c>AuditSaveChangesInterceptor</c> constructors.
     /// </summary>
     public IAuditEntityKeySerializer? EntityKeySerializer { get; set; }
+
+
+
+    /// <summary>
+    /// Minimum number of pending audit headers in a single save before the interceptor
+    /// tries a provider-specific bulk-insert fast path instead of the normal EF Core
+    /// tracked-entity insert. <c>null</c> (the default) disables bulk insert entirely —
+    /// every save uses the standard path regardless of size.
+    /// </summary>
+    /// <remarks>
+    /// Only takes effect when a provider-specific <c>IAuditBulkWriter</c> is registered
+    /// (e.g. via a provider integration package) AND that writer's <c>CanHandle</c>
+    /// returns <c>true</c> for the current context. Providers with no registered writer,
+    /// or a writer that declines, always use the standard EF Core insert path regardless
+    /// of this threshold.
+    /// </remarks>
+    public int? BulkInsertRowThreshold { get; set; }
 }

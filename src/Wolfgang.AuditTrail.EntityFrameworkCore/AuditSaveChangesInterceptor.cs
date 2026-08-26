@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage;
 using Wolfgang.AuditTrail.Entities;
 using Wolfgang.AuditTrail.Internal;
-using Wolfgang.AuditTrail.Serializers;
 
 namespace Wolfgang.AuditTrail;
 
@@ -34,14 +33,15 @@ namespace Wolfgang.AuditTrail;
 /// disposes the owned transaction, and re-raises — no leak. Cancellation that
 /// fires later (during EF's own SQL execution between
 /// <c>SavingChangesAsync</c> and <c>SavedChangesAsync</c>) is handled via
-/// <c>SaveChangesFailedAsync</c> on EF Core 6 / pre-7-cancel-callback versions;
-/// on EF Core 7+ that routes through <c>SaveChangesCanceledAsync</c> instead,
-/// which this interceptor doesn't yet hook because that method isn't on the
-/// EF Core 6 <c>ISaveChangesInterceptor</c> surface. In that narrow window the
-/// owned transaction is disposed when the <see cref="DbContext"/> is.
-/// Inherit from <see cref="AuditingDbContext"/> for full cancellation
-/// robustness — it owns the <c>SaveChangesAsync</c> override and can clean up
-/// on every exit path.
+/// <c>SaveChangesFailedAsync</c> on the net6.0 target, where
+/// <c>SaveChangesCanceledAsync</c> isn't part of <c>ISaveChangesInterceptor</c>
+/// yet. On the net8.0 and net10.0 targets this interceptor also implements
+/// <c>SaveChangesCanceledAsync</c> (EF Core 7+), so that window is covered
+/// there too. Only on net6.0, in that narrow window, does the owned
+/// transaction fall back to being disposed when the <see cref="DbContext"/>
+/// is. Inherit from <see cref="AuditingDbContext"/> if you need that net6.0
+/// gap closed too — it owns the <c>SaveChangesAsync</c> override and can
+/// clean up on every exit path regardless of target framework.
 /// </para>
 /// <para>
 /// <strong>acceptAllChangesOnSuccess caveat.</strong> The interceptor does not
@@ -93,6 +93,7 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
 
     private readonly IAuditUserProvider _userProvider;
     private readonly AuditOptions _options;
+    private readonly IAuditBulkWriter? _bulkWriter;
 
 
 
@@ -104,14 +105,37 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
         IAuditUserProvider userProvider,
         AuditOptions options
     )
+        : this(userProvider, options, bulkWriter: null)
+    {
+    }
+
+
+
+    /// <summary>
+    /// Initializes a new <see cref="AuditSaveChangesInterceptor"/> with a provider-specific
+    /// bulk insert writer. <see cref="DbContextOptionsBuilderExtensions.UseAuditing"/>
+    /// resolves this from the DI container automatically; construct the interceptor
+    /// directly with this overload only outside that flow.
+    /// </summary>
+    /// <param name="userProvider">Supplies the <see cref="AuditUser"/> stamped on every header.</param>
+    /// <param name="options">Audit configuration including the value / entity-key serializers.</param>
+    /// <param name="bulkWriter">
+    /// Optional provider-specific bulk-insert writer, consulted only when
+    /// <see cref="Wolfgang.AuditTrail.AuditOptions.BulkInsertRowThreshold"/> is set.
+    /// <c>null</c> means every save uses the standard EF Core insert path.
+    /// </param>
+    public AuditSaveChangesInterceptor
+    (
+        IAuditUserProvider userProvider,
+        AuditOptions options,
+        IAuditBulkWriter? bulkWriter
+    )
     {
         _userProvider = userProvider ?? throw new ArgumentNullException(nameof(userProvider));
         _options = options ?? throw new ArgumentNullException(nameof(options));
+        _bulkWriter = bulkWriter;
 
-        // Default the serializers so direct, non-DI construction works with a plain
-        // `new AuditOptions()` — mirrors what AddEfCoreAuditing wires up. See #185.
-        _options.ValueSerializer ??= new StringAuditValueSerializer();
-        _options.EntityKeySerializer ??= new PipeDelimitedEntityKeySerializer();
+        _options.EnsureDefaultSerializers();
     }
 
 
@@ -308,7 +332,7 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
             if (pending is { Count: > 0 })
             {
                 EnsureUserEntriesAreSettled(context);
-                AuditCapture.AddAuditEntities(context, pending, _userProvider, _options, txId);
+                AuditCapture.AddAuditEntities(context, pending, _userProvider, _options, txId, _bulkWriter);
 
                 context.SetItem(SuppressItemsKey, value: true);
                 try     { context.SaveChanges(); }
@@ -346,7 +370,9 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
             if (pending is { Count: > 0 })
             {
                 EnsureUserEntriesAreSettled(context);
-                AuditCapture.AddAuditEntities(context, pending, _userProvider, _options, txId);
+                await AuditCapture
+                    .AddAuditEntitiesAsync(context, pending, _userProvider, _options, txId, _bulkWriter, cancellationToken)
+                    .ConfigureAwait(false);
 
                 context.SetItem(SuppressItemsKey, value: true);
                 try

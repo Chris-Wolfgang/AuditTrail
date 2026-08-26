@@ -30,14 +30,9 @@ public static class ModelBuilderExtensions
 
     private static void ConfigureAuditHeader(EntityTypeBuilder<AuditHeader> builder, AuditOptions options)
     {
-        if (!string.IsNullOrWhiteSpace(options.Schema))
-        {
-            builder.ToTable(options.HeaderTableName, options.Schema);
-        }
-        else
-        {
-            builder.ToTable(options.HeaderTableName);
-        }
+        // ToTable(name, schema: null) is equivalent to ToTable(name) -- both mean
+        // "use the provider's default schema" -- so no branch is needed here.
+        builder.ToTable(options.HeaderTableName, string.IsNullOrWhiteSpace(options.Schema) ? null : options.Schema);
 
         builder.HasKey(h => h.HeaderId);
         builder.Property(h => h.HeaderId).ValueGeneratedNever();
@@ -79,14 +74,7 @@ public static class ModelBuilderExtensions
 
     private static void ConfigureAuditDetail(EntityTypeBuilder<AuditDetail> builder, AuditOptions options)
     {
-        if (!string.IsNullOrWhiteSpace(options.Schema))
-        {
-            builder.ToTable(options.DetailTableName, options.Schema);
-        }
-        else
-        {
-            builder.ToTable(options.DetailTableName);
-        }
+        builder.ToTable(options.DetailTableName, string.IsNullOrWhiteSpace(options.Schema) ? null : options.Schema);
 
         builder.HasKey(d => d.DetailId);
         builder.Property(d => d.DetailId).ValueGeneratedOnAdd();

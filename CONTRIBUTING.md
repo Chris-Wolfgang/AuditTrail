@@ -145,7 +145,7 @@ var now = DateTimeOffset.UtcNow;
 ## Build and Test Instructions
 
 ### Prerequisites
-- .NET 8.0 SDK or later
+- .NET 10.0 SDK or later (the src projects multi-target up to `net10.0`; the .NET 10 SDK is required to build every TFM)
 - PowerShell Core (optional, for formatting scripts)
 
 ### Build the Project
@@ -182,10 +182,10 @@ dotnet format
 dotnet format --verify-no-changes
 
 # PowerShell formatting script
-pwsh ./format.ps1
+pwsh ./scripts/format.ps1
 ```
 
-See [README-FORMATTING.md](README-FORMATTING.md) for detailed formatting rules.
+See [docs/README-FORMATTING.md](docs/README-FORMATTING.md) for detailed formatting rules.
 
 ---
 

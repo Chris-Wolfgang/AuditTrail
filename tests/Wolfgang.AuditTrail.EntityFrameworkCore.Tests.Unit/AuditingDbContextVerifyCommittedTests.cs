@@ -81,7 +81,7 @@ public sealed class AuditingDbContextVerifyCommittedTests : IDisposable
         Assert.Equal("Verified", verify.Customers.Single().Name);
         // Cross-check: a re-query for the same TransactionId returns true,
         // matching what the verifySucceeded delegate would have observed.
-        Assert.True(verify.Set<AuditHeader>().Any(h => h.TransactionId == header.TransactionId));
+        Assert.Contains(verify.Set<AuditHeader>(), h => h.TransactionId == header.TransactionId);
     }
 
 
@@ -98,8 +98,8 @@ public sealed class AuditingDbContextVerifyCommittedTests : IDisposable
         await using var verify = NewContext(withVerifyingStrategy: false);
         var header = await verify.Set<AuditHeader>().SingleAsync();
         Assert.Equal("VerifiedAsync", (await verify.Customers.SingleAsync()).Name);
-        Assert.True(await verify.Set<AuditHeader>()
-            .AnyAsync(h => h.TransactionId == header.TransactionId));
+        var headers = await verify.Set<AuditHeader>().ToListAsync();
+        Assert.Contains(headers, h => h.TransactionId == header.TransactionId);
     }
 
 

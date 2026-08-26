@@ -58,8 +58,11 @@ public sealed class AuditCaptureColumnNameTests : IDisposable
     {
         await using (var ctx = CreateContext())
         {
-            ctx.Items.Add(new MappedItem { DisplayName = "Hello" });
+            var item = new MappedItem { DisplayName = "Hello" };
+            ctx.Items.Add(item);
             await ctx.SaveChangesAsync();
+
+            Assert.True(item.Id > 0);
         }
 
         await using var verify = CreateContext();

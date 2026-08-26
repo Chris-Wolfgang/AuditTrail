@@ -22,7 +22,7 @@ internal sealed class CapturingMigrateRunner : IMigrateRunner
 
 
 
-    public Task RunAsync(MigrateOptions options, IConsole console)
+    public Task RunAsync(MigrateOptions options, IConsole console, CancellationToken cancellationToken)
     {
         CallCount++;
         CapturedOptions = options;

@@ -31,13 +31,16 @@ public static class DbContextOptionsBuilderExtensions
     /// <see cref="Entities.AuditHeader"/> / <see cref="Entities.AuditDetail"/>
     /// entities.
     /// </para>
-    /// <para>Minimal correct wiring:</para>
+    /// <para>
+    /// Register the options and user provider first via
+    /// <c>services.AddEfCoreAuditing&lt;TUserProvider&gt;()</c>, then call
+    /// <c>UseAuditing</c> when registering the context — see that method's own
+    /// example for the DI registration side. The derived context itself must
+    /// still apply the model mappings, shown below.
+    /// </para>
+    /// </remarks>
+    /// <example>
     /// <code>
-    /// services.AddEfCoreAuditing&lt;MyUserProvider&gt;();
-    /// services.AddDbContext&lt;AppDbContext&gt;((sp, opts) =&gt; opts
-    ///     .UseSqlServer(connStr)
-    ///     .UseAuditing(sp));
-    ///
     /// public class AppDbContext : IdentityDbContext&lt;AppUser&gt;
     /// {
     ///     private readonly AuditOptions _auditOptions;
@@ -50,13 +53,19 @@ public static class DbContextOptionsBuilderExtensions
     ///         modelBuilder.ApplyAuditing(_auditOptions);  // &lt;-- required
     ///     }
     /// }
+    ///
+    /// public class AppUser : IdentityUser
+    /// {
+    /// }
     /// </code>
-    /// </remarks>
+    /// </example>
     /// <param name="optionsBuilder">The EF Core options builder.</param>
     /// <param name="serviceProvider">
     /// The DI service provider; must already contain <see cref="AuditOptions"/>
     /// and <see cref="IAuditUserProvider"/> (register them via
-    /// <c>services.AddEfCoreAuditing&lt;TUserProvider&gt;()</c>).
+    /// <c>services.AddEfCoreAuditing&lt;TUserProvider&gt;()</c>). An <see cref="IAuditBulkWriter"/>
+    /// is picked up automatically if one is registered (e.g. by a provider integration
+    /// package) — optional, absent by default.
     /// </param>
     /// <returns><paramref name="optionsBuilder"/> for chaining.</returns>
     public static DbContextOptionsBuilder UseAuditing
@@ -70,7 +79,8 @@ public static class DbContextOptionsBuilderExtensions
 
         var userProvider = serviceProvider.GetRequiredService<IAuditUserProvider>();
         var options = serviceProvider.GetRequiredService<AuditOptions>();
+        var bulkWriter = serviceProvider.GetService<IAuditBulkWriter>();
 
-        return optionsBuilder.AddInterceptors(new AuditSaveChangesInterceptor(userProvider, options));
+        return optionsBuilder.AddInterceptors(new AuditSaveChangesInterceptor(userProvider, options, bulkWriter));
     }
 }

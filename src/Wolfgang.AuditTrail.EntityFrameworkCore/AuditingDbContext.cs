@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Wolfgang.AuditTrail.Entities;
 using Wolfgang.AuditTrail.Internal;
-using Wolfgang.AuditTrail.Serializers;
 
 namespace Wolfgang.AuditTrail;
 
@@ -30,10 +29,24 @@ namespace Wolfgang.AuditTrail;
 /// <c>options.UseAuditing(serviceProvider)</c>.
 /// </para>
 /// </remarks>
+/// <example>
+/// <code>
+/// public class AppDbContext : AuditingDbContext
+/// {
+///     public AppDbContext(DbContextOptions options, IAuditUserProvider userProvider, AuditOptions auditOptions)
+///         : base(options, userProvider, auditOptions)
+///     {
+///     }
+///
+///     public DbSet&lt;Order&gt; Orders =&gt; Set&lt;Order&gt;();
+/// }
+/// </code>
+/// </example>
 public abstract class AuditingDbContext : DbContext
 {
     private readonly IAuditUserProvider _userProvider;
     private readonly AuditOptions _auditOptions;
+    private readonly IAuditBulkWriter? _bulkWriter;
 
     private bool _isAuditingSave;   // recursion guard for the audit-rows pass
 
@@ -61,16 +74,42 @@ public abstract class AuditingDbContext : DbContext
         IAuditUserProvider userProvider,
         AuditOptions auditOptions
     )
+        : this(options, userProvider, auditOptions, bulkWriter: null)
+    {
+    }
+
+
+
+    /// <summary>
+    /// Initializes a new <see cref="AuditingDbContext"/> with a provider-specific bulk
+    /// insert writer. Register the writer as a scoped/singleton service in your DI
+    /// container — a context constructed via <c>AddDbContext</c> receives it here
+    /// through ordinary constructor injection, the same way EF Core injects any other
+    /// application-registered service into a derived context's constructor.
+    /// </summary>
+    /// <param name="options">EF Core <see cref="DbContextOptions"/>.</param>
+    /// <param name="userProvider">Supplies the <see cref="AuditUser"/> stamped on every header.</param>
+    /// <param name="auditOptions">Audit configuration including the value / entity-key serializers.</param>
+    /// <param name="bulkWriter">
+    /// Optional provider-specific bulk-insert writer, consulted only when
+    /// <see cref="Wolfgang.AuditTrail.AuditOptions.BulkInsertRowThreshold"/> is set.
+    /// <c>null</c> means every save uses the standard EF Core insert path.
+    /// </param>
+    /// <exception cref="ArgumentNullException">If <paramref name="userProvider"/> or <paramref name="auditOptions"/> is <c>null</c>.</exception>
+    protected AuditingDbContext
+    (
+        DbContextOptions options,
+        IAuditUserProvider userProvider,
+        AuditOptions auditOptions,
+        IAuditBulkWriter? bulkWriter
+    )
         : base(options)
     {
         _userProvider = userProvider ?? throw new ArgumentNullException(nameof(userProvider));
         _auditOptions = auditOptions ?? throw new ArgumentNullException(nameof(auditOptions));
+        _bulkWriter = bulkWriter;
 
-        // Default the serializers so direct, non-DI construction works with a plain
-        // `new AuditOptions()` (unit-test context factories, IDesignTimeDbContextFactory,
-        // console spikes) — mirrors what AddEfCoreAuditing wires up. See #185.
-        _auditOptions.ValueSerializer ??= new StringAuditValueSerializer();
-        _auditOptions.EntityKeySerializer ??= new PipeDelimitedEntityKeySerializer();
+        _auditOptions.EnsureDefaultSerializers();
     }
 
 
@@ -184,7 +223,7 @@ public abstract class AuditingDbContext : DbContext
     {
         var result = base.SaveChanges(acceptAllChangesOnSuccess);
 
-        AuditCapture.AddAuditEntities(this, pending, _userProvider, _auditOptions, transactionId);
+        AuditCapture.AddAuditEntities(this, pending, _userProvider, _auditOptions, transactionId, _bulkWriter);
 
         _isAuditingSave = true;
         try     { base.SaveChanges(acceptAllChangesOnSuccess); }
@@ -207,7 +246,9 @@ public abstract class AuditingDbContext : DbContext
             .SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken)
             .ConfigureAwait(false);
 
-        AuditCapture.AddAuditEntities(this, pending, _userProvider, _auditOptions, transactionId);
+        await AuditCapture
+            .AddAuditEntitiesAsync(this, pending, _userProvider, _auditOptions, transactionId, _bulkWriter, cancellationToken)
+            .ConfigureAwait(false);
 
         _isAuditingSave = true;
         try

@@ -19,20 +19,32 @@ internal class Migrate
     [Option("-c|--connection-string <CONN>", Description = "ADO.NET connection string for the target database. Mutually exclusive with --connection-string-env.")]
     public string? ConnectionString { get; set; }
 
+
+
     [Option("--connection-string-env <ENV_VAR>", Description = "Name of an environment variable holding the connection string. Use this instead of --connection-string to keep secrets out of shell history.")]
     public string? ConnectionStringEnv { get; set; }
+
+
 
     [Option("-p|--provider <PROVIDER>", Description = "Database provider: sqlserver | postgresql | mysql | sqlite. Auto-detected from the connection string when possible.")]
     public string? Provider { get; set; }
 
+
+
     [Option("--schema <SCHEMA>", Description = "Schema to install the audit tables under. Defaults to the provider's default (dbo for SQL Server, public for PostgreSQL, none for SQLite/MySQL).")]
     public string? Schema { get; set; }
+
+
 
     [Option("--header-table <NAME>", Description = "Override the audit-header table name (default: AuditHeader).")]
     public string HeaderTable { get; set; } = "AuditHeader";
 
+
+
     [Option("--detail-table <NAME>", Description = "Override the audit-detail table name (default: AuditDetail).")]
     public string DetailTable { get; set; } = "AuditDetail";
+
+
 
     [Option("--dry-run", Description = "Print the SQL that would be executed but do not apply it.")]
     public bool DryRun { get; set; }
@@ -43,7 +55,8 @@ internal class Migrate
     (
         IConsole console,
         ILogger<Migrate> logger,
-        IMigrateRunner runner
+        IMigrateRunner runner,
+        CancellationToken cancellationToken
     )
     {
         logger.LogDebug("Starting {Command}", GetType().Name);
@@ -56,14 +69,12 @@ internal class Migrate
                 return ExitCode.ApplicationError;
             }
 
-            await runner.RunAsync(options, console).ConfigureAwait(false);
+            await runner.RunAsync(options, console, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception e)
         {
             logger.LogCritical(e, "Unhandled error: {Message}", e.Message);
-#pragma warning disable CA1849, VSTHRD103, S6966
-            console.Error.WriteLine($"Error: {e.Message}");
-#pragma warning restore CA1849, VSTHRD103, S6966
+            WriteError(console, $"Error: {e.Message}");
             return ExitCode.ApplicationError;
         }
 
@@ -107,26 +118,20 @@ internal class Migrate
         {
             if (!string.IsNullOrWhiteSpace(ConnectionString))
             {
-#pragma warning disable CA1849, VSTHRD103, S6966
-                console.Error.WriteLine("Error: --connection-string and --connection-string-env are mutually exclusive.");
-#pragma warning restore CA1849, VSTHRD103, S6966
+                WriteError(console, "Error: --connection-string and --connection-string-env are mutually exclusive.");
                 return null;
             }
             connectionString = Environment.GetEnvironmentVariable(ConnectionStringEnv);
             if (string.IsNullOrWhiteSpace(connectionString))
             {
-#pragma warning disable CA1849, VSTHRD103, S6966
-                console.Error.WriteLine($"Error: environment variable '{ConnectionStringEnv}' is not set or is empty.");
-#pragma warning restore CA1849, VSTHRD103, S6966
+                WriteError(console, $"Error: environment variable '{ConnectionStringEnv}' is not set or is empty.");
                 return null;
             }
         }
 
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-#pragma warning disable CA1849, VSTHRD103, S6966
-            console.Error.WriteLine("Error: one of --connection-string or --connection-string-env is required.");
-#pragma warning restore CA1849, VSTHRD103, S6966
+            WriteError(console, "Error: one of --connection-string or --connection-string-env is required.");
             return null;
         }
 
@@ -150,11 +155,10 @@ internal class Migrate
 
             if (explicitProvider == DatabaseProvider.Unknown)
             {
-#pragma warning disable CA1849, VSTHRD103, S6966
-                console.Error.WriteLine(
+                WriteError(
+                    console,
                     $"Error: unrecognized provider '{Provider}'. " +
                     "Valid values: sqlserver, postgresql, mysql, sqlite.");
-#pragma warning restore CA1849, VSTHRD103, S6966
                 return null;
             }
 
@@ -164,16 +168,25 @@ internal class Migrate
         var detected = DetectProvider(connectionString);
         if (detected == DatabaseProvider.Unknown)
         {
-#pragma warning disable CA1849, VSTHRD103, S6966
-            console.Error.WriteLine(
+            WriteError(
+                console,
                 "Error: could not auto-detect provider from the connection string. " +
                 "Specify --provider explicitly (sqlserver|postgresql|mysql|sqlite).");
-#pragma warning restore CA1849, VSTHRD103, S6966
             return null;
         }
 
         return detected;
     }
+
+
+
+#pragma warning disable S125 // explanatory comment below reads as commented-out code to Sonar's heuristic
+    // IConsole.Error is a synchronous TextWriter by design (McMaster.Extensions.CommandLineUtils);
+    // there is no async CLI-error-output path to route through instead.
+#pragma warning restore S125
+#pragma warning disable CA1849, VSTHRD103, S6966
+    private static void WriteError(IConsole console, string message) => console.Error.WriteLine(message);
+#pragma warning restore CA1849, VSTHRD103, S6966
 
 
 
