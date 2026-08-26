@@ -119,10 +119,12 @@ internal static class AuditCapture
         IAuditUserProvider userProvider,
         AuditOptions options,
         Guid transactionId,
-        IAuditBulkWriter? bulkWriter
+        IAuditBulkWriter? bulkWriter,
+        TimeProvider timeProvider,
+        Func<Guid> guidProvider
     )
     {
-        var headers = BuildHeaders(pending, userProvider, options, transactionId);
+        var headers = BuildHeaders(pending, userProvider, options, transactionId, timeProvider, guidProvider);
 
         if (TryGetBulkWriter(context, options, bulkWriter, headers.Count, out var writer))
         {
@@ -151,10 +153,12 @@ internal static class AuditCapture
         AuditOptions options,
         Guid transactionId,
         IAuditBulkWriter? bulkWriter,
+        TimeProvider timeProvider,
+        Func<Guid> guidProvider,
         CancellationToken cancellationToken
     )
     {
-        var headers = BuildHeaders(pending, userProvider, options, transactionId);
+        var headers = BuildHeaders(pending, userProvider, options, transactionId, timeProvider, guidProvider);
 
         if (TryGetBulkWriter(context, options, bulkWriter, headers.Count, out var writer))
         {
@@ -175,11 +179,13 @@ internal static class AuditCapture
         List<PendingAuditEntry> pending,
         IAuditUserProvider userProvider,
         AuditOptions options,
-        Guid transactionId
+        Guid transactionId,
+        TimeProvider timeProvider,
+        Func<Guid> guidProvider
     )
     {
         var user = userProvider.GetCurrentUser();
-        var auditedAt = DateTime.UtcNow;
+        var auditedAt = timeProvider.GetUtcNow().UtcDateTime;
 
         // AuditingDbContext / AuditSaveChangesInterceptor default these on
         // construction (EnsureDefaultSerializers), so they're only null here if
@@ -205,7 +211,7 @@ internal static class AuditCapture
 
             var header = new AuditHeader
             {
-                HeaderId = Guid.NewGuid(),
+                HeaderId = guidProvider(),
                 TransactionId = transactionId,
                 AuditedAtUtc = auditedAt,
                 UserId = user.UserId,

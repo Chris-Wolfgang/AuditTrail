@@ -94,6 +94,8 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
     private readonly IAuditUserProvider _userProvider;
     private readonly AuditOptions _options;
     private readonly IAuditBulkWriter? _bulkWriter;
+    private readonly TimeProvider _timeProvider;
+    private readonly Func<Guid> _guidProvider;
 
 
 
@@ -130,10 +132,49 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
         AuditOptions options,
         IAuditBulkWriter? bulkWriter
     )
+        : this(userProvider, options, bulkWriter, timeProvider: null, guidProvider: null)
+    {
+    }
+
+
+
+    /// <summary>
+    /// Initializes a new <see cref="AuditSaveChangesInterceptor"/> with a provider-specific
+    /// bulk insert writer, an injectable <see cref="TimeProvider"/>, and an injectable
+    /// <see cref="Guid"/> factory. Exists so tests can assert exact
+    /// <c>AuditHeader.HeaderId</c> / <c>AuditHeader.AuditedAtUtc</c> values instead of
+    /// only their shape — production code should keep using one of the other
+    /// constructors, which default both to real system time/randomness.
+    /// </summary>
+    /// <param name="userProvider">Supplies the <see cref="AuditUser"/> stamped on every header.</param>
+    /// <param name="options">Audit configuration including the value / entity-key serializers.</param>
+    /// <param name="bulkWriter">
+    /// Optional provider-specific bulk-insert writer, consulted only when
+    /// <see cref="Wolfgang.AuditTrail.AuditOptions.BulkInsertRowThreshold"/> is set.
+    /// <c>null</c> means every save uses the standard EF Core insert path.
+    /// </param>
+    /// <param name="timeProvider">
+    /// Supplies <c>AuditHeader.AuditedAtUtc</c>. <c>null</c> (the default) uses
+    /// <see cref="TimeProvider.System"/>.
+    /// </param>
+    /// <param name="guidProvider">
+    /// Supplies <c>AuditHeader.HeaderId</c> and the per-save audit transaction id.
+    /// <c>null</c> (the default) uses <see cref="Guid.NewGuid()"/>.
+    /// </param>
+    public AuditSaveChangesInterceptor
+    (
+        IAuditUserProvider userProvider,
+        AuditOptions options,
+        IAuditBulkWriter? bulkWriter,
+        TimeProvider? timeProvider,
+        Func<Guid>? guidProvider
+    )
     {
         _userProvider = userProvider ?? throw new ArgumentNullException(nameof(userProvider));
         _options = options ?? throw new ArgumentNullException(nameof(options));
         _bulkWriter = bulkWriter;
+        _timeProvider = timeProvider ?? TimeProvider.System;
+        _guidProvider = guidProvider ?? Guid.NewGuid;
 
         _options.EnsureDefaultSerializers();
     }
@@ -211,7 +252,7 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
     {
         var pending = AuditCapture.CapturePending(context, _options);
         context.SetItem(PendingItemsKey, pending);
-        context.SetItem(TxIdItemsKey, Guid.NewGuid());
+        context.SetItem(TxIdItemsKey, _guidProvider());
 
         // Symmetric short-circuit with BeginAudit (sync): no pending audit
         // entries means no audit transaction.
@@ -304,7 +345,7 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
         // PK values for Deletes and IsModified flags for Updates.
         var pending = AuditCapture.CapturePending(context, _options);
         context.SetItem(PendingItemsKey, pending);
-        context.SetItem(TxIdItemsKey, Guid.NewGuid());
+        context.SetItem(TxIdItemsKey, _guidProvider());
 
         // No audit work means no transaction. Opening an owned BEGIN/COMMIT
         // when CapturePending returns empty just burns a database round-trip
@@ -332,7 +373,7 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
             if (pending is { Count: > 0 })
             {
                 EnsureUserEntriesAreSettled(context);
-                AuditCapture.AddAuditEntities(context, pending, _userProvider, _options, txId, _bulkWriter);
+                AuditCapture.AddAuditEntities(context, pending, _userProvider, _options, txId, _bulkWriter, _timeProvider, _guidProvider);
 
                 context.SetItem(SuppressItemsKey, value: true);
                 try     { context.SaveChanges(); }
@@ -371,7 +412,7 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
             {
                 EnsureUserEntriesAreSettled(context);
                 await AuditCapture
-                    .AddAuditEntitiesAsync(context, pending, _userProvider, _options, txId, _bulkWriter, cancellationToken)
+                    .AddAuditEntitiesAsync(context, pending, _userProvider, _options, txId, _bulkWriter, _timeProvider, _guidProvider, cancellationToken)
                     .ConfigureAwait(false);
 
                 context.SetItem(SuppressItemsKey, value: true);
