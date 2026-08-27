@@ -119,31 +119,37 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
 
         var connection = (NpgsqlConnection)context.Database.GetDbConnection();
 
-        await using (var writer = await _importerFactory.BeginBinaryImportAsync(
-            connection, $"COPY {GetTableFqn<AuditHeader>(context)} {HeaderColumns} FROM STDIN (FORMAT BINARY)", cancellationToken).ConfigureAwait(false))
+        // MA0004 false-positive on `await using var` -- the disposal `await` cannot be
+        // ConfigureAwait'd via that syntax. Use the explicit ConfiguredAsyncDisposable
+        // form so both the construction and the implicit DisposeAsync run without
+        // resuming on the captured SynchronizationContext.
+        var headerWriter = await _importerFactory.BeginBinaryImportAsync(
+            connection, $"COPY {GetTableFqn<AuditHeader>(context)} {HeaderColumns} FROM STDIN (FORMAT BINARY)", cancellationToken).ConfigureAwait(false);
+        await using (headerWriter.ConfigureAwait(false))
         {
             foreach (var header in headers)
             {
-                await writer.StartRowAsync(cancellationToken).ConfigureAwait(false);
-                await WriteHeaderRowAsync(writer, header, cancellationToken).ConfigureAwait(false);
+                await headerWriter.StartRowAsync(cancellationToken).ConfigureAwait(false);
+                await WriteHeaderRowAsync(headerWriter, header, cancellationToken).ConfigureAwait(false);
             }
 
-            await writer.CompleteAsync(cancellationToken).ConfigureAwait(false);
+            await headerWriter.CompleteAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        await using (var writer = await _importerFactory.BeginBinaryImportAsync(
-            connection, $"COPY {GetTableFqn<AuditDetail>(context)} {DetailColumns} FROM STDIN (FORMAT BINARY)", cancellationToken).ConfigureAwait(false))
+        var detailWriter = await _importerFactory.BeginBinaryImportAsync(
+            connection, $"COPY {GetTableFqn<AuditDetail>(context)} {DetailColumns} FROM STDIN (FORMAT BINARY)", cancellationToken).ConfigureAwait(false);
+        await using (detailWriter.ConfigureAwait(false))
         {
             foreach (var header in headers)
             {
                 foreach (var detail in header.Details)
                 {
-                    await writer.StartRowAsync(cancellationToken).ConfigureAwait(false);
-                    await WriteDetailRowAsync(writer, detail, cancellationToken).ConfigureAwait(false);
+                    await detailWriter.StartRowAsync(cancellationToken).ConfigureAwait(false);
+                    await WriteDetailRowAsync(detailWriter, detail, cancellationToken).ConfigureAwait(false);
                 }
             }
 
-            await writer.CompleteAsync(cancellationToken).ConfigureAwait(false);
+            await detailWriter.CompleteAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 
