@@ -46,6 +46,9 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.Tests.Integration</_Parameter1>
     </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.Tests.Unit</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
   <!--

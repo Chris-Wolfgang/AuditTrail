@@ -32,6 +32,27 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
     // the target list to its default/identity generator.
     private const string DetailColumns = "(\"HeaderId\", \"ColumnName\", \"ValueText\", \"ValueType\")";
 
+    private readonly INpgsqlBinaryImporterFactory _importerFactory;
+
+
+
+    /// <summary>
+    /// Initializes a new <see cref="NpgsqlCopyAuditBulkWriter"/>.
+    /// </summary>
+    public NpgsqlCopyAuditBulkWriter() : this(new NpgsqlBinaryImporterFactory())
+    {
+    }
+
+
+
+    // Test-only injection seam -- see NpgsqlBinaryImporterWrapper/NpgsqlBinaryImporterFactory's
+    // [ExcludeFromCodeCoverage] doc comments for why the real Npgsql-facing implementations
+    // aren't unit-tested directly.
+    internal NpgsqlCopyAuditBulkWriter(INpgsqlBinaryImporterFactory importerFactory)
+    {
+        _importerFactory = importerFactory;
+    }
+
 
 
     /// <inheritdoc />
@@ -57,7 +78,7 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
 
         var connection = (NpgsqlConnection)context.Database.GetDbConnection();
 
-        using (var writer = connection.BeginBinaryImport($"COPY {GetTableFqn<AuditHeader>(context)} {HeaderColumns} FROM STDIN (FORMAT BINARY)"))
+        using (var writer = _importerFactory.BeginBinaryImport(connection, $"COPY {GetTableFqn<AuditHeader>(context)} {HeaderColumns} FROM STDIN (FORMAT BINARY)"))
         {
             foreach (var header in headers)
             {
@@ -68,7 +89,7 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
             writer.Complete();
         }
 
-        using (var writer = connection.BeginBinaryImport($"COPY {GetTableFqn<AuditDetail>(context)} {DetailColumns} FROM STDIN (FORMAT BINARY)"))
+        using (var writer = _importerFactory.BeginBinaryImport(connection, $"COPY {GetTableFqn<AuditDetail>(context)} {DetailColumns} FROM STDIN (FORMAT BINARY)"))
         {
             foreach (var header in headers)
             {
@@ -98,8 +119,8 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
 
         var connection = (NpgsqlConnection)context.Database.GetDbConnection();
 
-        await using (var writer = await connection.BeginBinaryImportAsync(
-            $"COPY {GetTableFqn<AuditHeader>(context)} {HeaderColumns} FROM STDIN (FORMAT BINARY)", cancellationToken).ConfigureAwait(false))
+        await using (var writer = await _importerFactory.BeginBinaryImportAsync(
+            connection, $"COPY {GetTableFqn<AuditHeader>(context)} {HeaderColumns} FROM STDIN (FORMAT BINARY)", cancellationToken).ConfigureAwait(false))
         {
             foreach (var header in headers)
             {
@@ -110,8 +131,8 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
             await writer.CompleteAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        await using (var writer = await connection.BeginBinaryImportAsync(
-            $"COPY {GetTableFqn<AuditDetail>(context)} {DetailColumns} FROM STDIN (FORMAT BINARY)", cancellationToken).ConfigureAwait(false))
+        await using (var writer = await _importerFactory.BeginBinaryImportAsync(
+            connection, $"COPY {GetTableFqn<AuditDetail>(context)} {DetailColumns} FROM STDIN (FORMAT BINARY)", cancellationToken).ConfigureAwait(false))
         {
             foreach (var header in headers)
             {
@@ -128,7 +149,7 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
 
 
 
-    private static void WriteHeaderRow(NpgsqlBinaryImporter writer, AuditHeader header)
+    private static void WriteHeaderRow(INpgsqlBinaryImporter writer, AuditHeader header)
     {
         writer.Write(header.HeaderId, NpgsqlDbType.Uuid);
         writer.Write(header.TransactionId, NpgsqlDbType.Uuid);
@@ -143,7 +164,7 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
 
 
 
-    private static async Task WriteHeaderRowAsync(NpgsqlBinaryImporter writer, AuditHeader header, CancellationToken cancellationToken)
+    private static async Task WriteHeaderRowAsync(INpgsqlBinaryImporter writer, AuditHeader header, CancellationToken cancellationToken)
     {
         await writer.WriteAsync(header.HeaderId, NpgsqlDbType.Uuid, cancellationToken).ConfigureAwait(false);
         await writer.WriteAsync(header.TransactionId, NpgsqlDbType.Uuid, cancellationToken).ConfigureAwait(false);
@@ -158,7 +179,7 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
 
 
 
-    private static void WriteDetailRow(NpgsqlBinaryImporter writer, AuditDetail detail)
+    private static void WriteDetailRow(INpgsqlBinaryImporter writer, AuditDetail detail)
     {
         writer.Write(detail.HeaderId, NpgsqlDbType.Uuid);
         writer.Write(detail.ColumnName, NpgsqlDbType.Text);
@@ -168,7 +189,7 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
 
 
 
-    private static async Task WriteDetailRowAsync(NpgsqlBinaryImporter writer, AuditDetail detail, CancellationToken cancellationToken)
+    private static async Task WriteDetailRowAsync(INpgsqlBinaryImporter writer, AuditDetail detail, CancellationToken cancellationToken)
     {
         await writer.WriteAsync(detail.HeaderId, NpgsqlDbType.Uuid, cancellationToken).ConfigureAwait(false);
         await writer.WriteAsync(detail.ColumnName, NpgsqlDbType.Text, cancellationToken).ConfigureAwait(false);
@@ -178,7 +199,7 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
 
 
 
-    private static void WriteNullableText(NpgsqlBinaryImporter writer, string? value)
+    private static void WriteNullableText(INpgsqlBinaryImporter writer, string? value)
     {
         if (value is null)
         {
@@ -192,7 +213,7 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
 
 
 
-    private static Task WriteNullableTextAsync(NpgsqlBinaryImporter writer, string? value, CancellationToken cancellationToken)
+    private static Task WriteNullableTextAsync(INpgsqlBinaryImporter writer, string? value, CancellationToken cancellationToken)
     {
         return value is null
             ? writer.WriteNullAsync(cancellationToken)
