@@ -2,6 +2,7 @@ using BenchmarkDotNet.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Testcontainers.MsSql;
 using Testcontainers.PostgreSql;
+using Wolfgang.AuditTrail.Npgsql;
 using Wolfgang.AuditTrail.Serializers;
 
 namespace Wolfgang.AuditTrail.Benchmarks;
@@ -53,6 +54,7 @@ public class ProviderSaveChangesBenchmarks
     private AuditOptions _options = null!;
     private StaticAuditUserProvider _userProvider = null!;
     private Customer[] _existingRows = Array.Empty<Customer>();
+    private IAuditBulkWriter? _bulkWriter;
 
 
 
@@ -62,6 +64,15 @@ public class ProviderSaveChangesBenchmarks
 
     [Params(1, 10, 50)]
     public int BatchSize { get; set; }
+
+
+    // Only PostgreSQL has a registered IAuditBulkWriter (NpgsqlCopyAuditBulkWriter);
+    // true on Sqlite/SqlServer is a no-op -- CanHandle declines and every save falls
+    // back to the standard path, same as false. Kept in the cross-product anyway so
+    // the PostgreSQL rows are directly comparable per #148's original ask, without a
+    // separate benchmark class just for the provider that has a writer.
+    [Params(false, true)]
+    public bool UseBulkInsert { get; set; }
 
 
 
@@ -74,6 +85,16 @@ public class ProviderSaveChangesBenchmarks
             EntityKeySerializer = new PipeDelimitedEntityKeySerializer(),
         };
         _userProvider = new StaticAuditUserProvider();
+
+        if (UseBulkInsert)
+        {
+            // Threshold of 1 means every save -- even BatchSize:1 -- takes the bulk
+            // path when a writer is registered, so the comparison shows the COPY
+            // protocol's fixed handshake cost at small batches too, not just its
+            // payoff at large ones.
+            _options.BulkInsertRowThreshold = 1;
+            _bulkWriter = Provider == BenchmarkProvider.PostgreSQL ? new NpgsqlCopyAuditBulkWriter() : null;
+        }
 
         switch (Provider)
         {
@@ -207,7 +228,7 @@ public class ProviderSaveChangesBenchmarks
     {
         var builder = new DbContextOptionsBuilder<AuditedBenchmarkDbContext>();
         ApplyProvider(builder);
-        return new AuditedBenchmarkDbContext(builder.Options, _userProvider, _options);
+        return new AuditedBenchmarkDbContext(builder.Options, _userProvider, _options, _bulkWriter);
     }
 
 

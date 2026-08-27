@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Wolfgang.AuditTrail.EntityFrameworkCore\Wolfgang.AuditTrail.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\src\Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql\Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.csproj" />
   </ItemGroup>
 
   <ItemGroup>
