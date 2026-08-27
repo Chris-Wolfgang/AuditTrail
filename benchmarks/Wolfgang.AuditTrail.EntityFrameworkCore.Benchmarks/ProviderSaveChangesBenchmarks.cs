@@ -66,11 +66,13 @@ public class ProviderSaveChangesBenchmarks
     public int BatchSize { get; set; }
 
 
+#pragma warning disable S125 // explanatory comment below reads as commented-out code to Sonar's heuristic
     // Only PostgreSQL has a registered IAuditBulkWriter (NpgsqlCopyAuditBulkWriter);
     // true on Sqlite/SqlServer is a no-op -- CanHandle declines and every save falls
     // back to the standard path, same as false. Kept in the cross-product anyway so
     // the PostgreSQL rows are directly comparable per #148's original ask, without a
     // separate benchmark class just for the provider that has a writer.
+#pragma warning restore S125
     [Params(false, true)]
     public bool UseBulkInsert { get; set; }
 
