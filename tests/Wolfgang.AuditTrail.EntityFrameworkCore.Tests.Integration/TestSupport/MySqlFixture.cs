@@ -19,9 +19,20 @@ public sealed class MySqlFixture : IAsyncLifetime, IProviderFixture
 
     public string ProviderName => "MySQL";
 
+    public bool Available { get; private set; }
+
+    public string? UnavailableReason { get; private set; }
+
     public async Task InitializeAsync()
     {
-        await _container.StartAsync().ConfigureAwait(false);
+        (Available, UnavailableReason) = await DockerContainerStartup
+            .TryStartAsync(() => _container.StartAsync(), ProviderName)
+            .ConfigureAwait(false);
+
+        if (!Available)
+        {
+            return;
+        }
 
         // Detect the server version once at fixture init, not on every
         // CreateContextOptions call. AutoDetect opens a new connection each
