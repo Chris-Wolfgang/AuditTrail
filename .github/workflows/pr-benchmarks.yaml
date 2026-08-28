@@ -33,6 +33,17 @@ concurrency:
 env:
   TIME_THRESHOLD_PCT: '20'
   ALLOC_THRESHOLD_PCT: '50'
+  # A percentage-only threshold flags the smallest/fastest benchmarks the
+  # hardest: this suite runs entirely against in-memory SQLite, so every
+  # measurement is already small (low-ms range), and a shared-runner GC pause
+  # or a neighboring job stealing CPU for a fraction of a millisecond reads as
+  # a large percentage swing. Require the ABSOLUTE mean delta to also clear
+  # this floor before something counts as regressed, so noise on the fastest
+  # benchmarks can't trip the gate on percentage alone. 500us was chosen to
+  # sit below the total wall-clock time of the smallest real (BatchSize: 1)
+  # operations in this suite, so a genuine regression there still has room to
+  # clear it.
+  TIME_ABS_FLOOR_NS: '500000'
   BENCH_FILTER: '*Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks*'
   BENCH_PROJECT: benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks.csproj
 
@@ -126,19 +137,24 @@ jobs:
             --slurpfile base "$base_report" \
             --argjson timeThreshold "$TIME_THRESHOLD_PCT" \
             --argjson allocThreshold "$ALLOC_THRESHOLD_PCT" \
+            --argjson timeAbsFloorNs "$TIME_ABS_FLOOR_NS" \
             '
             ($base[0].Benchmarks | map({(.FullName): .}) | add) as $baseByName |
             [$head[0].Benchmarks[] |
               . as $h |
               $baseByName[$h.FullName] as $b |
               select($b != null) |
-              (($h.Statistics.Mean - $b.Statistics.Mean) / $b.Statistics.Mean * 100) as $timePct |
+              ($h.Statistics.Mean - $b.Statistics.Mean) as $timeDeltaNs |
+              ($timeDeltaNs / $b.Statistics.Mean * 100) as $timePct |
               (($h.Memory.BytesAllocatedPerOperation - $b.Memory.BytesAllocatedPerOperation) / $b.Memory.BytesAllocatedPerOperation * 100) as $allocPct |
               {
                 name: $h.FullName,
                 baseMeanNs: $b.Statistics.Mean, headMeanNs: $h.Statistics.Mean, timePct: ($timePct | round),
                 baseAllocBytes: $b.Memory.BytesAllocatedPerOperation, headAllocBytes: $h.Memory.BytesAllocatedPerOperation, allocPct: ($allocPct | round),
-                regressed: (($timePct > $timeThreshold) or ($allocPct > $allocThreshold))
+                # Percentage alone flags the fastest benchmarks hardest -- also require the
+                # absolute time delta to clear a floor, so runner-jitter noise on a small
+                # baseline (big % of a tiny number) can't trip the gate on its own.
+                regressed: ((($timePct > $timeThreshold) and ($timeDeltaNs > $timeAbsFloorNs)) or ($allocPct > $allocThreshold))
               }
             ] | sort_by(-.timePct)
             ')"
@@ -168,7 +184,7 @@ jobs:
           message: |
             ### Benchmark delta vs base (`${{ steps.mergebase.outputs.sha }}`)
 
-            Time threshold: ${{ env.TIME_THRESHOLD_PCT }}% · Allocation threshold: ${{ env.ALLOC_THRESHOLD_PCT }}%. Bold = over threshold.
+            Time threshold: ${{ env.TIME_THRESHOLD_PCT }}% (and >${{ env.TIME_ABS_FLOOR_NS }}ns absolute) · Allocation threshold: ${{ env.ALLOC_THRESHOLD_PCT }}%. Bold = over threshold.
 
             ${{ steps.delta.outputs.table }}
 
@@ -179,7 +195,7 @@ jobs:
         env:
           REGRESSED_COUNT: ${{ steps.delta.outputs.regressed }}
         run: |
-          echo "::error::$REGRESSED_COUNT benchmark(s) regressed beyond threshold (time >${TIME_THRESHOLD_PCT}%, alloc >${ALLOC_THRESHOLD_PCT}%). Add the 'perf-impact-acknowledged' label to override."
+          echo "::error::$REGRESSED_COUNT benchmark(s) regressed beyond threshold (time >${TIME_THRESHOLD_PCT}% and >${TIME_ABS_FLOOR_NS}ns absolute, or alloc >${ALLOC_THRESHOLD_PCT}%). Add the 'perf-impact-acknowledged' label to override."
           exit 1
 
       - name: Upload delta artifact
