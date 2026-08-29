@@ -1,0 +1,8 @@
+#nullable enable
+Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter
+Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.NpgsqlCopyAuditBulkWriter() -> void
+Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.CanHandle(Microsoft.EntityFrameworkCore.DbContext! context) -> bool
+Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.Write(Microsoft.EntityFrameworkCore.DbContext! context, System.Collections.Generic.IReadOnlyList<Wolfgang.AuditTrail.Entities.AuditHeader!>! headers) -> void
+Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.WriteAsync(Microsoft.EntityFrameworkCore.DbContext! context, System.Collections.Generic.IReadOnlyList<Wolfgang.AuditTrail.Entities.AuditHeader!>! headers, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions
+static Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions.AddNpgsqlAuditBulkWriter(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

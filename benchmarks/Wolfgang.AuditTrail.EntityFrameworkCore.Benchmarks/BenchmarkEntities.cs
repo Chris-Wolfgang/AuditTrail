@@ -49,9 +49,10 @@ public sealed class AuditedBenchmarkDbContext : AuditingDbContext
     (
         DbContextOptions<AuditedBenchmarkDbContext> options,
         IAuditUserProvider userProvider,
-        AuditOptions auditOptions
+        AuditOptions auditOptions,
+        IAuditBulkWriter? bulkWriter = null
     )
-        : base(options, userProvider, auditOptions)
+        : base(options, userProvider, auditOptions, bulkWriter)
     {
     }
 

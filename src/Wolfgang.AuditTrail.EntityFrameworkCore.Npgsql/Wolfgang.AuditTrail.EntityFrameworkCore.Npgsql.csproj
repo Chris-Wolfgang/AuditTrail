@@ -1,0 +1,77 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsPackable>true</IsPackable>
+
+    <PackageId>Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql</PackageId>
+    <Version>0.1.0</Version>
+
+    <!-- No EnablePackageValidation/PackageValidationBaselineVersion yet: this is a
+         brand-new package with no prior published version to validate against. Add
+         both after the first release ships (see reference: keep the baseline at the
+         last PUBLISHED version). -->
+    <Title>Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql</Title>
+    <Authors>Chris Wolfgang</Authors>
+    <Description>PostgreSQL COPY-protocol bulk writer for Wolfgang.AuditTrail.EntityFrameworkCore. Implements IAuditBulkWriter via NpgsqlBinaryImporter so large audit batches bypass EF Core's per-entity insert while staying inside the caller's SaveChanges transaction.</Description>
+    <Copyright>Copyright (c) Chris Wolfgang</Copyright>
+    <PackageProjectUrl>https://github.com/Chris-Wolfgang/AuditTrail</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Chris-Wolfgang/AuditTrail</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>audit;ef;ef-core;postgresql;npgsql;bulk-insert;copy</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Wolfgang.AuditTrail.Abstractions\Wolfgang.AuditTrail.Abstractions.csproj" />
+    <ProjectReference Include="..\Wolfgang.AuditTrail.EntityFrameworkCore\Wolfgang.AuditTrail.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      InternalsVisibleTo for unit/integration tests. SDK csproj doesn't natively
+      support InternalsVisibleTo as a direct item: emit the attribute via the
+      AssemblyAttribute item the SDK targets understand.
+    -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.Tests.Integration</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.Tests.Unit</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!--
+    PublicApiAnalyzers: track the public API surface to catch unintended
+    additions/changes. Scoped to the net10.0 TFM only, mirroring the core
+    EntityFrameworkCore package's convention; the net8 surface is a strict
+    subset, so maintaining per-TFM PublicAPI files isn't worth the bookkeeping.
+  -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="5.6.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+  </ItemGroup>
+
+</Project>
