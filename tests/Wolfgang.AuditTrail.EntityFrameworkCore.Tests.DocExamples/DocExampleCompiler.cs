@@ -62,6 +62,7 @@ public static class DocExampleCompiler
             using Microsoft.AspNetCore.Identity;
             using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
             using Wolfgang.AuditTrail;
+            using Wolfgang.AuditTrail.Npgsql;
 
             namespace DocExamples.Generated
             {
