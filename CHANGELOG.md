@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-_(empty — open this section as work for the next release begins.)_
+### Added
+- `THIRD-PARTY-NOTICES.md` at the repo root, generated from the existing
+  license-audit gate output, listing the shipped runtime dependencies of
+  each package and their licenses. Packed into the 3 published packages
+  (`Wolfgang.AuditTrail.Abstractions`, `.EntityFrameworkCore`,
+  `.TestKit.Xunit`) alongside their `README.md`.
+  ([#266](https://github.com/Chris-Wolfgang/AuditTrail/issues/266))
 
 ## [0.3.0] — 2026-08-25
 
