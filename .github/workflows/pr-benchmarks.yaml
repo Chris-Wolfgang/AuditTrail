@@ -153,7 +153,7 @@ jobs:
                 baseAllocBytes: $b.Memory.BytesAllocatedPerOperation, headAllocBytes: $h.Memory.BytesAllocatedPerOperation, allocPct: ($allocPct | round),
                 # Percentage alone flags the fastest benchmarks hardest -- also require the
                 # absolute time delta to clear a floor, so runner-jitter noise on a small
-                # baseline (big % of a tiny number) can't trip the gate on its own.
+                # baseline (big % of a tiny number) cannot trip the gate on its own.
                 regressed: ((($timePct > $timeThreshold) and ($timeDeltaNs > $timeAbsFloorNs)) or ($allocPct > $allocThreshold))
               }
             ] | sort_by(-.timePct)
