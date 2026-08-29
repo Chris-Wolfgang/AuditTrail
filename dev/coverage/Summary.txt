@@ -1,6 +1,6 @@
 Summary
-  Generated on: 08/29/2026 - 22:48:35
-  Coverage date: 08/29/2026 - 22:48:33
+  Generated on: 08/29/2026 - 23:22:33
+  Coverage date: 08/29/2026 - 23:22:30
   Parser: Cobertura
   Assemblies: 3
   Classes: 29
@@ -10,15 +10,15 @@ Summary
   Uncovered lines: 7
   Coverable lines: 897
   Total lines: 3204
-  Branch coverage: 90.1% (375 of 416)
-  Covered branches: 375
+  Branch coverage: 89.9% (374 of 416)
+  Covered branches: 374
   Total branches: 416
   Method coverage: 100% (167 of 167)
   Full method coverage: 96.4% (161 of 167)
   Covered methods: 167
   Fully covered methods: 161
   Total methods: 167
-  Tag: 267_33279452373
+  Tag: 269_33280808831
 
 Wolfgang.AuditTrail.Abstractions                                            100%
   Wolfgang.AuditTrail.AuditOptions                                          100%
