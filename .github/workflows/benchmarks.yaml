@@ -47,6 +47,7 @@ jobs:
     permissions:
       contents: write
       deployments: write   # per the action's own docs: "deployments permission to deploy GitHub pages website"
+      issues: write        # required to file a tracking issue on failure
 
     steps:
       - name: Checkout
@@ -101,4 +102,32 @@ jobs:
           benchmark-data-dir-path: dev/bench
           alert-threshold: '200%'
           fail-on-alert: true
+
+      # This job only runs on push to main -- by the time an alert fails it, the
+      # regression is already merged. There's no PR to bounce and no reviewer
+      # watching; without this, the only signal is a red X on the Actions tab
+      # that nobody proactively checks. Mirrors shadow.yaml's exact pattern.
+      - name: File a tracking issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh label create benchmark-regression --color B60205 \
+            --description "The push-to-main benchmark trend run found a performance/allocation regression" 2>/dev/null || true
+
+          open_count="$(gh issue list --label benchmark-regression --state open --json number --jq 'length')"
+          if [ "${open_count:-0}" -gt 0 ]; then
+            echo "An open benchmark-regression issue already exists — not filing another."
+            exit 0
+          fi
+
+          gh issue create \
+            --title "Benchmark trend run found a performance/allocation regression" \
+            --label benchmark-regression \
+            --body "The push-to-main benchmark run alerted beyond the 200% threshold vs. the last recorded gh-pages snapshot.
+
+          Check the \`Audit Interceptor Benchmarks\` chart (dev/bench on gh-pages) for the specific benchmark(s) and magnitude.
+
+          Run: ${RUN_URL}"
           auto-push: true

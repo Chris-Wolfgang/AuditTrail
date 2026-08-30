@@ -16,7 +16,16 @@ public sealed class SqlServerFixture : IAsyncLifetime, IProviderFixture
 
     public string ProviderName => "SqlServer";
 
-    public Task InitializeAsync() => _container.StartAsync();
+    public bool Available { get; private set; }
+
+    public string? UnavailableReason { get; private set; }
+
+    public async Task InitializeAsync()
+    {
+        (Available, UnavailableReason) = await DockerContainerStartup
+            .TryStartAsync(() => _container.StartAsync(), ProviderName)
+            .ConfigureAwait(false);
+    }
 
     public Task DisposeAsync() => _container.DisposeAsync().AsTask();
 
