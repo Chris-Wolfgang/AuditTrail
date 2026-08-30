@@ -1,23 +1,23 @@
 Summary
-  Generated on: 8/26/2026 - 1:40:38 PM
-  Coverage date: 8/26/2026 - 1:40:21 PM - 8/26/2026 - 1:40:33 PM
-  Parser: MultiReport (4x Cobertura)
-  Assemblies: 8
-  Classes: 80
-  Files: 79
-  Line coverage: 99.5%
-  Covered lines: 3480
+  Generated on: 8/30/2026 - 11:11:55 PM
+  Coverage date: 8/30/2026 - 11:11:36 PM - 8/30/2026 - 11:11:50 PM
+  Parser: MultiReport (5x Cobertura)
+  Assemblies: 10
+  Classes: 85
+  Files: 84
+  Line coverage: 99.6%
+  Covered lines: 3799
   Uncovered lines: 15
-  Coverable lines: 3495
-  Total lines: 9803
-  Branch coverage: 88.8% (576 of 648)
-  Covered branches: 576
-  Total branches: 648
-  Method coverage: 100% (539 of 539)
-  Full method coverage: 97.5% (526 of 539)
-  Covered methods: 539
-  Fully covered methods: 526
-  Total methods: 539
+  Coverable lines: 3814
+  Total lines: 10627
+  Branch coverage: 88.4% (612 of 692)
+  Covered branches: 612
+  Total branches: 692
+  Method coverage: 100% (583 of 583)
+  Full method coverage: 97.7% (570 of 583)
+  Covered methods: 583
+  Fully covered methods: 570
+  Total methods: 583
 
 audittrail                                                                              100%
   Wolfgang.AuditTrail.Cli.Command.Migrate                                               100%
@@ -37,7 +37,7 @@ Wolfgang.AuditTrail.Cli.Tests.Unit                                              
   Wolfgang.AuditTrail.Cli.Tests.Unit.TestSupport.StringConsoleTests                     100%
 
 Wolfgang.AuditTrail.EntityFrameworkCore                                                99.2%
-  Wolfgang.AuditTrail.AuditingDbContext                                                97.5%
+  Wolfgang.AuditTrail.AuditingDbContext                                                97.6%
   Wolfgang.AuditTrail.AuditSaveChangesInterceptor                                       100%
   Wolfgang.AuditTrail.DbContextOptionsBuilderExtensions                                 100%
   Wolfgang.AuditTrail.Internal.AuditCapture                                            97.2%
@@ -60,6 +60,14 @@ Wolfgang.AuditTrail.EntityFrameworkCore                                         
   Wolfgang.AuditTrail.Serializers.StringAuditValueSerializer                            100%
   Wolfgang.AuditTrail.ServiceCollectionExtensions                                       100%
 
+Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql                                          100%
+  Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter                                  100%
+  Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions                                100%
+
+Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.Tests.Unit                               100%
+  Wolfgang.AuditTrail.Npgsql.Tests.Unit.NpgsqlCopyAuditBulkWriterTests                  100%
+  Wolfgang.AuditTrail.Npgsql.Tests.Unit.ServiceCollectionExtensionsTests                100%
+
 Wolfgang.AuditTrail.EntityFrameworkCore.Tests.DocExamples                              98.6%
   Wolfgang.AuditTrail.Tests.DocExamples.DocExample                                      100%
   Wolfgang.AuditTrail.Tests.DocExamples.DocExampleCompilationTests                      100%
@@ -78,6 +86,7 @@ Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit                              
   Wolfgang.AuditTrail.Tests.Unit.AuditCaptureColumnNameTests                            100%
   Wolfgang.AuditTrail.Tests.Unit.AuditCapturePostSaveSnapshotTests                      100%
   Wolfgang.AuditTrail.Tests.Unit.AuditingDbContextConstructorTests                      100%
+  Wolfgang.AuditTrail.Tests.Unit.AuditingDbContextDeterministicSeamTests                100%
   Wolfgang.AuditTrail.Tests.Unit.AuditingDbContextSaveChangesTests                      100%
   Wolfgang.AuditTrail.Tests.Unit.AuditingDbContextSyncSaveChangesTests                  100%
   Wolfgang.AuditTrail.Tests.Unit.AuditingDbContextVerifyCommittedTests                  100%

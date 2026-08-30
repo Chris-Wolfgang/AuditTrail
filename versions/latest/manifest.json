@@ -274,6 +274,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter",
+      "Summary": "<p sourcefile=\"api/Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.yml\" sourcestartlinenumber=\"1\"><xref href=\"Wolfgang.AuditTrail.IAuditBulkWriter\" data-throw-if-not-resolved=\"false\"></xref> implementation that writes <xref href=\"Wolfgang.AuditTrail.Entities.AuditHeader\" data-throw-if-not-resolved=\"false\"></xref> /\n<xref href=\"Wolfgang.AuditTrail.Entities.AuditDetail\" data-throw-if-not-resolved=\"false\"></xref> rows via PostgreSQL's binary <code>COPY</code> protocol\n(<xref href=\"Npgsql.NpgsqlConnection.BeginBinaryImportAsync(System.String%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>),\nbypassing EF Core's per-entity insert for large audit batches.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions",
+      "Summary": "<p sourcefile=\"api/Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions.yml\" sourcestartlinenumber=\"1\">Dependency-injection helper for registering <xref href=\"Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wolfgang.AuditTrail.Npgsql.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wolfgang.AuditTrail.Npgsql.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Wolfgang.AuditTrail.Npgsql",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Wolfgang.AuditTrail.Schema.AuditMigrationsDbContext.yml",
       "output": {
         ".html": {

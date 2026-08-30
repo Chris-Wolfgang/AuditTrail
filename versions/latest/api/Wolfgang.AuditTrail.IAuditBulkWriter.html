@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/AuditTrail/new/v0.3.0/apiSpec/new?filename=Wolfgang_AuditTrail_IAuditBulkWriter.md&amp;value=---%0Auid%3A%20Wolfgang.AuditTrail.IAuditBulkWriter%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="docfx:docurl" content="https://github.com/Chris-Wolfgang/AuditTrail/new/v0.4.0/apiSpec/new?filename=Wolfgang_AuditTrail_IAuditBulkWriter.md&amp;value=---%0Auid%3A%20Wolfgang.AuditTrail.IAuditBulkWriter%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -75,7 +75,7 @@
 
 
   <h1 id="Wolfgang_AuditTrail_IAuditBulkWriter" data-uid="Wolfgang.AuditTrail.IAuditBulkWriter" class="text-break">
-Interface IAuditBulkWriter  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.3.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L17"><i class="bi bi-code-slash"></i></a>
+Interface IAuditBulkWriter  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.4.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L17"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -119,7 +119,7 @@ including whenever no writer is registered.</p>
 
   <h3 id="Wolfgang_AuditTrail_IAuditBulkWriter_CanHandle_Microsoft_EntityFrameworkCore_DbContext_" data-uid="Wolfgang.AuditTrail.IAuditBulkWriter.CanHandle(Microsoft.EntityFrameworkCore.DbContext)">
   CanHandle(DbContext)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.3.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.4.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Returns <code>true</code> if this writer can handle bulk-inserting audit rows for
@@ -159,7 +159,7 @@ to the standard EF Core insert path for that save.</p>
 
   <h3 id="Wolfgang_AuditTrail_IAuditBulkWriter_Write_Microsoft_EntityFrameworkCore_DbContext_System_Collections_Generic_IReadOnlyList_Wolfgang_AuditTrail_Entities_AuditHeader__" data-uid="Wolfgang.AuditTrail.IAuditBulkWriter.Write(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IReadOnlyList{Wolfgang.AuditTrail.Entities.AuditHeader})">
   Write(DbContext, IReadOnlyList&lt;AuditHeader&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.3.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.4.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Synchronous counterpart to <a class="xref" href="Wolfgang.AuditTrail.IAuditBulkWriter.html#Wolfgang_AuditTrail_IAuditBulkWriter_WriteAsync_Microsoft_EntityFrameworkCore_DbContext_System_Collections_Generic_IReadOnlyList_Wolfgang_AuditTrail_Entities_AuditHeader__System_Threading_CancellationToken_">WriteAsync(DbContext, IReadOnlyList&lt;AuditHeader&gt;, CancellationToken)</a>, used by the sync
@@ -194,7 +194,7 @@ to the standard EF Core insert path for that save.</p>
 
   <h3 id="Wolfgang_AuditTrail_IAuditBulkWriter_WriteAsync_Microsoft_EntityFrameworkCore_DbContext_System_Collections_Generic_IReadOnlyList_Wolfgang_AuditTrail_Entities_AuditHeader__System_Threading_CancellationToken_" data-uid="Wolfgang.AuditTrail.IAuditBulkWriter.WriteAsync(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IReadOnlyList{Wolfgang.AuditTrail.Entities.AuditHeader},System.Threading.CancellationToken)">
   WriteAsync(DbContext, IReadOnlyList&lt;AuditHeader&gt;, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.3.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.4.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L33"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Writes <code class="paramref">headers</code> (each with its <a class="xref" href="Wolfgang.AuditTrail.Entities.AuditHeader.html#Wolfgang_AuditTrail_Entities_AuditHeader_Details">Details</a>
@@ -238,7 +238,7 @@ change tracker — the caller does not run a subsequent save for these entities.
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.3.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L17" class="edit-link">Edit this page</a>
+          <a href="https://github.com/Chris-Wolfgang/AuditTrail/blob/v0.4.0/src/Wolfgang.AuditTrail.EntityFrameworkCore/IAuditBulkWriter.cs/#L17" class="edit-link">Edit this page</a>
         </div>
 
 

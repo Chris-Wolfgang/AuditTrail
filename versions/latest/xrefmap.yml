@@ -152,6 +152,15 @@ references:
   fullName.vb: Wolfgang.AuditTrail.AuditSaveChangesInterceptor.New(Wolfgang.AuditTrail.IAuditUserProvider, Wolfgang.AuditTrail.AuditOptions, Wolfgang.AuditTrail.IAuditBulkWriter)
   nameWithType: AuditSaveChangesInterceptor.AuditSaveChangesInterceptor(IAuditUserProvider, AuditOptions, IAuditBulkWriter?)
   nameWithType.vb: AuditSaveChangesInterceptor.New(IAuditUserProvider, AuditOptions, IAuditBulkWriter)
+- uid: Wolfgang.AuditTrail.AuditSaveChangesInterceptor.#ctor(Wolfgang.AuditTrail.IAuditUserProvider,Wolfgang.AuditTrail.AuditOptions,Wolfgang.AuditTrail.IAuditBulkWriter,System.TimeProvider,System.Func{System.Guid})
+  name: AuditSaveChangesInterceptor(IAuditUserProvider, AuditOptions, IAuditBulkWriter?, TimeProvider?, Func<Guid>?)
+  href: api/Wolfgang.AuditTrail.AuditSaveChangesInterceptor.html#Wolfgang_AuditTrail_AuditSaveChangesInterceptor__ctor_Wolfgang_AuditTrail_IAuditUserProvider_Wolfgang_AuditTrail_AuditOptions_Wolfgang_AuditTrail_IAuditBulkWriter_System_TimeProvider_System_Func_System_Guid__
+  commentId: M:Wolfgang.AuditTrail.AuditSaveChangesInterceptor.#ctor(Wolfgang.AuditTrail.IAuditUserProvider,Wolfgang.AuditTrail.AuditOptions,Wolfgang.AuditTrail.IAuditBulkWriter,System.TimeProvider,System.Func{System.Guid})
+  name.vb: New(IAuditUserProvider, AuditOptions, IAuditBulkWriter, TimeProvider, Func(Of Guid))
+  fullName: Wolfgang.AuditTrail.AuditSaveChangesInterceptor.AuditSaveChangesInterceptor(Wolfgang.AuditTrail.IAuditUserProvider, Wolfgang.AuditTrail.AuditOptions, Wolfgang.AuditTrail.IAuditBulkWriter?, System.TimeProvider?, System.Func<System.Guid>?)
+  fullName.vb: Wolfgang.AuditTrail.AuditSaveChangesInterceptor.New(Wolfgang.AuditTrail.IAuditUserProvider, Wolfgang.AuditTrail.AuditOptions, Wolfgang.AuditTrail.IAuditBulkWriter, System.TimeProvider, System.Func(Of System.Guid))
+  nameWithType: AuditSaveChangesInterceptor.AuditSaveChangesInterceptor(IAuditUserProvider, AuditOptions, IAuditBulkWriter?, TimeProvider?, Func<Guid>?)
+  nameWithType.vb: AuditSaveChangesInterceptor.New(IAuditUserProvider, AuditOptions, IAuditBulkWriter, TimeProvider, Func(Of Guid))
 - uid: Wolfgang.AuditTrail.AuditSaveChangesInterceptor.#ctor*
   name: AuditSaveChangesInterceptor
   href: api/Wolfgang.AuditTrail.AuditSaveChangesInterceptor.html#Wolfgang_AuditTrail_AuditSaveChangesInterceptor__ctor_
@@ -378,6 +387,15 @@ references:
   fullName.vb: Wolfgang.AuditTrail.AuditingDbContext.New(Microsoft.EntityFrameworkCore.DbContextOptions, Wolfgang.AuditTrail.IAuditUserProvider, Wolfgang.AuditTrail.AuditOptions, Wolfgang.AuditTrail.IAuditBulkWriter)
   nameWithType: AuditingDbContext.AuditingDbContext(DbContextOptions, IAuditUserProvider, AuditOptions, IAuditBulkWriter?)
   nameWithType.vb: AuditingDbContext.New(DbContextOptions, IAuditUserProvider, AuditOptions, IAuditBulkWriter)
+- uid: Wolfgang.AuditTrail.AuditingDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions,Wolfgang.AuditTrail.IAuditUserProvider,Wolfgang.AuditTrail.AuditOptions,Wolfgang.AuditTrail.IAuditBulkWriter,System.TimeProvider,System.Func{System.Guid})
+  name: AuditingDbContext(DbContextOptions, IAuditUserProvider, AuditOptions, IAuditBulkWriter?, TimeProvider?, Func<Guid>?)
+  href: api/Wolfgang.AuditTrail.AuditingDbContext.html#Wolfgang_AuditTrail_AuditingDbContext__ctor_Microsoft_EntityFrameworkCore_DbContextOptions_Wolfgang_AuditTrail_IAuditUserProvider_Wolfgang_AuditTrail_AuditOptions_Wolfgang_AuditTrail_IAuditBulkWriter_System_TimeProvider_System_Func_System_Guid__
+  commentId: M:Wolfgang.AuditTrail.AuditingDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions,Wolfgang.AuditTrail.IAuditUserProvider,Wolfgang.AuditTrail.AuditOptions,Wolfgang.AuditTrail.IAuditBulkWriter,System.TimeProvider,System.Func{System.Guid})
+  name.vb: New(DbContextOptions, IAuditUserProvider, AuditOptions, IAuditBulkWriter, TimeProvider, Func(Of Guid))
+  fullName: Wolfgang.AuditTrail.AuditingDbContext.AuditingDbContext(Microsoft.EntityFrameworkCore.DbContextOptions, Wolfgang.AuditTrail.IAuditUserProvider, Wolfgang.AuditTrail.AuditOptions, Wolfgang.AuditTrail.IAuditBulkWriter?, System.TimeProvider?, System.Func<System.Guid>?)
+  fullName.vb: Wolfgang.AuditTrail.AuditingDbContext.New(Microsoft.EntityFrameworkCore.DbContextOptions, Wolfgang.AuditTrail.IAuditUserProvider, Wolfgang.AuditTrail.AuditOptions, Wolfgang.AuditTrail.IAuditBulkWriter, System.TimeProvider, System.Func(Of System.Guid))
+  nameWithType: AuditingDbContext.AuditingDbContext(DbContextOptions, IAuditUserProvider, AuditOptions, IAuditBulkWriter?, TimeProvider?, Func<Guid>?)
+  nameWithType.vb: AuditingDbContext.New(DbContextOptions, IAuditUserProvider, AuditOptions, IAuditBulkWriter, TimeProvider, Func(Of Guid))
 - uid: Wolfgang.AuditTrail.AuditingDbContext.#ctor*
   name: AuditingDbContext
   href: api/Wolfgang.AuditTrail.AuditingDbContext.html#Wolfgang_AuditTrail_AuditingDbContext__ctor_
@@ -903,6 +921,101 @@ references:
   commentId: T:Wolfgang.AuditTrail.NotAuditedAttribute
   fullName: Wolfgang.AuditTrail.NotAuditedAttribute
   nameWithType: NotAuditedAttribute
+- uid: Wolfgang.AuditTrail.Npgsql
+  name: Wolfgang.AuditTrail.Npgsql
+  href: api/Wolfgang.AuditTrail.Npgsql.html
+  commentId: N:Wolfgang.AuditTrail.Npgsql
+  fullName: Wolfgang.AuditTrail.Npgsql
+  nameWithType: Wolfgang.AuditTrail.Npgsql
+- uid: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter
+  name: NpgsqlCopyAuditBulkWriter
+  href: api/Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.html
+  commentId: T:Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter
+  fullName: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter
+  nameWithType: NpgsqlCopyAuditBulkWriter
+- uid: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.#ctor
+  name: NpgsqlCopyAuditBulkWriter()
+  href: api/Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.html#Wolfgang_AuditTrail_Npgsql_NpgsqlCopyAuditBulkWriter__ctor
+  commentId: M:Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.#ctor
+  name.vb: New()
+  fullName: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.NpgsqlCopyAuditBulkWriter()
+  fullName.vb: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.New()
+  nameWithType: NpgsqlCopyAuditBulkWriter.NpgsqlCopyAuditBulkWriter()
+  nameWithType.vb: NpgsqlCopyAuditBulkWriter.New()
+- uid: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.#ctor*
+  name: NpgsqlCopyAuditBulkWriter
+  href: api/Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.html#Wolfgang_AuditTrail_Npgsql_NpgsqlCopyAuditBulkWriter__ctor_
+  commentId: Overload:Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.NpgsqlCopyAuditBulkWriter
+  fullName.vb: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.New
+  nameWithType: NpgsqlCopyAuditBulkWriter.NpgsqlCopyAuditBulkWriter
+  nameWithType.vb: NpgsqlCopyAuditBulkWriter.New
+- uid: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.CanHandle(Microsoft.EntityFrameworkCore.DbContext)
+  name: CanHandle(DbContext)
+  href: api/Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.html#Wolfgang_AuditTrail_Npgsql_NpgsqlCopyAuditBulkWriter_CanHandle_Microsoft_EntityFrameworkCore_DbContext_
+  commentId: M:Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.CanHandle(Microsoft.EntityFrameworkCore.DbContext)
+  fullName: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.CanHandle(Microsoft.EntityFrameworkCore.DbContext)
+  nameWithType: NpgsqlCopyAuditBulkWriter.CanHandle(DbContext)
+- uid: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.CanHandle*
+  name: CanHandle
+  href: api/Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.html#Wolfgang_AuditTrail_Npgsql_NpgsqlCopyAuditBulkWriter_CanHandle_
+  commentId: Overload:Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.CanHandle
+  isSpec: "True"
+  fullName: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.CanHandle
+  nameWithType: NpgsqlCopyAuditBulkWriter.CanHandle
+- uid: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.Write(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IReadOnlyList{Wolfgang.AuditTrail.Entities.AuditHeader})
+  name: Write(DbContext, IReadOnlyList<AuditHeader>)
+  href: api/Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.html#Wolfgang_AuditTrail_Npgsql_NpgsqlCopyAuditBulkWriter_Write_Microsoft_EntityFrameworkCore_DbContext_System_Collections_Generic_IReadOnlyList_Wolfgang_AuditTrail_Entities_AuditHeader__
+  commentId: M:Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.Write(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IReadOnlyList{Wolfgang.AuditTrail.Entities.AuditHeader})
+  name.vb: Write(DbContext, IReadOnlyList(Of AuditHeader))
+  fullName: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.Write(Microsoft.EntityFrameworkCore.DbContext, System.Collections.Generic.IReadOnlyList<Wolfgang.AuditTrail.Entities.AuditHeader>)
+  fullName.vb: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.Write(Microsoft.EntityFrameworkCore.DbContext, System.Collections.Generic.IReadOnlyList(Of Wolfgang.AuditTrail.Entities.AuditHeader))
+  nameWithType: NpgsqlCopyAuditBulkWriter.Write(DbContext, IReadOnlyList<AuditHeader>)
+  nameWithType.vb: NpgsqlCopyAuditBulkWriter.Write(DbContext, IReadOnlyList(Of AuditHeader))
+- uid: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.Write*
+  name: Write
+  href: api/Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.html#Wolfgang_AuditTrail_Npgsql_NpgsqlCopyAuditBulkWriter_Write_
+  commentId: Overload:Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.Write
+  isSpec: "True"
+  fullName: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.Write
+  nameWithType: NpgsqlCopyAuditBulkWriter.Write
+- uid: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.WriteAsync(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IReadOnlyList{Wolfgang.AuditTrail.Entities.AuditHeader},System.Threading.CancellationToken)
+  name: WriteAsync(DbContext, IReadOnlyList<AuditHeader>, CancellationToken)
+  href: api/Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.html#Wolfgang_AuditTrail_Npgsql_NpgsqlCopyAuditBulkWriter_WriteAsync_Microsoft_EntityFrameworkCore_DbContext_System_Collections_Generic_IReadOnlyList_Wolfgang_AuditTrail_Entities_AuditHeader__System_Threading_CancellationToken_
+  commentId: M:Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.WriteAsync(Microsoft.EntityFrameworkCore.DbContext,System.Collections.Generic.IReadOnlyList{Wolfgang.AuditTrail.Entities.AuditHeader},System.Threading.CancellationToken)
+  name.vb: WriteAsync(DbContext, IReadOnlyList(Of AuditHeader), CancellationToken)
+  fullName: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.WriteAsync(Microsoft.EntityFrameworkCore.DbContext, System.Collections.Generic.IReadOnlyList<Wolfgang.AuditTrail.Entities.AuditHeader>, System.Threading.CancellationToken)
+  fullName.vb: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.WriteAsync(Microsoft.EntityFrameworkCore.DbContext, System.Collections.Generic.IReadOnlyList(Of Wolfgang.AuditTrail.Entities.AuditHeader), System.Threading.CancellationToken)
+  nameWithType: NpgsqlCopyAuditBulkWriter.WriteAsync(DbContext, IReadOnlyList<AuditHeader>, CancellationToken)
+  nameWithType.vb: NpgsqlCopyAuditBulkWriter.WriteAsync(DbContext, IReadOnlyList(Of AuditHeader), CancellationToken)
+- uid: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.WriteAsync*
+  name: WriteAsync
+  href: api/Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.html#Wolfgang_AuditTrail_Npgsql_NpgsqlCopyAuditBulkWriter_WriteAsync_
+  commentId: Overload:Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.WriteAsync
+  isSpec: "True"
+  fullName: Wolfgang.AuditTrail.Npgsql.NpgsqlCopyAuditBulkWriter.WriteAsync
+  nameWithType: NpgsqlCopyAuditBulkWriter.WriteAsync
+- uid: Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions
+  name: ServiceCollectionExtensions
+  href: api/Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions.html
+  commentId: T:Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions
+  fullName: Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions
+  nameWithType: ServiceCollectionExtensions
+- uid: Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions.AddNpgsqlAuditBulkWriter(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  name: AddNpgsqlAuditBulkWriter(IServiceCollection)
+  href: api/Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions.html#Wolfgang_AuditTrail_Npgsql_ServiceCollectionExtensions_AddNpgsqlAuditBulkWriter_Microsoft_Extensions_DependencyInjection_IServiceCollection_
+  commentId: M:Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions.AddNpgsqlAuditBulkWriter(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  fullName: Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions.AddNpgsqlAuditBulkWriter(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  nameWithType: ServiceCollectionExtensions.AddNpgsqlAuditBulkWriter(IServiceCollection)
+- uid: Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions.AddNpgsqlAuditBulkWriter*
+  name: AddNpgsqlAuditBulkWriter
+  href: api/Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions.html#Wolfgang_AuditTrail_Npgsql_ServiceCollectionExtensions_AddNpgsqlAuditBulkWriter_
+  commentId: Overload:Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions.AddNpgsqlAuditBulkWriter
+  isSpec: "True"
+  fullName: Wolfgang.AuditTrail.Npgsql.ServiceCollectionExtensions.AddNpgsqlAuditBulkWriter
+  nameWithType: ServiceCollectionExtensions.AddNpgsqlAuditBulkWriter
 - uid: Wolfgang.AuditTrail.Schema
   name: Wolfgang.AuditTrail.Schema
   href: api/Wolfgang.AuditTrail.Schema.html
