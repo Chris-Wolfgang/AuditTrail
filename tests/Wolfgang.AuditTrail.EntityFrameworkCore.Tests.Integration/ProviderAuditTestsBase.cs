@@ -31,9 +31,11 @@ public abstract class ProviderAuditTestsBase<TFixture> : IClassFixture<TFixture>
         return new TestDbContext(_fixture.CreateContextOptions(), userProvider, options);
     }
 
-    [Fact]
+    [SkippableFact]
     public async Task SaveChangesAsync_when_inserting_writes_a_header_with_the_generated_primary_key()
     {
+        Skip.IfNot(_fixture.Available, _fixture.UnavailableReason);
+
         int customerId;
         var context = NewContext();
         await using (context)
@@ -62,9 +64,11 @@ public abstract class ProviderAuditTestsBase<TFixture> : IClassFixture<TFixture>
         }
     }
 
-    [Fact]
+    [SkippableFact]
     public async Task SaveChangesAsync_when_user_transaction_rolls_back_writes_no_audit_rows()
     {
+        Skip.IfNot(_fixture.Available, _fixture.UnavailableReason);
+
         var context = NewContext();
         await using (context)
         {
@@ -84,9 +88,11 @@ public abstract class ProviderAuditTestsBase<TFixture> : IClassFixture<TFixture>
         }
     }
 
-    [Fact]
+    [SkippableFact]
     public async Task SaveChangesAsync_when_inserting_multiple_entities_shares_one_TransactionId()
     {
+        Skip.IfNot(_fixture.Available, _fixture.UnavailableReason);
+
         var context = NewContext();
         await using (context)
         {
