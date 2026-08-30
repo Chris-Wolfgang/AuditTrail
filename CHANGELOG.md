@@ -7,13 +7,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-08-29
+
+Minor release. Ships the first concrete `IAuditBulkWriter` implementation —
+a new companion package targeting PostgreSQL's `COPY` protocol — and a
+`TimeProvider`/`Guid`-provider constructor seam for deterministic audit-row
+testing. No breaking changes; a drop-in upgrade from 0.3.0.
+
 ### Added
+
+- **New package: `Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql` (0.1.0,
+  first release)** — `NpgsqlCopyAuditBulkWriter`, a PostgreSQL-specific
+  `IAuditBulkWriter` that streams audit rows through `NpgsqlConnection`'s
+  binary `COPY` protocol instead of per-entity `INSERT`s once a save crosses
+  `AuditOptions.BulkInsertRowThreshold`. Register via
+  `AddNpgsqlAuditBulkWriter()`; every other provider keeps using the
+  standard EF Core insert path unchanged. Ships as its own package
+  specifically so `Npgsql` never becomes a transitive dependency of SQL
+  Server/SQLite consumers — see
+  [ADR-0005](docs/adr/0005-provider-specific-writers-live-in-companion-packages.md)
+  for the policy this generalizes.
+  ([#148](https://github.com/Chris-Wolfgang/AuditTrail/issues/148),
+  [#248](https://github.com/Chris-Wolfgang/AuditTrail/issues/248),
+  [#249](https://github.com/Chris-Wolfgang/AuditTrail/issues/249))
+- **`TimeProvider`/`Guid`-provider constructor seam** — `AuditSaveChangesInterceptor`
+  and `AuditingDbContext` gained optional `TimeProvider?`/`Func<Guid>?`
+  constructor parameters so consumers can inject deterministic clocks/IDs
+  for testing audit-row timestamps and transaction identifiers. Both
+  default to the existing runtime behavior when omitted — no behavior
+  change for existing callers.
+  ([#259](https://github.com/Chris-Wolfgang/AuditTrail/pull/259))
 - `THIRD-PARTY-NOTICES.md` at the repo root, generated from the existing
   license-audit gate output, listing the shipped runtime dependencies of
-  each package and their licenses. Packed into the 3 published packages
+  each package and their licenses. Packed into the published packages
   (`Wolfgang.AuditTrail.Abstractions`, `.EntityFrameworkCore`,
-  `.TestKit.Xunit`) alongside their `README.md`.
+  `.TestKit.Xunit`, `.EntityFrameworkCore.Npgsql`) alongside their
+  `README.md`.
   ([#266](https://github.com/Chris-Wolfgang/AuditTrail/issues/266))
+
+### Internal (no consumer impact)
+
+- Absolute-floor threshold on the per-PR benchmark regression gate — a
+  benchmark now only counts as regressed when it clears both the
+  percentage threshold and an absolute nanosecond floor, since this suite's
+  in-memory SQLite benchmarks are fast enough that shared-runner jitter
+  alone can swing the percentage past threshold.
+  ([#270](https://github.com/Chris-Wolfgang/AuditTrail/pull/270))
+- `benchmarks.yaml` now auto-files a tracking issue when the post-merge
+  trend-chart run fails, instead of failing silently with nobody watching.
+  ([#271](https://github.com/Chris-Wolfgang/AuditTrail/pull/271))
+- Provider integration-test fixtures (SQL Server, PostgreSQL, MySQL) skip
+  gracefully when Docker isn't reachable on a local dev machine, but still
+  fail the build outright in CI — a Docker outage on a GitHub-hosted runner
+  is a real anomaly, not an expected gap, so it must never pass silently as
+  a skipped test batch.
+  ([#275](https://github.com/Chris-Wolfgang/AuditTrail/pull/275))
 
 ## [0.3.0] — 2026-08-25
 
@@ -211,5 +259,6 @@ source projects; tests cover net462 → net10.0 inclusive.
 
 ---
 
-[Unreleased]: https://github.com/Chris-Wolfgang/AuditTrail/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/Chris-Wolfgang/AuditTrail/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/Chris-Wolfgang/AuditTrail/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Chris-Wolfgang/AuditTrail/compare/v0.2.1...v0.3.0

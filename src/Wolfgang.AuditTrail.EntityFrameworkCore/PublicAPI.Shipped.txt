@@ -2,10 +2,12 @@
 Wolfgang.AuditTrail.AuditingDbContext
 Wolfgang.AuditTrail.AuditingDbContext.AuditingDbContext(Microsoft.EntityFrameworkCore.DbContextOptions! options, Wolfgang.AuditTrail.IAuditUserProvider! userProvider, Wolfgang.AuditTrail.AuditOptions! auditOptions) -> void
 Wolfgang.AuditTrail.AuditingDbContext.AuditingDbContext(Microsoft.EntityFrameworkCore.DbContextOptions! options, Wolfgang.AuditTrail.IAuditUserProvider! userProvider, Wolfgang.AuditTrail.AuditOptions! auditOptions, Wolfgang.AuditTrail.IAuditBulkWriter? bulkWriter) -> void
+Wolfgang.AuditTrail.AuditingDbContext.AuditingDbContext(Microsoft.EntityFrameworkCore.DbContextOptions! options, Wolfgang.AuditTrail.IAuditUserProvider! userProvider, Wolfgang.AuditTrail.AuditOptions! auditOptions, Wolfgang.AuditTrail.IAuditBulkWriter? bulkWriter, System.TimeProvider? timeProvider, System.Func<System.Guid>? guidProvider) -> void
 Wolfgang.AuditTrail.AuditingDbContext.AuditOptions.get -> Wolfgang.AuditTrail.AuditOptions!
 Wolfgang.AuditTrail.AuditSaveChangesInterceptor
 Wolfgang.AuditTrail.AuditSaveChangesInterceptor.AuditSaveChangesInterceptor(Wolfgang.AuditTrail.IAuditUserProvider! userProvider, Wolfgang.AuditTrail.AuditOptions! options) -> void
 Wolfgang.AuditTrail.AuditSaveChangesInterceptor.AuditSaveChangesInterceptor(Wolfgang.AuditTrail.IAuditUserProvider! userProvider, Wolfgang.AuditTrail.AuditOptions! options, Wolfgang.AuditTrail.IAuditBulkWriter? bulkWriter) -> void
+Wolfgang.AuditTrail.AuditSaveChangesInterceptor.AuditSaveChangesInterceptor(Wolfgang.AuditTrail.IAuditUserProvider! userProvider, Wolfgang.AuditTrail.AuditOptions! options, Wolfgang.AuditTrail.IAuditBulkWriter? bulkWriter, System.TimeProvider? timeProvider, System.Func<System.Guid>? guidProvider) -> void
 Wolfgang.AuditTrail.AuditSaveChangesInterceptor.SaveChangesCanceledAsync(Microsoft.EntityFrameworkCore.Diagnostics.DbContextEventData! eventData, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 Wolfgang.AuditTrail.AuditSaveChangesInterceptor.SaveChangesFailed(Microsoft.EntityFrameworkCore.Diagnostics.DbContextErrorEventData! eventData) -> void
 Wolfgang.AuditTrail.AuditSaveChangesInterceptor.SaveChangesFailedAsync(Microsoft.EntityFrameworkCore.Diagnostics.DbContextErrorEventData! eventData, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
