@@ -1,1 +1,3 @@
 #nullable enable
+Wolfgang.AuditTrail.AuditSaveChangesInterceptor.AuditSaveChangesInterceptor(Wolfgang.AuditTrail.IAuditUserProvider! userProvider, Wolfgang.AuditTrail.AuditOptions! options, Wolfgang.AuditTrail.IAuditBulkWriter? bulkWriter, System.TimeProvider? timeProvider, System.Func<System.Guid>? guidProvider) -> void
+Wolfgang.AuditTrail.AuditingDbContext.AuditingDbContext(Microsoft.EntityFrameworkCore.DbContextOptions! options, Wolfgang.AuditTrail.IAuditUserProvider! userProvider, Wolfgang.AuditTrail.AuditOptions! auditOptions, Wolfgang.AuditTrail.IAuditBulkWriter? bulkWriter, System.TimeProvider? timeProvider, System.Func<System.Guid>? guidProvider) -> void

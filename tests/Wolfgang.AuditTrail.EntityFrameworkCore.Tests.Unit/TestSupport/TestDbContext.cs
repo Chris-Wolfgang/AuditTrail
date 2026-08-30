@@ -31,6 +31,20 @@ public class TestDbContext : AuditingDbContext
 
 
 
+    public TestDbContext
+    (
+        DbContextOptions<TestDbContext> options,
+        IAuditUserProvider userProvider,
+        AuditOptions auditOptions,
+        TimeProvider? timeProvider,
+        Func<Guid>? guidProvider
+    )
+        : base(options, userProvider, auditOptions, bulkWriter: null, timeProvider, guidProvider)
+    {
+    }
+
+
+
     public DbSet<Customer> Customers => Set<Customer>();
 
     public DbSet<CacheEntry> CacheEntries => Set<CacheEntry>();

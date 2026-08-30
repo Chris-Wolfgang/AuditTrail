@@ -47,6 +47,8 @@ public abstract class AuditingDbContext : DbContext
     private readonly IAuditUserProvider _userProvider;
     private readonly AuditOptions _auditOptions;
     private readonly IAuditBulkWriter? _bulkWriter;
+    private readonly TimeProvider _timeProvider;
+    private readonly Func<Guid> _guidProvider;
 
     private bool _isAuditingSave;   // recursion guard for the audit-rows pass
 
@@ -103,11 +105,53 @@ public abstract class AuditingDbContext : DbContext
         AuditOptions auditOptions,
         IAuditBulkWriter? bulkWriter
     )
+        : this(options, userProvider, auditOptions, bulkWriter, timeProvider: null, guidProvider: null)
+    {
+    }
+
+
+
+    /// <summary>
+    /// Initializes a new <see cref="AuditingDbContext"/> with a provider-specific bulk
+    /// insert writer, an injectable <see cref="TimeProvider"/>, and an injectable
+    /// <see cref="Guid"/> factory. Exists so tests can assert exact
+    /// <c>AuditHeader.HeaderId</c> / <c>AuditHeader.AuditedAtUtc</c> values instead of
+    /// only their shape — production code should keep using one of the other
+    /// constructors, which default both to real system time/randomness.
+    /// </summary>
+    /// <param name="options">EF Core <see cref="DbContextOptions"/>.</param>
+    /// <param name="userProvider">Supplies the <see cref="AuditUser"/> stamped on every header.</param>
+    /// <param name="auditOptions">Audit configuration including the value / entity-key serializers.</param>
+    /// <param name="bulkWriter">
+    /// Optional provider-specific bulk-insert writer, consulted only when
+    /// <see cref="Wolfgang.AuditTrail.AuditOptions.BulkInsertRowThreshold"/> is set.
+    /// <c>null</c> means every save uses the standard EF Core insert path.
+    /// </param>
+    /// <param name="timeProvider">
+    /// Supplies <c>AuditHeader.AuditedAtUtc</c>. <c>null</c> (the default) uses
+    /// <see cref="TimeProvider.System"/>.
+    /// </param>
+    /// <param name="guidProvider">
+    /// Supplies <c>AuditHeader.HeaderId</c> and the per-save audit transaction id.
+    /// <c>null</c> (the default) uses <see cref="Guid.NewGuid()"/>.
+    /// </param>
+    /// <exception cref="ArgumentNullException">If <paramref name="userProvider"/> or <paramref name="auditOptions"/> is <c>null</c>.</exception>
+    protected AuditingDbContext
+    (
+        DbContextOptions options,
+        IAuditUserProvider userProvider,
+        AuditOptions auditOptions,
+        IAuditBulkWriter? bulkWriter,
+        TimeProvider? timeProvider,
+        Func<Guid>? guidProvider
+    )
         : base(options)
     {
         _userProvider = userProvider ?? throw new ArgumentNullException(nameof(userProvider));
         _auditOptions = auditOptions ?? throw new ArgumentNullException(nameof(auditOptions));
         _bulkWriter = bulkWriter;
+        _timeProvider = timeProvider ?? TimeProvider.System;
+        _guidProvider = guidProvider ?? Guid.NewGuid;
 
         _auditOptions.EnsureDefaultSerializers();
     }
@@ -152,7 +196,7 @@ public abstract class AuditingDbContext : DbContext
         // TransactionId is generated once and threaded through state so a retrying
         // execution strategy can detect "the commit actually succeeded but the response
         // was lost" via VerifyAuditCommitted.
-        var auditTransactionId = Guid.NewGuid();
+        var auditTransactionId = _guidProvider();
 
         // Honor an existing user transaction: skip the execution-strategy wrap and
         // just run inline; commit/rollback remains the consumer's responsibility.
@@ -194,7 +238,7 @@ public abstract class AuditingDbContext : DbContext
 
         EnsureAcceptAllChangesOnSuccess(acceptAllChangesOnSuccess);
 
-        var auditTransactionId = Guid.NewGuid();
+        var auditTransactionId = _guidProvider();
 
         if (Database.CurrentTransaction is not null)
         {
@@ -223,7 +267,7 @@ public abstract class AuditingDbContext : DbContext
     {
         var result = base.SaveChanges(acceptAllChangesOnSuccess);
 
-        AuditCapture.AddAuditEntities(this, pending, _userProvider, _auditOptions, transactionId, _bulkWriter);
+        AuditCapture.AddAuditEntities(this, pending, _userProvider, _auditOptions, transactionId, _bulkWriter, _timeProvider, _guidProvider);
 
         _isAuditingSave = true;
         try     { base.SaveChanges(acceptAllChangesOnSuccess); }
@@ -247,7 +291,7 @@ public abstract class AuditingDbContext : DbContext
             .ConfigureAwait(false);
 
         await AuditCapture
-            .AddAuditEntitiesAsync(this, pending, _userProvider, _auditOptions, transactionId, _bulkWriter, cancellationToken)
+            .AddAuditEntitiesAsync(this, pending, _userProvider, _auditOptions, transactionId, _bulkWriter, _timeProvider, _guidProvider, cancellationToken)
             .ConfigureAwait(false);
 
         _isAuditingSave = true;
