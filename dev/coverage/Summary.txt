@@ -1,24 +1,24 @@
 Summary
-  Generated on: 08/30/2026 - 00:38:30
-  Coverage date: 08/30/2026 - 00:38:27
+  Generated on: 08/30/2026 - 02:10:14
+  Coverage date: 08/30/2026 - 02:10:11
   Parser: Cobertura
   Assemblies: 3
   Classes: 29
   Files: 29
   Line coverage: 99.2%
-  Covered lines: 890
+  Covered lines: 900
   Uncovered lines: 7
-  Coverable lines: 897
-  Total lines: 3204
-  Branch coverage: 90.1% (375 of 416)
-  Covered branches: 375
-  Total branches: 416
-  Method coverage: 100% (167 of 167)
-  Full method coverage: 96.4% (161 of 167)
-  Covered methods: 167
-  Fully covered methods: 161
-  Total methods: 167
-  Tag: 278_33283767007
+  Coverable lines: 907
+  Total lines: 3295
+  Branch coverage: 89.6% (380 of 424)
+  Covered branches: 380
+  Total branches: 424
+  Method coverage: 100% (169 of 169)
+  Full method coverage: 96.4% (163 of 169)
+  Covered methods: 169
+  Fully covered methods: 163
+  Total methods: 169
+  Tag: 281_33287315707
 
 Wolfgang.AuditTrail.Abstractions                                            100%
   Wolfgang.AuditTrail.AuditOptions                                          100%
@@ -28,7 +28,7 @@ Wolfgang.AuditTrail.Abstractions                                            100%
   Wolfgang.AuditTrail.Entities.AuditHeader                                  100%
 
 Wolfgang.AuditTrail.EntityFrameworkCore                                    99.2%
-  Wolfgang.AuditTrail.AuditingDbContext                                    97.5%
+  Wolfgang.AuditTrail.AuditingDbContext                                    97.6%
   Wolfgang.AuditTrail.AuditSaveChangesInterceptor                           100%
   Wolfgang.AuditTrail.DbContextOptionsBuilderExtensions                     100%
   Wolfgang.AuditTrail.Internal.AuditCapture                                97.2%
