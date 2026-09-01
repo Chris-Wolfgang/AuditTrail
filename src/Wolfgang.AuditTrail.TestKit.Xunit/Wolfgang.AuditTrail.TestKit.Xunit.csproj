@@ -56,7 +56,7 @@
 
   <ItemGroup>
     <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="FsCheck.Xunit" Version="3.3.4" />
+    <PackageReference Include="FsCheck.Xunit" Version="3.4.0" />
   </ItemGroup>
 
 </Project>
