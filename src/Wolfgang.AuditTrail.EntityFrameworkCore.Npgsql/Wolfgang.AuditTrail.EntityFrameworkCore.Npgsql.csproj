@@ -10,10 +10,14 @@
     <PackageId>Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql</PackageId>
     <Version>0.1.0</Version>
 
-    <!-- No EnablePackageValidation/PackageValidationBaselineVersion yet: this is a
-         brand-new package with no prior published version to validate against. Add
-         both after the first release ships (see reference: keep the baseline at the
-         last PUBLISHED version). -->
+    <!-- Binary/ABI-compatibility gate (#51). PackageValidation compares the packed
+         assemblies against the last published version on NuGet and fails the pack if
+         a break is introduced; per SemVer a PATCH/MINOR bump must not break ABI.
+         Bump PackageValidationBaselineVersion to the new value AFTER each release
+         (see reference: keep the baseline at the last PUBLISHED version). Intentional
+         breaks in a MAJOR release are recorded in CompatibilitySuppressions.xml. -->
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>0.1.0</PackageValidationBaselineVersion>
     <Title>Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql</Title>
     <Authors>Chris Wolfgang</Authors>
     <Description>PostgreSQL COPY-protocol bulk writer for Wolfgang.AuditTrail.EntityFrameworkCore. Implements IAuditBulkWriter via NpgsqlBinaryImporter so large audit batches bypass EF Core's per-entity insert while staying inside the caller's SaveChanges transaction.</Description>
