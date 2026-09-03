@@ -101,9 +101,9 @@ jobs:
 
       - name: Compare against baseline
         env:
-          LATENCY_THRESHOLD_PCT: ${{ github.event.inputs.latency-threshold-pct || '20' }}
-          ALLOC_THRESHOLD_PCT: ${{ github.event.inputs.alloc-threshold-pct || '50' }}
-          LATENCY_ABS_FLOOR_MS: ${{ github.event.inputs.latency-abs-floor-ms || '20' }}
+          LATENCY_THRESHOLD_PCT: ${{ github.event.inputs['latency-threshold-pct'] || '20' }}
+          ALLOC_THRESHOLD_PCT: ${{ github.event.inputs['alloc-threshold-pct'] || '50' }}
+          LATENCY_ABS_FLOOR_MS: ${{ github.event.inputs['latency-abs-floor-ms'] || '20' }}
         run: |
           set -euo pipefail
 
