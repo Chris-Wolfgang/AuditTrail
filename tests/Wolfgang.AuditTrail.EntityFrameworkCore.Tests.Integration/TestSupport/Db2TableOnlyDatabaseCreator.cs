@@ -91,6 +91,12 @@ internal sealed class Db2TableOnlyDatabaseCreator : Db2DatabaseCreator
 
                 tables = stillRemaining;
             }
+
+            if (tables.Count > 0)
+            {
+                var remaining = string.Join(", ", tables.Select(t => $"\"{t.Schema}\".\"{t.Table}\""));
+                throw new InvalidOperationException($"Db2TableOnlyDatabaseCreator could not drop the following tables after exhausting all retry passes: {remaining}.");
+            }
         }
         finally
         {
