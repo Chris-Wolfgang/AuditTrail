@@ -70,7 +70,17 @@
   <!-- EF Core 10-only providers: Oracle, Db2. Neither ships a net8.0 build. -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="10.23.26300" />
-    <PackageReference Include="IBM.EntityFrameworkCore" Version="10.0.0.100" />
+
+    <!--
+      IBM.EntityFrameworkCore bundles a Windows-only native Db2 CLI driver
+      (clidriver/bin/*.dll only, no .so equivalents). The Linux integration-test
+      job (ubuntu-latest) needs the separately-published -lnx package, which
+      ships the same managed assembly plus Linux native binaries via its own
+      Net.IBM.Data.Db2-lnx dependency; picking the wrong one throws
+      DllNotFoundException at connection-open time, not at build time.
+    -->
+    <PackageReference Include="IBM.EntityFrameworkCore" Version="10.0.0.100" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+    <PackageReference Include="IBM.EntityFrameworkCore-lnx" Version="10.0.0.100" Condition="!$([MSBuild]::IsOSPlatform('Windows'))" />
 
     <PackageReference Include="Testcontainers.Oracle" Version="4.14.0" />
     <PackageReference Include="Testcontainers.Db2" Version="4.14.0" />

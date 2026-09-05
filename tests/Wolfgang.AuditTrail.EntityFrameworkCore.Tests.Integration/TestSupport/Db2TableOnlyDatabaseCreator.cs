@@ -26,6 +26,7 @@ namespace Wolfgang.AuditTrail.Tests.Integration.TestSupport;
 /// uses) instead of the database.
 /// </remarks>
 [ExcludeFromCodeCoverage]
+#pragma warning disable EF1001 // Db2DatabaseCreator/IDb2SqlConnection are EF Core's own internal extension points for this exact scenario (see Oracle's official provider precedent in the remarks above) -- there is no public alternative to subclass.
 internal sealed class Db2TableOnlyDatabaseCreator : Db2DatabaseCreator
 {
     private readonly IDb2SqlConnection _connection;
@@ -40,6 +41,7 @@ internal sealed class Db2TableOnlyDatabaseCreator : Db2DatabaseCreator
     {
         _connection = connection;
     }
+#pragma warning restore EF1001
 
 
 
@@ -56,7 +58,9 @@ internal sealed class Db2TableOnlyDatabaseCreator : Db2DatabaseCreator
 
 
 
+#pragma warning disable VSTHRD002 // Delete() is a synchronous override required by RelationalDatabaseCreator's contract -- no async counterpart exists to route through instead.
     public override void Delete() => DropAllTablesAsync(CancellationToken.None).GetAwaiter().GetResult();
+#pragma warning restore VSTHRD002
 
 
 
