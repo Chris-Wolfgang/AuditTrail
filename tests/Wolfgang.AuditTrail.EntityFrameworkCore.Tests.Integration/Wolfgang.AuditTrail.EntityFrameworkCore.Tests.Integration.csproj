@@ -2,14 +2,18 @@
 
   <PropertyGroup>
     <!--
-      Targets net8.0 (the TFM), but the provider PackageReferences below pin
-      EF Core 9.x, the most recent line where all three providers (SQL
-      Server, Npgsql, Pomelo MySQL) have stable releases. Pomelo lags EF Core
-      by one major; flip to net10.0 / EF Core 10 once Pomelo ships a 10.x
-      stable. The net8.0 TFM keeps this project runnable without requiring
-      the newer SDK the net10.0-only projects need.
+      Multi-targeted because the providers this project covers split across
+      two EF Core majors and neither side multi-targets to bridge the gap:
+      SQL Server / PostgreSQL / MySQL (Pomelo) all cap at EF Core 9 (Pomelo
+      specifically: confirmed via a real runtime probe that forcing it onto
+      EF Core 10 throws MissingMethodException, not just a version-range
+      warning), while Oracle (Oracle.EntityFrameworkCore) and Db2
+      (IBM.EntityFrameworkCore) ship net10.0-only EF Core 10 packages with no
+      net8.0 build at all. Each provider's fixture/test files are TFM-scoped
+      below via Compile Remove so the net8.0 build only sees the EF9-provider
+      set and the net10.0 build only sees the EF10-provider set.
     -->
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
@@ -43,7 +47,11 @@
     <PackageReference Include="coverlet.collector" Version="10.0.1">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Xunit.SkippableFact" Version="1.5.85" />
+  </ItemGroup>
 
+  <!-- EF Core 9-capped providers: SQL Server, PostgreSQL, MySQL (Pomelo). -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.19" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
@@ -51,7 +59,38 @@
     <PackageReference Include="Testcontainers.MsSql" Version="4.14.0" />
     <PackageReference Include="Testcontainers.PostgreSql" Version="4.14.0" />
     <PackageReference Include="Testcontainers.MySql" Version="4.14.0" />
-    <PackageReference Include="Xunit.SkippableFact" Version="1.5.85" />
+
+    <Compile Remove="OracleAuditTests.cs" />
+    <Compile Remove="Db2AuditTests.cs" />
+    <Compile Remove="TestSupport\OracleFixture.cs" />
+    <Compile Remove="TestSupport\Db2Fixture.cs" />
+    <Compile Remove="TestSupport\Db2TableOnlyDatabaseCreator.cs" />
+  </ItemGroup>
+
+  <!-- EF Core 10-only providers: Oracle, Db2. Neither ships a net8.0 build. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Oracle.EntityFrameworkCore" Version="10.23.26300" />
+
+    <!--
+      IBM.EntityFrameworkCore bundles a Windows-only native Db2 CLI driver
+      (clidriver/bin/*.dll only, no .so equivalents). The Linux integration-test
+      job (ubuntu-latest) needs the separately-published -lnx package, which
+      ships the same managed assembly plus Linux native binaries via its own
+      Net.IBM.Data.Db2-lnx dependency; picking the wrong one throws
+      DllNotFoundException at connection-open time, not at build time.
+    -->
+    <PackageReference Include="IBM.EntityFrameworkCore" Version="10.0.0.100" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+    <PackageReference Include="IBM.EntityFrameworkCore-lnx" Version="10.0.0.100" Condition="!$([MSBuild]::IsOSPlatform('Windows'))" />
+
+    <PackageReference Include="Testcontainers.Oracle" Version="4.14.0" />
+    <PackageReference Include="Testcontainers.Db2" Version="4.14.0" />
+
+    <Compile Remove="SqlServerAuditTests.cs" />
+    <Compile Remove="PostgresAuditTests.cs" />
+    <Compile Remove="MySqlAuditTests.cs" />
+    <Compile Remove="TestSupport\SqlServerFixture.cs" />
+    <Compile Remove="TestSupport\PostgresFixture.cs" />
+    <Compile Remove="TestSupport\MySqlFixture.cs" />
   </ItemGroup>
 
 </Project>
