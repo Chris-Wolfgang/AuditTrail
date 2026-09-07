@@ -70,14 +70,18 @@ jobs:
           dotnet run \
             --project benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks.csproj \
             --configuration Release \
+            --framework net10.0 \
             -- \
             --exporters json \
             --filter '*Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks*' \
             --memory
-        # Filter scoped to the SQLite-only SaveChangesBenchmarks. The
+        # Filter scoped to the SQLite-only SaveChangesBenchmarks, which stays
+        # net10.0-only -- --framework just disambiguates `dotnet run` now that
+        # the project also multi-targets net8.0 for MySQL (see #272). The
         # ProviderSaveChangesBenchmarks class spins Testcontainers for
-        # SQL Server / PostgreSQL and is intentionally excluded from CI —
-        # run it locally with --filter '*ProviderSaveChangesBenchmarks*'.
+        # SQL Server / PostgreSQL / MySQL and is intentionally excluded from
+        # CI — run it locally with --filter '*ProviderSaveChangesBenchmarks*'
+        # (add --framework net8.0 for the MySQL case).
 
       - name: Locate full-report JSON
         id: locate
