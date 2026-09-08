@@ -1,6 +1,10 @@
 using BenchmarkDotNet.Attributes;
+using IBM.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using Testcontainers.Db2;
 using Testcontainers.MsSql;
+using Testcontainers.Oracle;
 using Testcontainers.PostgreSql;
 using Wolfgang.AuditTrail.Npgsql;
 using Wolfgang.AuditTrail.Serializers;
@@ -17,6 +21,8 @@ public enum BenchmarkProvider
     Sqlite,
     SqlServer,
     PostgreSQL,
+    Oracle,
+    Db2,
 }
 
 
@@ -25,8 +31,8 @@ public enum BenchmarkProvider
 /// Compares unaudited <c>SaveChangesAsync</c> against audited
 /// <c>SaveChangesAsync</c> (via <see cref="AuditingDbContext"/>) across each of
 /// the supported providers. Each <see cref="BenchmarkProvider"/> value spins
-/// up its own engine — Testcontainers for SQL Server / PostgreSQL, in-memory
-/// for SQLite — in <c>GlobalSetup</c> and reuses it across iterations.
+/// up its own engine — Testcontainers for SQL Server / PostgreSQL / Oracle / Db2,
+/// in-memory for SQLite — in <c>GlobalSetup</c> and reuses it across iterations.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -38,9 +44,8 @@ public enum BenchmarkProvider
 /// value and the GlobalSetup switch needs the container wiring.
 /// </para>
 /// <para>
-/// <strong>Docker required</strong> for SQL Server and PostgreSQL iterations
-/// — same prerequisite as Tests.Integration. SQLite iterations run with no
-/// external dependency.
+/// <strong>Docker required</strong> for every provider except SQLite — same
+/// prerequisite as Tests.Integration.
 /// </para>
 /// </remarks>
 [MemoryDiagnoser]
@@ -48,6 +53,8 @@ public class ProviderSaveChangesBenchmarks
 {
     private MsSqlContainer? _sqlServerContainer;
     private PostgreSqlContainer? _postgresContainer;
+    private OracleContainer? _oracleContainer;
+    private Db2Container? _db2Container;
     private Microsoft.Data.Sqlite.SqliteConnection? _sqliteConnection;
     private string _connectionString = string.Empty;
 
@@ -58,7 +65,7 @@ public class ProviderSaveChangesBenchmarks
 
 
 
-    [Params(BenchmarkProvider.Sqlite, BenchmarkProvider.SqlServer, BenchmarkProvider.PostgreSQL)]
+    [Params(BenchmarkProvider.Sqlite, BenchmarkProvider.SqlServer, BenchmarkProvider.PostgreSQL, BenchmarkProvider.Oracle, BenchmarkProvider.Db2)]
     public BenchmarkProvider Provider { get; set; }
 
 
@@ -98,6 +105,16 @@ public class ProviderSaveChangesBenchmarks
             _bulkWriter = Provider == BenchmarkProvider.PostgreSQL ? new NpgsqlCopyAuditBulkWriter() : null;
         }
 
+        await StartProviderAsync().ConfigureAwait(false);
+
+        using var seed = CreateAuditedContext();
+        await seed.Database.EnsureCreatedAsync().ConfigureAwait(false);
+    }
+
+
+
+    private async Task StartProviderAsync()
+    {
         switch (Provider)
         {
             case BenchmarkProvider.Sqlite:
@@ -127,12 +144,32 @@ public class ProviderSaveChangesBenchmarks
                 _connectionString = _postgresContainer.GetConnectionString();
                 break;
 
+            case BenchmarkProvider.Oracle:
+                // Pin to the same exact image as Tests.Integration's OracleFixture
+                // for the same reproducibility reason as the other providers above.
+                _oracleContainer = new OracleBuilder("gvenzl/oracle-xe:21.3.0-slim-faststart").Build();
+                await _oracleContainer.StartAsync().ConfigureAwait(false);
+                _connectionString = _oracleContainer.GetConnectionString();
+                break;
+
+            case BenchmarkProvider.Db2:
+                // Pin to the same exact image as Tests.Integration's Db2Fixture
+                // for the same reproducibility reason as the other providers above.
+                // Db2 database names are capped at 8 characters (SQL1001N on
+                // anything longer, confirmed against a real container) --
+                // "auditbench" is too long, so this uses the same "auditdb"
+                // Tests.Integration's Db2Fixture already settled on.
+                _db2Container = new Db2Builder("icr.io/db2_community/db2:12.1.0.0")
+                    .WithAcceptLicenseAgreement(true)
+                    .WithDatabase("auditdb")
+                    .Build();
+                await _db2Container.StartAsync().ConfigureAwait(false);
+                _connectionString = _db2Container.GetConnectionString();
+                break;
+
             default:
                 throw new NotSupportedException($"Unknown provider {Provider}");
         }
-
-        using var seed = CreateAuditedContext();
-        await seed.Database.EnsureCreatedAsync().ConfigureAwait(false);
     }
 
 
@@ -147,6 +184,14 @@ public class ProviderSaveChangesBenchmarks
         if (_postgresContainer is not null)
         {
             await _postgresContainer.DisposeAsync().ConfigureAwait(false);
+        }
+        if (_oracleContainer is not null)
+        {
+            await _oracleContainer.DisposeAsync().ConfigureAwait(false);
+        }
+        if (_db2Container is not null)
+        {
+            await _db2Container.DisposeAsync().ConfigureAwait(false);
         }
         if (_sqliteConnection is not null)
         {
@@ -186,20 +231,28 @@ public class ProviderSaveChangesBenchmarks
     private void TruncateAllTables()
     {
         using var ctx = CreateUnauditedContext();
-        // Provider-specific identifier quoting; DELETE works on all three.
+        // Provider-specific identifier quoting: Postgres/Oracle/Db2 fold unquoted
+        // identifiers (lower/upper/upper respectively), but EF creates tables with
+        // quotes preserving the exact mixed-case C# type name -- so unquoted DELETE
+        // would look for a differently-cased, nonexistent object on those three.
+        // Db2's EF provider does NOT quote its generated DDL, unlike Oracle/Postgres --
+        // confirmed against a real container: quoting Db2 here throws SQL0204N
+        // ("AuditDetail" undefined) because the real table is unquoted-folded, so
+        // Db2 needs the SAME unquoted access as Sqlite/SqlServer, not grouped with
+        // Oracle/Postgres.
         var customerTable = Provider switch
         {
-            BenchmarkProvider.PostgreSQL => "\"Customers\"",
+            BenchmarkProvider.PostgreSQL or BenchmarkProvider.Oracle => "\"Customers\"",
             _ => "Customers",
         };
         var detailTable = Provider switch
         {
-            BenchmarkProvider.PostgreSQL => "\"AuditDetail\"",
+            BenchmarkProvider.PostgreSQL or BenchmarkProvider.Oracle => "\"AuditDetail\"",
             _ => "AuditDetail",
         };
         var headerTable = Provider switch
         {
-            BenchmarkProvider.PostgreSQL => "\"AuditHeader\"",
+            BenchmarkProvider.PostgreSQL or BenchmarkProvider.Oracle => "\"AuditHeader\"",
             _ => "AuditHeader",
         };
 #pragma warning disable EF1002, S2077 // Static SQL, table names are hardcoded provider literals with no user input.
@@ -257,6 +310,14 @@ public class ProviderSaveChangesBenchmarks
                 break;
             case BenchmarkProvider.PostgreSQL:
                 builder.UseNpgsql(_connectionString);
+                break;
+            case BenchmarkProvider.Oracle:
+                builder.UseOracle(_connectionString);
+                break;
+            case BenchmarkProvider.Db2:
+                builder
+                    .UseDb2(_connectionString, Db2OptionsAction: null)
+                    .ReplaceService<IRelationalTransactionFactory, Db2NoSavepointsTransactionFactory>();
                 break;
             default:
                 throw new NotSupportedException($"Unknown provider {Provider}");
