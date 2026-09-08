@@ -121,6 +121,16 @@ public class ProviderSaveChangesBenchmarks
 #endif
         }
 
+        await StartProviderAsync().ConfigureAwait(false);
+
+        using var seed = CreateAuditedContext();
+        await seed.Database.EnsureCreatedAsync().ConfigureAwait(false);
+    }
+
+
+
+    private async Task StartProviderAsync()
+    {
         switch (Provider)
         {
 #if NET10_0
@@ -168,9 +178,6 @@ public class ProviderSaveChangesBenchmarks
             default:
                 throw new NotSupportedException($"Unknown provider {Provider}");
         }
-
-        using var seed = CreateAuditedContext();
-        await seed.Database.EnsureCreatedAsync().ConfigureAwait(false);
     }
 
 
