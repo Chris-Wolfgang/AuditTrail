@@ -46,7 +46,7 @@ jobs:
           persist-credentials: false
 
       - name: Run actionlint
-        uses: reviewdog/action-actionlint@dbe5299849118fd6f099ba563d263d770955a64a # v1.73.2
+        uses: reviewdog/action-actionlint@49cb3ce06e5d81452e14b38ad34e4b12a8acfe2b # v1.73.3
         with:
           reporter: github-check
           level: warning
@@ -82,7 +82,7 @@ jobs:
         run: zizmor --config zizmor.yml --format sarif . > zizmor.sarif
 
       - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28 # v4.37.8
+        uses: github/codeql-action/upload-sarif@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4.37.9
         with:
           sarif_file: zizmor.sarif
           category: zizmor
