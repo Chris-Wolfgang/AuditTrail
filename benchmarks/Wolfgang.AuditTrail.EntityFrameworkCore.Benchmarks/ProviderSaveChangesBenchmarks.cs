@@ -1,4 +1,7 @@
+using System.Reflection;
+using System.Runtime.InteropServices;
 using BenchmarkDotNet.Attributes;
+using IBM.Data.Db2;
 using IBM.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -51,6 +54,33 @@ public enum BenchmarkProvider
 [MemoryDiagnoser]
 public class ProviderSaveChangesBenchmarks
 {
+    // On Linux, IBM.EntityFrameworkCore-lnx's native driver (clidriver/lib/*.so) is
+    // copied nested under the build output rather than the output root, so .NET's
+    // default native-library probing never finds it -- DllNotFoundException on
+    // libdb2.so. Loading it by absolute path here sidesteps that: libdb2.so's own
+    // sibling dependencies inside clidriver/lib then resolve via its
+    // $ORIGIN-relative rpath. Mirrors Tests.Integration's Db2Fixture, which
+    // verified this exact mechanism against a real container. Windows resolves its
+    // native driver (clidriver/bin/*.dll) without any of this, so the resolver is
+    // Linux-only.
+    static ProviderSaveChangesBenchmarks()
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            NativeLibrary.SetDllImportResolver(typeof(DB2Connection).Assembly, ResolveDb2NativeLibrary);
+        }
+    }
+
+
+
+    private static IntPtr ResolveDb2NativeLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+    {
+        var candidate = Path.Combine(AppContext.BaseDirectory, "clidriver", "lib", libraryName);
+        return File.Exists(candidate) && NativeLibrary.TryLoad(candidate, out var handle) ? handle : IntPtr.Zero;
+    }
+
+
+
     private MsSqlContainer? _sqlServerContainer;
     private PostgreSqlContainer? _postgresContainer;
     private OracleContainer? _oracleContainer;
@@ -231,15 +261,15 @@ public class ProviderSaveChangesBenchmarks
     private void TruncateAllTables()
     {
         using var ctx = CreateUnauditedContext();
-        // Provider-specific identifier quoting: Postgres/Oracle/Db2 fold unquoted
-        // identifiers (lower/upper/upper respectively), but EF creates tables with
+        // Provider-specific identifier quoting: Postgres/Oracle fold unquoted
+        // identifiers (lower/upper respectively), but EF creates their tables with
         // quotes preserving the exact mixed-case C# type name -- so unquoted DELETE
-        // would look for a differently-cased, nonexistent object on those three.
-        // Db2's EF provider does NOT quote its generated DDL, unlike Oracle/Postgres --
-        // confirmed against a real container: quoting Db2 here throws SQL0204N
-        // ("AuditDetail" undefined) because the real table is unquoted-folded, so
-        // Db2 needs the SAME unquoted access as Sqlite/SqlServer, not grouped with
-        // Oracle/Postgres.
+        // would look for a differently-cased, nonexistent object on those two.
+        // Db2 is deliberately NOT in that group: its EF provider does not quote its
+        // generated DDL, so Db2's real tables are unquoted-folded -- confirmed
+        // against a real container, where quoting Db2 here threw SQL0204N
+        // ("AuditDetail" undefined). Db2 needs the same unquoted access as
+        // Sqlite/SqlServer below.
         var customerTable = Provider switch
         {
             BenchmarkProvider.PostgreSQL or BenchmarkProvider.Oracle => "\"Customers\"",
