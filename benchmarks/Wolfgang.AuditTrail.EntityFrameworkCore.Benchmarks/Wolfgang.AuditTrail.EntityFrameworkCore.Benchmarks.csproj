@@ -26,6 +26,19 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageReference Include="Testcontainers.MsSql" Version="4.14.0" />
     <PackageReference Include="Testcontainers.PostgreSql" Version="4.14.0" />
+    <PackageReference Include="Oracle.EntityFrameworkCore" Version="10.23.26300" />
+    <PackageReference Include="Testcontainers.Oracle" Version="4.14.0" />
+    <PackageReference Include="Testcontainers.Db2" Version="4.14.0" />
+  </ItemGroup>
+
+  <!--
+    IBM.EntityFrameworkCore bundles a Windows-only native Db2 CLI driver;
+    the Linux build needs the separately-published -lnx package instead.
+    See Tests.Integration's csproj for the full rationale.
+  -->
+  <ItemGroup>
+    <PackageReference Include="IBM.EntityFrameworkCore" Version="10.0.0.100" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+    <PackageReference Include="IBM.EntityFrameworkCore-lnx" Version="10.0.0.100" Condition="!$([MSBuild]::IsOSPlatform('Windows'))" />
   </ItemGroup>
 
 </Project>
