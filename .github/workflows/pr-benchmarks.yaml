@@ -46,6 +46,12 @@ env:
   TIME_ABS_FLOOR_NS: '500000'
   BENCH_FILTER: '*Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks*'
   BENCH_PROJECT: benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks.csproj
+  # --framework net10.0 below is added ahead of #272, which will multi-target
+  # the benchmarks project to net10.0;net8.0 (net8.0 for a MySQL-only
+  # ProviderSaveChangesBenchmarks case, since Pomelo is still EF9-capped).
+  # Once that lands, `dotnet run` becomes ambiguous without --framework.
+  # BENCH_FILTER only ever selects SaveChangesBenchmarks, which stays
+  # net10.0-only either way, so this isn't gating anything.
 
 jobs:
   perf-delta:
@@ -89,6 +95,7 @@ jobs:
           dotnet run \
             --project "$BENCH_PROJECT" \
             --configuration Release \
+            --framework net10.0 \
             -- \
             --exporters json \
             --filter "$BENCH_FILTER" \
@@ -112,6 +119,7 @@ jobs:
           dotnet run \
             --project "$BENCH_PROJECT" \
             --configuration Release \
+            --framework net10.0 \
             -- \
             --exporters json \
             --filter "$BENCH_FILTER" \
