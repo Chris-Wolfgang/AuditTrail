@@ -57,7 +57,7 @@
       Adding a new provider (Oracle, DB2, …) is one PackageReference here plus
       one switch arm in SchemaMigrateRunner.BuildDbContextOptions.
     -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
     <!-- NU1903 transitive override — see issue #121. -->
