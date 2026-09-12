@@ -37,10 +37,25 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
     <!-- NU1903 transitive override — see issue #121. -->
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageReference Include="Testcontainers.MsSql" Version="4.14.0" />
     <PackageReference Include="Testcontainers.PostgreSql" Version="4.14.0" />
+    <PackageReference Include="Oracle.EntityFrameworkCore" Version="10.23.26300" />
+    <PackageReference Include="Testcontainers.Oracle" Version="4.14.0" />
+    <PackageReference Include="Testcontainers.Db2" Version="4.14.0" />
+  </ItemGroup>
+
+  <!--
+    IBM.EntityFrameworkCore bundles a Windows-only native Db2 CLI driver;
+    the Linux build needs the separately-published -lnx package instead.
+    See Tests.Integration's csproj for the full rationale. net10.0-only,
+    same as the other providers in the ItemGroup above, since this package
+    requires EF Core 10, which isn't referenced on the net8.0 slot.
+  -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="IBM.EntityFrameworkCore" Version="10.0.0.100" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+    <PackageReference Include="IBM.EntityFrameworkCore-lnx" Version="10.0.0.100" Condition="!$([MSBuild]::IsOSPlatform('Windows'))" />
   </ItemGroup>
 
   <!--

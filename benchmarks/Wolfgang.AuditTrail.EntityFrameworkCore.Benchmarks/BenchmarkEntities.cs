@@ -59,6 +59,26 @@ public sealed class AuditedBenchmarkDbContext : AuditingDbContext
 
 
     public DbSet<Customer> Customers => Set<Customer>();
+
+
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        ArgumentNullException.ThrowIfNull(modelBuilder);
+
+        base.OnModelCreating(modelBuilder);
+
+        // IBM.EntityFrameworkCore's default relational type mapping for Guid emits
+        // SQL Server's "uniqueidentifier" verbatim, which Db2 doesn't recognize
+        // (SQL0204N) -- Db2 has no native GUID type. Mirrors Tests.Integration's
+        // TestDbContext, scoped to Db2 only.
+        if (string.Equals(Database.ProviderName, "IBM.EntityFrameworkCore", StringComparison.Ordinal))
+        {
+            modelBuilder.Entity<Entities.AuditHeader>().Property(h => h.HeaderId).HasConversion<string>();
+            modelBuilder.Entity<Entities.AuditHeader>().Property(h => h.TransactionId).HasConversion<string>();
+            modelBuilder.Entity<Entities.AuditDetail>().Property(d => d.HeaderId).HasConversion<string>();
+        }
+    }
 }
 
 [ExcludeFromCodeCoverage]
