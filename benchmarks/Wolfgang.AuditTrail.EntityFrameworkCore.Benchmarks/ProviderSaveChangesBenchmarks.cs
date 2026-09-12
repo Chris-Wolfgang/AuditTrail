@@ -1,15 +1,20 @@
+using BenchmarkDotNet.Attributes;
+using Microsoft.EntityFrameworkCore;
+#if NET10_0
 using System.Reflection;
 using System.Runtime.InteropServices;
-using BenchmarkDotNet.Attributes;
 using IBM.Data.Db2;
 using IBM.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Testcontainers.Db2;
 using Testcontainers.MsSql;
 using Testcontainers.Oracle;
 using Testcontainers.PostgreSql;
 using Wolfgang.AuditTrail.Npgsql;
+#endif
+#if NET8_0
+using Testcontainers.MySql;
+#endif
 using Wolfgang.AuditTrail.Serializers;
 
 namespace Wolfgang.AuditTrail.Benchmarks;
@@ -24,6 +29,7 @@ public enum BenchmarkProvider
     Sqlite,
     SqlServer,
     PostgreSQL,
+    MySQL,
     Oracle,
     Db2,
 }
@@ -34,17 +40,20 @@ public enum BenchmarkProvider
 /// Compares unaudited <c>SaveChangesAsync</c> against audited
 /// <c>SaveChangesAsync</c> (via <see cref="AuditingDbContext"/>) across each of
 /// the supported providers. Each <see cref="BenchmarkProvider"/> value spins
-/// up its own engine — Testcontainers for SQL Server / PostgreSQL / Oracle / Db2,
-/// in-memory for SQLite — in <c>GlobalSetup</c> and reuses it across iterations.
+/// up its own engine — Testcontainers for SQL Server / PostgreSQL / Oracle / Db2 /
+/// MySQL, in-memory for SQLite — in <c>GlobalSetup</c> and reuses it across
+/// iterations.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <strong>MySQL is intentionally excluded.</strong> Pomelo
-/// (<c>Pomelo.EntityFrameworkCore.MySql</c>) ships stable for EF Core 8 and 9
-/// (latest stable as of 2026-05: <c>9.0.0</c>) but no EF Core 10 release yet,
-/// while this benchmark project targets net10.0 / EF Core 10. Re-add once
-/// Pomelo ships a 10.x stable; the BenchmarkProvider enum just needs a MySQL
-/// value and the GlobalSetup switch needs the container wiring.
+/// <strong>MySQL runs on a separate net8.0 build.</strong> Pomelo
+/// (<c>Pomelo.EntityFrameworkCore.MySql</c>) is still capped at EF Core 9 as of
+/// this writing, while Sqlite/SqlServer/PostgreSQL use EF Core 10 (net10.0-only
+/// packages). The PR regression gate compares each provider's own numbers
+/// between two commits on the same TFM, never across providers, so this split
+/// doesn't affect comparability — see #272. <c>Provider</c>'s valid values are
+/// TFM-scoped via <c>NET10_0</c>/<c>NET8_0</c> conditionals below; fold MySQL
+/// back into the net10.0-only matrix once Pomelo ships an EF Core 10 stable.
 /// </para>
 /// <para>
 /// <strong>Docker required</strong> for every provider except SQLite — same
@@ -54,6 +63,7 @@ public enum BenchmarkProvider
 [MemoryDiagnoser]
 public class ProviderSaveChangesBenchmarks
 {
+#if NET10_0
     // On Linux, IBM.EntityFrameworkCore-lnx's native driver (clidriver/lib/*.so) is
     // copied nested under the build output rather than the output root, so .NET's
     // default native-library probing never finds it -- DllNotFoundException on
@@ -86,6 +96,11 @@ public class ProviderSaveChangesBenchmarks
     private OracleContainer? _oracleContainer;
     private Db2Container? _db2Container;
     private Microsoft.Data.Sqlite.SqliteConnection? _sqliteConnection;
+#endif
+#if NET8_0
+    private MySqlContainer? _mySqlContainer;
+    private ServerVersion? _mySqlServerVersion;
+#endif
     private string _connectionString = string.Empty;
 
     private AuditOptions _options = null!;
@@ -95,7 +110,11 @@ public class ProviderSaveChangesBenchmarks
 
 
 
+#if NET10_0
     [Params(BenchmarkProvider.Sqlite, BenchmarkProvider.SqlServer, BenchmarkProvider.PostgreSQL, BenchmarkProvider.Oracle, BenchmarkProvider.Db2)]
+#elif NET8_0
+    [Params(BenchmarkProvider.MySQL)]
+#endif
     public BenchmarkProvider Provider { get; set; }
 
 
@@ -132,7 +151,11 @@ public class ProviderSaveChangesBenchmarks
             // protocol's fixed handshake cost at small batches too, not just its
             // payoff at large ones.
             _options.BulkInsertRowThreshold = 1;
+#if NET10_0
             _bulkWriter = Provider == BenchmarkProvider.PostgreSQL ? new NpgsqlCopyAuditBulkWriter() : null;
+#else
+            _bulkWriter = null;
+#endif
         }
 
         await StartProviderAsync().ConfigureAwait(false);
@@ -147,6 +170,7 @@ public class ProviderSaveChangesBenchmarks
     {
         switch (Provider)
         {
+#if NET10_0
             case BenchmarkProvider.Sqlite:
                 _sqliteConnection = new Microsoft.Data.Sqlite.SqliteConnection("Filename=:memory:");
                 await _sqliteConnection.OpenAsync().ConfigureAwait(false);
@@ -196,6 +220,20 @@ public class ProviderSaveChangesBenchmarks
                 await _db2Container.StartAsync().ConfigureAwait(false);
                 _connectionString = _db2Container.GetConnectionString();
                 break;
+#endif
+
+#if NET8_0
+            case BenchmarkProvider.MySQL:
+                // Pin to the same exact image as Tests.Integration's MySqlFixture
+                // for the same reproducibility reason as the other providers above.
+                _mySqlContainer = new MySqlBuilder("mysql:8.0.39").Build();
+                await _mySqlContainer.StartAsync().ConfigureAwait(false);
+                _connectionString = _mySqlContainer.GetConnectionString();
+                // AutoDetect opens a real connection to probe the server version --
+                // cached once here rather than recomputed on every context creation.
+                _mySqlServerVersion = await ServerVersion.AutoDetectAsync(_connectionString).ConfigureAwait(false);
+                break;
+#endif
 
             default:
                 throw new NotSupportedException($"Unknown provider {Provider}");
@@ -207,6 +245,7 @@ public class ProviderSaveChangesBenchmarks
     [GlobalCleanup]
     public async Task GlobalCleanup()
     {
+#if NET10_0
         if (_sqlServerContainer is not null)
         {
             await _sqlServerContainer.DisposeAsync().ConfigureAwait(false);
@@ -227,6 +266,13 @@ public class ProviderSaveChangesBenchmarks
         {
             await _sqliteConnection.DisposeAsync().ConfigureAwait(false);
         }
+#endif
+#if NET8_0
+        if (_mySqlContainer is not null)
+        {
+            await _mySqlContainer.DisposeAsync().ConfigureAwait(false);
+        }
+#endif
     }
 
 
@@ -332,6 +378,7 @@ public class ProviderSaveChangesBenchmarks
     {
         switch (Provider)
         {
+#if NET10_0
             case BenchmarkProvider.Sqlite:
                 builder.UseSqlite(_sqliteConnection!);
                 break;
@@ -349,6 +396,12 @@ public class ProviderSaveChangesBenchmarks
                     .UseDb2(_connectionString, Db2OptionsAction: null)
                     .ReplaceService<IRelationalTransactionFactory, Db2NoSavepointsTransactionFactory>();
                 break;
+#endif
+#if NET8_0
+            case BenchmarkProvider.MySQL:
+                builder.UseMySql(_connectionString, _mySqlServerVersion!);
+                break;
+#endif
             default:
                 throw new NotSupportedException($"Unknown provider {Provider}");
         }
