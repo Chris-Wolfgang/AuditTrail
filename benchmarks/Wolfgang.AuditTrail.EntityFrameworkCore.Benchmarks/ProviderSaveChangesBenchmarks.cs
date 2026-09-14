@@ -199,39 +199,17 @@ public class ProviderSaveChangesBenchmarks
                 break;
 
             case BenchmarkProvider.Oracle:
-                // Pin to the same exact image as Tests.Integration's OracleFixture
-                // for the same reproducibility reason as the other providers above.
-                _oracleContainer = new OracleBuilder("gvenzl/oracle-xe:21.3.0-slim-faststart").Build();
-                await _oracleContainer.StartAsync().ConfigureAwait(false);
-                _connectionString = _oracleContainer.GetConnectionString();
+                await StartOracleAsync().ConfigureAwait(false);
                 break;
 
             case BenchmarkProvider.Db2:
-                // Pin to the same exact image as Tests.Integration's Db2Fixture
-                // for the same reproducibility reason as the other providers above.
-                // Db2 database names are capped at 8 characters (SQL1001N on
-                // anything longer, confirmed against a real container) --
-                // "auditbench" is too long, so this uses the same "auditdb"
-                // Tests.Integration's Db2Fixture already settled on.
-                _db2Container = new Db2Builder("icr.io/db2_community/db2:12.1.0.0")
-                    .WithAcceptLicenseAgreement(true)
-                    .WithDatabase("auditdb")
-                    .Build();
-                await _db2Container.StartAsync().ConfigureAwait(false);
-                _connectionString = _db2Container.GetConnectionString();
+                await StartDb2Async().ConfigureAwait(false);
                 break;
 #endif
 
 #if NET8_0
             case BenchmarkProvider.MySQL:
-                // Pin to the same exact image as Tests.Integration's MySqlFixture
-                // for the same reproducibility reason as the other providers above.
-                _mySqlContainer = new MySqlBuilder("mysql:8.0.39").Build();
-                await _mySqlContainer.StartAsync().ConfigureAwait(false);
-                _connectionString = _mySqlContainer.GetConnectionString();
-                // AutoDetect opens a real connection to probe the server version --
-                // cached once here rather than recomputed on every context creation.
-                _mySqlServerVersion = await ServerVersion.AutoDetectAsync(_connectionString).ConfigureAwait(false);
+                await StartMySqlAsync().ConfigureAwait(false);
                 break;
 #endif
 
@@ -239,6 +217,52 @@ public class ProviderSaveChangesBenchmarks
                 throw new NotSupportedException($"Unknown provider {Provider}");
         }
     }
+
+
+
+#if NET10_0
+    private async Task StartOracleAsync()
+    {
+        // Pin to the same exact image as Tests.Integration's OracleFixture
+        // for the same reproducibility reason as the other providers.
+        _oracleContainer = new OracleBuilder("gvenzl/oracle-xe:21.3.0-slim-faststart").Build();
+        await _oracleContainer.StartAsync().ConfigureAwait(false);
+        _connectionString = _oracleContainer.GetConnectionString();
+    }
+
+
+
+    private async Task StartDb2Async()
+    {
+        // Pin to the same exact image as Tests.Integration's Db2Fixture for the
+        // same reproducibility reason as the other providers. Db2 database names
+        // are capped at 8 characters (SQL1001N on anything longer, confirmed
+        // against a real container) -- "auditbench" is too long, so this uses
+        // the same "auditdb" Tests.Integration's Db2Fixture already settled on.
+        _db2Container = new Db2Builder("icr.io/db2_community/db2:12.1.0.0")
+            .WithAcceptLicenseAgreement(true)
+            .WithDatabase("auditdb")
+            .Build();
+        await _db2Container.StartAsync().ConfigureAwait(false);
+        _connectionString = _db2Container.GetConnectionString();
+    }
+#endif
+
+
+
+#if NET8_0
+    private async Task StartMySqlAsync()
+    {
+        // Pin to the same exact image as Tests.Integration's MySqlFixture for
+        // the same reproducibility reason as the other providers.
+        _mySqlContainer = new MySqlBuilder("mysql:8.0.39").Build();
+        await _mySqlContainer.StartAsync().ConfigureAwait(false);
+        _connectionString = _mySqlContainer.GetConnectionString();
+        // AutoDetect opens a real connection to probe the server version --
+        // cached once here rather than recomputed on every context creation.
+        _mySqlServerVersion = await ServerVersion.AutoDetectAsync(_connectionString).ConfigureAwait(false);
+    }
+#endif
 
 
 
