@@ -176,6 +176,34 @@ jobs:
           fi
           echo "report=$report" >> "$GITHUB_OUTPUT"
 
+      - name: Drop failed cases from the net10.0 provider report
+        run: |
+          # A single provider's transient failure (e.g. a container registry
+          # timeout -- observed for real: Db2's image pull hit a Docker
+          # InternalServerError against icr.io on 2026-09-15) leaves that
+          # case's `Statistics`/`Memory` null in the JSON report while
+          # `dotnet run` itself still exits 0. benchmark-action's own
+          # comparison logic then throws "Cannot read properties of null
+          # (reading 'Mean')" on that null entry, crashing the ENTIRE
+          # chart-push step -- which discards every OTHER provider's
+          # perfectly good data for the day, not just the failed one's, and
+          # (by GH Actions' default step-skip-on-failure behavior) also
+          # skips the MySQL and SQLite chart-push steps below it. Stripping
+          # null-Statistics entries here keeps one provider's infra flake
+          # from costing the whole day's chart data.
+          report='${{ steps.locate-providers-net10.outputs.report }}'
+          total=$(jq '.Benchmarks | length' "$report")
+          jq '.Benchmarks |= map(select(.Statistics != null))' "$report" > "$report.filtered"
+          mv "$report.filtered" "$report"
+          kept=$(jq '.Benchmarks | length' "$report")
+          if [ "$kept" -lt "$total" ]; then
+            echo "::warning::Dropped $((total - kept)) failed benchmark case(s) (null Statistics) from the net10.0 provider report before charting -- see the 'Run ProviderSaveChangesBenchmarks (SqlServer/PostgreSQL/Oracle/Db2)' step log for which provider/case failed and why."
+          fi
+          if [ "$kept" -eq 0 ]; then
+            echo "::error::Every net10.0 provider case failed this run -- nothing left to chart. Failing explicitly rather than pushing an empty report."
+            exit 1
+          fi
+
       - name: Run ProviderSaveChangesBenchmarks (MySQL)
         run: |
           dotnet run \
@@ -202,6 +230,25 @@ jobs:
             exit 1
           fi
           echo "report=$report" >> "$GITHUB_OUTPUT"
+
+      - name: Drop failed cases from the net8.0 provider report
+        run: |
+          # Same rationale as the net10.0 filter step above -- only one
+          # provider (MySQL) runs on this slot, but a transient container
+          # failure here would otherwise crash this chart-push AND skip the
+          # SQLite chart-push after it.
+          report='${{ steps.locate-providers-net8.outputs.report }}'
+          total=$(jq '.Benchmarks | length' "$report")
+          jq '.Benchmarks |= map(select(.Statistics != null))' "$report" > "$report.filtered"
+          mv "$report.filtered" "$report"
+          kept=$(jq '.Benchmarks | length' "$report")
+          if [ "$kept" -lt "$total" ]; then
+            echo "::warning::Dropped $((total - kept)) failed benchmark case(s) (null Statistics) from the net8.0 provider report before charting -- see the 'Run ProviderSaveChangesBenchmarks (MySQL)' step log for why."
+          fi
+          if [ "$kept" -eq 0 ]; then
+            echo "::error::Every net8.0 provider case failed this run -- nothing left to chart. Failing explicitly rather than pushing an empty report."
+            exit 1
+          fi
 
       # fail-on-alert is deliberately false for the provider charts, unlike
       # SQLite's below. This is the first CI run of these benchmarks ever --
@@ -281,21 +328,39 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
+          # Label creation isn't just cosmetic here -- until 2026-09-15 this
+          # whole step had never actually run (no benchmarks.yaml run had
+          # ever failed since #271 added it), and its first real run failed
+          # BECAUSE `gh issue create --label benchmark-regression` hard-fails
+          # when the label doesn't exist yet and label creation silently
+          # failed (root cause not recoverable from the swallowed
+          # `2>/dev/null` output -- fixed here to stay visible instead).
+          # Below, `|| true` keeps a real creation failure from aborting this
+          # step, but the ISSUE-FILING itself now has its own fallback: if
+          # filing with the label fails for any reason, retry once without
+          # it, so a labeling hiccup can never silently swallow the one
+          # thing this step exists to guarantee -- a human gets notified.
           gh label create benchmark-regression --color B60205 \
-            --description "The push-to-main benchmark trend run found a performance/allocation regression, or the run itself failed" 2>/dev/null || true
+            --description "The push-to-main benchmark trend run found a performance/allocation regression, or the run itself failed" || true
 
-          open_count="$(gh issue list --label benchmark-regression --state open --json number --jq 'length')"
+          open_count="$(gh issue list --label benchmark-regression --state open --json number --jq 'length' 2>/dev/null || echo 0)"
           if [ "${open_count:-0}" -gt 0 ]; then
             echo "An open benchmark-regression issue already exists — not filing another."
             exit 0
           fi
 
-          gh issue create \
-            --title "Benchmark trend run found a regression, or the run failed" \
-            --label benchmark-regression \
-            --body "The push-to-main benchmark run either alerted beyond threshold (SQLite only -- the provider charts don't gate yet) or failed outright.
+          body="The push-to-main benchmark run either alerted beyond threshold (SQLite only -- the provider charts don't gate yet) or failed outright.
 
           Check the \`Audit Interceptor Benchmarks\` chart (dev/bench on gh-pages) and, if relevant, the \`Audit Interceptor Provider Benchmarks (net10.0)\` / \`... (MySQL net8.0)\` charts (dev/bench-providers) for the specific benchmark(s) and magnitude, and check the run log for a non-alert failure (e.g. a Testcontainers/Docker issue).
 
           Run: ${RUN_URL}"
-          auto-push: true
+
+          if ! gh issue create \
+            --title "Benchmark trend run found a regression, or the run failed" \
+            --label benchmark-regression \
+            --body "$body"; then
+            echo "::warning::Filing with the benchmark-regression label failed (label creation likely failed above) -- retrying without a label so the notification isn't lost."
+            gh issue create \
+              --title "Benchmark trend run found a regression, or the run failed" \
+              --body "$body"
+          fi
