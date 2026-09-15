@@ -5,7 +5,35 @@
 # (#64): it runs the suite on the PR's HEAD and on its merge-base, posts a
 # delta table, and can be overridden with the perf-impact-acknowledged
 # label. That workflow replaced this one's old `benchmark-pr` job so BDN
-# only runs once per PR push, under one gate, not two.
+# only runs once per PR push, under one gate, not two. It deliberately
+# stays scoped to the fast, dependency-free SaveChangesBenchmarks (SQLite)
+# class -- ProviderSaveChangesBenchmarks (SqlServer/PostgreSQL/Oracle/Db2/
+# MySQL, all via Testcontainers) is charted here instead, on the
+# once-per-main-push cadence, since spinning up multiple containers plus a
+# second net8.0 run twice per PR (head + merge-base) would make every PR
+# slow and expensive for comparatively little benefit -- a trend chart
+# already answers "did this regress" without needing a live A/B per PR.
+#
+# ProviderSaveChangesBenchmarks is a [Params] cross-product (Provider x
+# BatchSize x UseBulkInsert) over 6 [Benchmark] methods -- 36 cases PER
+# PROVIDER when run unfiltered (confirmed locally: `--filter *Sqlite*`
+# alone reports "Found 36 benchmark(s)"), and BenchmarkDotNet's
+# [GlobalSetup]/[GlobalCleanup] -- where each case starts/stops its own
+# Testcontainer -- run once per CASE, not once per provider. Unfiltered,
+# that's ~180 container start/stop cycles for the net10.0 slot alone, far
+# past any sane CI budget. The --filter below narrows the CI-charted slice
+# to the 2 methods (Insert_without_audit / Insert_with_audit) that most
+# directly answer "did audit overhead regress", at a single BatchSize (50
+# -- larger operations give a cleaner signal-to-noise ratio, same reasoning
+# as pr-benchmarks.yaml's TIME_ABS_FLOOR_NS) and UseBulkInsert: false (the
+# bulk-insert path only differs from the standard path on PostgreSQL --
+# CanHandle declines everywhere else -- so trending it for every provider
+# would double the container count for a no-op signal on 4 of 5). That's
+# 2 cases/provider: 10 for the net10.0 slot (5 providers, 4 containerized),
+# 2 for the net8.0 MySQL slot -- ~10 container cycles per run instead of
+# ~180. The full cross-product (all methods/batch sizes/UseBulkInsert) is
+# still available for local ad-hoc `dotnet run` -- this filter only scopes
+# the CI trend chart.
 #
 # First-time setup requirements (one-time, by repo owner):
 #   - A `gh-pages` branch must exist (the chart pushes to dev/bench/ under it).
@@ -43,7 +71,15 @@ jobs:
       || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     name: Benchmark + publish chart (main)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # SQLite alone finishes in a couple of minutes; the provider suite adds
+    # ~10 Testcontainer start/stop cycles (see the --filter rationale above)
+    # across SqlServer/PostgreSQL/Oracle/Db2 (net10.0) + MySQL (net8.0).
+    # Oracle in particular is slow per-operation (single-digit seconds,
+    # confirmed locally) and Testcontainers doesn't reliably detect a dead
+    # container (observed locally: an exited container hung the readiness
+    # poll indefinitely instead of erroring) -- this budgets generously so a
+    # real hang times out the JOB rather than the runner minute quota.
+    timeout-minutes: 90
     permissions:
       contents: write
       deployments: write   # per the action's own docs: "deployments permission to deploy GitHub pages website"
@@ -63,9 +99,22 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
-          dotnet-version: 10.0.x
+          # 8.0.x is required to actually RUN (not just build) the
+          # net8.0-targeted MySQL provider benchmark below -- matches
+          # integration.yaml's identical multi-SDK setup for the same reason.
+          dotnet-version: |
+            8.0.x
+            10.0.x
 
-      - name: Run benchmarks
+      - name: Verify Docker is available
+        # The provider benchmarks below need Docker for every provider except
+        # SQLite -- fail fast with a clear signal if it's ever missing, rather
+        # than a confusing Testcontainers connection error three steps later.
+        run: |
+          docker version
+          docker info
+
+      - name: Run SaveChangesBenchmarks (SQLite)
         run: |
           dotnet run \
             --project benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks.csproj \
@@ -76,36 +125,149 @@ jobs:
             --filter '*Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks*' \
             --memory
         # Filter scoped to the SQLite-only SaveChangesBenchmarks, which stays
-        # net10.0-only -- --framework is added ahead of #272, which will
-        # multi-target this project to net10.0;net8.0 (net8.0 for MySQL);
-        # once that lands, `dotnet run` becomes ambiguous without it. The
-        # ProviderSaveChangesBenchmarks class spins Testcontainers for
-        # SQL Server / PostgreSQL (MySQL once #272 lands) and is intentionally
-        # excluded from CI — run it locally with
-        # --filter '*ProviderSaveChangesBenchmarks*' (add --framework net8.0
-        # for the MySQL case, once #272 lands).
+        # net10.0-only. Uses BDN's default artifacts dir, unchanged from
+        # before -- the provider runs below use --artifacts to keep their
+        # reports separate instead.
 
-      - name: Locate full-report JSON
-        id: locate
+      - name: Locate SaveChangesBenchmarks report JSON
+        id: locate-sqlite
         run: |
           # BDN 0.15.x emits *-report-full-compressed.json instead of the old
           # *-report-full.json. Match either so we ride out BDN renames cleanly.
-          report=$(find . -path '*/BenchmarkDotNet.Artifacts/results/*-report-full*.json' | head -1)
+          report=$(find . -path '*/BenchmarkDotNet.Artifacts/results/*SaveChangesBenchmarks-report-full*.json' -not -path '*ProviderSaveChangesBenchmarks*' | head -1)
           if [ -z "$report" ]; then
             echo "No BDN report found"
             exit 1
           fi
           echo "report=$report" >> "$GITHUB_OUTPUT"
 
-      - name: Store + push chart history
+      - name: Run ProviderSaveChangesBenchmarks (SqlServer/PostgreSQL/Oracle/Db2)
+        run: |
+          dotnet run \
+            --project benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks.csproj \
+            --configuration Release \
+            --framework net10.0 \
+            -- \
+            --exporters json \
+            --filter '*ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: *, BatchSize: 50, UseBulkInsert: False)*' '*ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: *, BatchSize: 50, UseBulkInsert: False)*' \
+            --memory \
+            --job short \
+            --artifacts ./bdn-providers-net10
+        # -j short (fewer iterations/warmup than BDN's default job) keeps this
+        # bounded given Oracle's per-operation cost -- still a real statistical
+        # measurement, just less precise than a full local run. --artifacts
+        # keeps this run's report from colliding with the SQLite run above or
+        # the net8.0 MySQL run below (same class name, would otherwise
+        # overwrite the same default-path file). The two --filter patterns
+        # (Insert_without_audit / Insert_with_audit, both pinned to
+        # BatchSize: 50 and UseBulkInsert: False, any Provider) scope this to
+        # 10 cases instead of the unfiltered 180 -- see the top-of-file
+        # rationale. Confirmed locally that this exact literal template
+        # (`Provider: <value>, BatchSize: 50, UseBulkInsert: False`) matches
+        # BDN's real case-name format via a live --filter test.
+
+      - name: Locate net10.0 provider report JSON
+        id: locate-providers-net10
+        run: |
+          report=$(find ./bdn-providers-net10 -path '*/results/*ProviderSaveChangesBenchmarks-report-full*.json' | head -1)
+          if [ -z "$report" ]; then
+            echo "No BDN report found for net10.0 providers"
+            exit 1
+          fi
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+
+      - name: Run ProviderSaveChangesBenchmarks (MySQL)
+        run: |
+          dotnet run \
+            --project benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks.csproj \
+            --configuration Release \
+            --framework net8.0 \
+            -- \
+            --exporters json \
+            --filter '*ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: *, BatchSize: 50, UseBulkInsert: False)*' '*ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: *, BatchSize: 50, UseBulkInsert: False)*' \
+            --memory \
+            --job short \
+            --artifacts ./bdn-providers-net8
+        # MySQL is on its own net8.0 build (Pomelo is still EF9-capped, see
+        # #272) -- a separate TFM, separate dotnet run, separate artifacts
+        # dir. Same 2-case filter as the net10.0 run above (only Provider:
+        # MySQL exists on this slot, so it's 2 cases here, not 10).
+
+      - name: Locate net8.0 provider report JSON
+        id: locate-providers-net8
+        run: |
+          report=$(find ./bdn-providers-net8 -path '*/results/*ProviderSaveChangesBenchmarks-report-full*.json' | head -1)
+          if [ -z "$report" ]; then
+            echo "No BDN report found for net8.0 providers"
+            exit 1
+          fi
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+
+      # fail-on-alert is deliberately false for the provider charts, unlike
+      # SQLite's below. This is the first CI run of these benchmarks ever --
+      # Oracle's own numbers already showed multi-second swings between
+      # otherwise-identical local runs (container/network variance dominates
+      # at that scale), and this repo has hit repeated shared-runner false
+      # positives on the SQLite gate alone (#276, #280, #290 twice). Chart
+      # first, tune real alert thresholds per provider once genuine baseline
+      # noise is visible on gh-pages -- flipping this on blind would likely
+      # just repeat that history at a worse (multi-container) blast radius.
+      #
+      # net10.0 and net8.0(MySQL) publish under DIFFERENT `name` values even
+      # though they share `benchmark-data-dir-path: dev/bench-providers`.
+      # The action's own addBenchmarkEntry keys its "previous suite" lookup
+      # by `name`, walking backward for the most recent entry with a
+      # DIFFERENT commit ID -- with one shared name, the net10.0 step's
+      # prevBench (on every run) resolves to the net8.0/MySQL-only entry
+      # this same job just pushed moments earlier (same commit ID skipped,
+      # next-most-recent picked), and vice versa, so no case names ever
+      # match between "current" and "previous" and alerting silently never
+      # fires for either slot. Separate names keep each slot's own history
+      # self-contained and alert-comparable once thresholds are tuned.
+      - name: Store + push net10.0 provider chart history
+        uses: benchmark-action/github-action-benchmark@52576c92bccf6ac60c8223ec7eb2565637cae9ba # v1.22.1
+        with:
+          name: Audit Interceptor Provider Benchmarks (net10.0)
+          tool: 'benchmarkdotnet'
+          output-file-path: ${{ steps.locate-providers-net10.outputs.report }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          gh-pages-branch: gh-pages
+          benchmark-data-dir-path: dev/bench-providers
+          auto-push: true
+          fail-on-alert: false
+
+      - name: Store + push net8.0 provider (MySQL) chart history
+        uses: benchmark-action/github-action-benchmark@52576c92bccf6ac60c8223ec7eb2565637cae9ba # v1.22.1
+        with:
+          name: Audit Interceptor Provider Benchmarks (MySQL net8.0)
+          tool: 'benchmarkdotnet'
+          output-file-path: ${{ steps.locate-providers-net8.outputs.report }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          gh-pages-branch: gh-pages
+          benchmark-data-dir-path: dev/bench-providers
+          auto-push: true
+          fail-on-alert: false
+
+      # Deliberately LAST among the chart-push steps (not right after the
+      # SQLite report is located, like before). This is the only step with
+      # fail-on-alert: true, and a GitHub Actions step failure skips every
+      # later step by default -- with this step earlier, an SQLite alert
+      # (this repo has hit several false positives: #276, #280, #290 twice)
+      # would abort the job before the provider steps below it ever ran,
+      # silently starving the just-added provider chart of any data point
+      # on exactly the runs where SQLite's gate misfires. Running it last
+      # means both provider charts are already pushed by the time this can
+      # fail.
+      - name: Store + push SQLite chart history
         uses: benchmark-action/github-action-benchmark@52576c92bccf6ac60c8223ec7eb2565637cae9ba # v1.22.1
         with:
           name: Audit Interceptor Benchmarks
           tool: 'benchmarkdotnet'
-          output-file-path: ${{ steps.locate.outputs.report }}
+          output-file-path: ${{ steps.locate-sqlite.outputs.report }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           gh-pages-branch: gh-pages
           benchmark-data-dir-path: dev/bench
+          auto-push: true
           alert-threshold: '200%'
           fail-on-alert: true
 
@@ -120,7 +282,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           gh label create benchmark-regression --color B60205 \
-            --description "The push-to-main benchmark trend run found a performance/allocation regression" 2>/dev/null || true
+            --description "The push-to-main benchmark trend run found a performance/allocation regression, or the run itself failed" 2>/dev/null || true
 
           open_count="$(gh issue list --label benchmark-regression --state open --json number --jq 'length')"
           if [ "${open_count:-0}" -gt 0 ]; then
@@ -129,11 +291,11 @@ jobs:
           fi
 
           gh issue create \
-            --title "Benchmark trend run found a performance/allocation regression" \
+            --title "Benchmark trend run found a regression, or the run failed" \
             --label benchmark-regression \
-            --body "The push-to-main benchmark run alerted beyond the 200% threshold vs. the last recorded gh-pages snapshot.
+            --body "The push-to-main benchmark run either alerted beyond threshold (SQLite only -- the provider charts don't gate yet) or failed outright.
 
-          Check the \`Audit Interceptor Benchmarks\` chart (dev/bench on gh-pages) for the specific benchmark(s) and magnitude.
+          Check the \`Audit Interceptor Benchmarks\` chart (dev/bench on gh-pages) and, if relevant, the \`Audit Interceptor Provider Benchmarks (net10.0)\` / \`... (MySQL net8.0)\` charts (dev/bench-providers) for the specific benchmark(s) and magnitude, and check the run log for a non-alert failure (e.g. a Testcontainers/Docker issue).
 
           Run: ${RUN_URL}"
           auto-push: true
