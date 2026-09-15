@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789489454372,
+  "lastUpdate": 1789489457784,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -84,6 +84,44 @@ window.BENCHMARK_DATA = {
             "value": 37908891.666666664,
             "unit": "ns",
             "range": "± 3496252.122479918"
+          }
+        ]
+      }
+    ],
+    "Audit Interceptor Provider Benchmarks (MySQL net8.0)": [
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "dcf7a63460f9098f09be9f5beb099ee68d003061",
+          "message": "Merge pull request #293 from Chris-Wolfgang/protected/wire-provider-benchmarks-into-ci\n\nci: wire ProviderSaveChangesBenchmarks into the main-push trend chart",
+          "timestamp": "2026-09-15T12:15:02-04:00",
+          "tree_id": "bb15e0c4770c741b818500ac7347a19bce531873",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/dcf7a63460f9098f09be9f5beb099ee68d003061"
+        },
+        "date": 1789489456199,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 15439846.833333334,
+            "unit": "ns",
+            "range": "± 734270.4537493888"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 77085636,
+            "unit": "ns",
+            "range": "± 2476716.76842125"
           }
         ]
       }
