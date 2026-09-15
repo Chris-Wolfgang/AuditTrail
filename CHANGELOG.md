@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] — 2026-09-15
+
+Patch release. Zero source or public-API changes — `Abstractions`,
+`EntityFrameworkCore`, `TestKit.Xunit`, and `Cli` are a drop-in upgrade from
+0.4.0. `Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql` is unchanged and
+stays at 0.1.0.
+
+### Internal (no consumer impact)
+
+- `ProviderSaveChangesBenchmarks` (`benchmarks/`) now covers Oracle and Db2
+  alongside the existing SQL Server/PostgreSQL/MySQL providers, and the
+  MySQL case moved to a dedicated net8.0 build slot (Pomelo is still
+  EF Core 9-capped).
+  ([#291](https://github.com/Chris-Wolfgang/AuditTrail/issues/291),
+  [#272](https://github.com/Chris-Wolfgang/AuditTrail/issues/272))
+- Oracle and Db2 integration-test fixtures added alongside the existing
+  SQL Server/PostgreSQL/MySQL coverage.
+  ([#273](https://github.com/Chris-Wolfgang/AuditTrail/issues/273),
+  [#274](https://github.com/Chris-Wolfgang/AuditTrail/issues/274))
+- `benchmarks.yaml` now runs `ProviderSaveChangesBenchmarks` on every push to
+  `main` and charts the results to a new `gh-pages` trend chart, separate
+  from the existing SQLite-only chart — chart-only for now, doesn't gate.
+  ([#293](https://github.com/Chris-Wolfgang/AuditTrail/pull/293))
+- Absolute-floor threshold ported to `shadow.yaml`'s regression gate, same
+  fix as 0.4.0's `#270` for `pr-benchmarks.yaml` — shared-runner jitter had
+  produced repeat false positives on this gate specifically (`#276`,
+  `#280`).
+  ([#282](https://github.com/Chris-Wolfgang/AuditTrail/issues/282))
+- `PackageValidationBaselineVersion` advanced to 0.4.0 across the packable
+  projects, including first-time `EnablePackageValidation` on the Npgsql
+  package.
+
 ## [0.4.0] — 2026-08-29
 
 Minor release. Ships the first concrete `IAuditBulkWriter` implementation —
@@ -259,6 +291,7 @@ source projects; tests cover net462 → net10.0 inclusive.
 
 ---
 
-[Unreleased]: https://github.com/Chris-Wolfgang/AuditTrail/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/Chris-Wolfgang/AuditTrail/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/Chris-Wolfgang/AuditTrail/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/Chris-Wolfgang/AuditTrail/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Chris-Wolfgang/AuditTrail/compare/v0.2.1...v0.3.0
