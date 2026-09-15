@@ -177,6 +177,15 @@ jobs:
           echo "report=$report" >> "$GITHUB_OUTPUT"
 
       - name: Drop failed cases from the net10.0 provider report
+        id: filter-net10
+        env:
+          # Passed via env, not interpolated directly into the script, so a
+          # step-output value can never be read as shell syntax (zizmor
+          # template-injection finding on the PR that introduced this step --
+          # this output is never attacker-influenced today, a `find` result
+          # under our own checkout, but the indirection costs nothing and
+          # matches this repo's established convention elsewhere).
+          REPORT: ${{ steps.locate-providers-net10.outputs.report }}
         run: |
           # A single provider's transient failure (e.g. a container registry
           # timeout -- observed for real: Db2's image pull hit a Docker
@@ -191,17 +200,24 @@ jobs:
           # skips the MySQL and SQLite chart-push steps below it. Stripping
           # null-Statistics entries here keeps one provider's infra flake
           # from costing the whole day's chart data.
-          report='${{ steps.locate-providers-net10.outputs.report }}'
-          total=$(jq '.Benchmarks | length' "$report")
-          jq '.Benchmarks |= map(select(.Statistics != null))' "$report" > "$report.filtered"
-          mv "$report.filtered" "$report"
-          kept=$(jq '.Benchmarks | length' "$report")
+          total=$(jq '.Benchmarks | length' "$REPORT")
+          jq '.Benchmarks |= map(select(.Statistics != null))' "$REPORT" > "$REPORT.filtered"
+          mv "$REPORT.filtered" "$REPORT"
+          kept=$(jq '.Benchmarks | length' "$REPORT")
           if [ "$kept" -lt "$total" ]; then
             echo "::warning::Dropped $((total - kept)) failed benchmark case(s) (null Statistics) from the net10.0 provider report before charting -- see the 'Run ProviderSaveChangesBenchmarks (SqlServer/PostgreSQL/Oracle/Db2)' step log for which provider/case failed and why."
           fi
           if [ "$kept" -eq 0 ]; then
-            echo "::error::Every net10.0 provider case failed this run -- nothing left to chart. Failing explicitly rather than pushing an empty report."
-            exit 1
+            # Skip only THIS chart's push (via the step output below), rather
+            # than failing the step outright -- an earlier version of this
+            # fix used `exit 1` here, which (GH Actions' default
+            # skip-after-failure) would have skipped the MySQL and SQLite
+            # chart-pushes too, recreating the exact cascading-failure bug
+            # this whole PR exists to eliminate, just moved one step over.
+            # Real finding from Copilot's review on this PR -- verified by
+            # re-reading the step order before "fixing" it a second time.
+            echo "::warning::Every net10.0 provider case failed this run -- nothing left to chart. Skipping only this chart's push; MySQL and SQLite charts still run."
+            echo "empty=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Run ProviderSaveChangesBenchmarks (MySQL)
@@ -232,22 +248,26 @@ jobs:
           echo "report=$report" >> "$GITHUB_OUTPUT"
 
       - name: Drop failed cases from the net8.0 provider report
+        id: filter-net8
+        env:
+          REPORT: ${{ steps.locate-providers-net8.outputs.report }}
         run: |
           # Same rationale as the net10.0 filter step above -- only one
           # provider (MySQL) runs on this slot, but a transient container
           # failure here would otherwise crash this chart-push AND skip the
           # SQLite chart-push after it.
-          report='${{ steps.locate-providers-net8.outputs.report }}'
-          total=$(jq '.Benchmarks | length' "$report")
-          jq '.Benchmarks |= map(select(.Statistics != null))' "$report" > "$report.filtered"
-          mv "$report.filtered" "$report"
-          kept=$(jq '.Benchmarks | length' "$report")
+          total=$(jq '.Benchmarks | length' "$REPORT")
+          jq '.Benchmarks |= map(select(.Statistics != null))' "$REPORT" > "$REPORT.filtered"
+          mv "$REPORT.filtered" "$REPORT"
+          kept=$(jq '.Benchmarks | length' "$REPORT")
           if [ "$kept" -lt "$total" ]; then
             echo "::warning::Dropped $((total - kept)) failed benchmark case(s) (null Statistics) from the net8.0 provider report before charting -- see the 'Run ProviderSaveChangesBenchmarks (MySQL)' step log for why."
           fi
           if [ "$kept" -eq 0 ]; then
-            echo "::error::Every net8.0 provider case failed this run -- nothing left to chart. Failing explicitly rather than pushing an empty report."
-            exit 1
+            # See the net10.0 filter step above for why this skips only this
+            # chart's push instead of failing the step outright.
+            echo "::warning::Every net8.0 provider case failed this run -- nothing left to chart. Skipping only this chart's push; the SQLite chart still runs."
+            echo "empty=true" >> "$GITHUB_OUTPUT"
           fi
 
       # fail-on-alert is deliberately false for the provider charts, unlike
@@ -272,6 +292,7 @@ jobs:
       # fires for either slot. Separate names keep each slot's own history
       # self-contained and alert-comparable once thresholds are tuned.
       - name: Store + push net10.0 provider chart history
+        if: steps.filter-net10.outputs.empty != 'true'
         uses: benchmark-action/github-action-benchmark@52576c92bccf6ac60c8223ec7eb2565637cae9ba # v1.22.1
         with:
           name: Audit Interceptor Provider Benchmarks (net10.0)
@@ -284,6 +305,7 @@ jobs:
           fail-on-alert: false
 
       - name: Store + push net8.0 provider (MySQL) chart history
+        if: steps.filter-net8.outputs.empty != 'true'
         uses: benchmark-action/github-action-benchmark@52576c92bccf6ac60c8223ec7eb2565637cae9ba # v1.22.1
         with:
           name: Audit Interceptor Provider Benchmarks (MySQL net8.0)
@@ -343,7 +365,13 @@ jobs:
           gh label create benchmark-regression --color B60205 \
             --description "The push-to-main benchmark trend run found a performance/allocation regression, or the run itself failed" || true
 
-          open_count="$(gh issue list --label benchmark-regression --state open --json number --jq 'length' 2>/dev/null || echo 0)"
+          # Dedup by TITLE, not by label. If a prior run's labeled creation
+          # failed and fell through to the unlabeled fallback below, that
+          # issue carries no label -- a label-based dedup check would never
+          # see it, so every subsequent failed run would file a fresh
+          # duplicate instead of finding the existing one (real finding from
+          # Copilot's review on this PR).
+          open_count="$(gh issue list --state open --search 'in:title "Benchmark trend run found a regression, or the run failed"' --json number --jq 'length' 2>/dev/null || echo 0)"
           if [ "${open_count:-0}" -gt 0 ]; then
             echo "An open benchmark-regression issue already exists — not filing another."
             exit 0
