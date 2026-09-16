@@ -1277,7 +1277,10 @@ jobs:
       - name: Fetch trusted changelog script from main
         shell: bash
         run: |
-          if ! git fetch origin main --depth=1; then
+          # Full fetch on purpose (no --depth=1): a shallow fetch marks the main tip parentless,
+          # and for a PR branched from an older main commit `BASE_SHA...HEAD` then has no
+          # merge base and the check fails ("fatal: no merge base") on a valid PR.
+          if ! git fetch origin main; then
             echo "::error::Failed to fetch origin/main — aborting before changelog check."
             exit 1
           fi
@@ -1299,7 +1302,7 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
         run: |
-          git fetch origin $env:BASE_SHA --depth=1
+          git fetch origin $env:BASE_SHA
           pwsh ./scripts/changelog.ps1 check -BaseRef $env:BASE_SHA -Labels $env:PR_LABELS
 
   # ============================================================================
