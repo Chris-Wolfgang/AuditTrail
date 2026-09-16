@@ -190,7 +190,13 @@ function Get-TrackedIssues
         if ($i.PSObject.Properties['pull_request']) { continue }           # the issues endpoint also returns PRs
         $issue = [pscustomobject]@{ number = $i.number; title = $i.title; body = [string]$i.body; state = $i.state.ToUpper() }
         if ($issue.body -match '<!-- security-alert: ([a-z-]+#\d+(?:-bypass)?) -->') { $map[$Matches[1]] = $issue }
-        elseif ($issue.body -match [regex]::Escape($summaryMarker)) { $map['summary'] = $issue }
+        elseif ($issue.body -match [regex]::Escape($summaryMarker))
+        {
+            # The listing is newest-first and state=all includes closed summaries; keep the OPEN
+            # one (else the newest) so an older closed summary can't displace it and cause a
+            # duplicate to be created instead of a comment.
+            if (-not $map.ContainsKey('summary') -or $map['summary'].state -ne 'OPEN') { $map['summary'] = $issue }
+        }
     }
     return $map
 }
@@ -254,6 +260,7 @@ function Confirm-Label
 # ---------------------------------------------------------------------------
 # Autofix mode: a separate, narrower invocation from the workflow's autofix job.
 # ---------------------------------------------------------------------------
+$script:failures = 0
 if ($RequestAutofix)
 {
     $numbers = @($AlertNumbers -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ -match '^\d+$' })
@@ -274,8 +281,15 @@ if ($RequestAutofix)
         }
         Write-Host "alert ${n}: $result"
         $issue = $tracked["code-scanning#$n"]
-        if ($issue -and -not $DryRun) { & gh issue comment $issue.number -R $Repository --body $result | Out-Null }
+        if ($issue -and -not $DryRun)
+        {
+            $out = & gh issue comment $issue.number -R $Repository --body $result 2>&1
+            if ($LASTEXITCODE -ne 0) { Write-Warning "comment on #$($issue.number) failed: $out"; $script:failures++ }
+        }
     }
+    # An unavailable autofix (403/404 -- not enabled, or this alert has none) is an expected outcome
+    # and is recorded on the issue; only a failed issue write counts as a failure, per the contract.
+    if ($script:failures -gt 0) { exit 1 }
     exit 0
 }
 

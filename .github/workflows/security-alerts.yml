@@ -55,6 +55,11 @@ jobs:
       - name: Checkout scripts
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
+          # Always run main's copy of the script. Without `ref`, a workflow_dispatch
+          # checks out whichever branch was selected, so a branch with an edited
+          # script would run with SECURITY_ALERTS_TOKEN and issues: write. Same
+          # trusted-from-main rule pr.yaml applies to its config and validator.
+          ref: main
           persist-credentials: false
           sparse-checkout: scripts/security-alerts.ps1
           sparse-checkout-cone-mode: false
@@ -87,6 +92,11 @@ jobs:
       - name: Checkout scripts
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
+          # Always run main's copy of the script. Without `ref`, a workflow_dispatch
+          # checks out whichever branch was selected, so a branch with an edited
+          # script would run with SECURITY_ALERTS_TOKEN and issues: write. Same
+          # trusted-from-main rule pr.yaml applies to its config and validator.
+          ref: main
           persist-credentials: false
           sparse-checkout: scripts/security-alerts.ps1
           sparse-checkout-cone-mode: false
