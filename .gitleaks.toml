@@ -12,3 +12,13 @@ title = "gitleaks config"
     '''(^|/)tests?/.*fixtures?/''',
     '''(^|/)tests?/.*testdata/''',
   ]
+
+# Without this, a config file that only declares an [allowlist] defines ZERO
+# detection rules -- gitleaks does not fall back to its built-in rules when a
+# .gitleaks.toml exists (cmd/root.go loads it in place of the defaults, and
+# config.Translate only merges the defaults when useDefault is set). Verified
+# against v8.24.0: a planted token passed with this section absent and was
+# caught with it present. Both the pre-commit hook and pr.yaml's
+# "Secrets Scan (gitleaks)" step load this file.
+[extend]
+useDefault = true
