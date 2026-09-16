@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789526062070,
+  "lastUpdate": 1789526065456,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -686,6 +686,42 @@ window.BENCHMARK_DATA = {
             "value": 75874008.33333333,
             "unit": "ns",
             "range": "± 1699866.6072902111"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "f068e6421119856259bf034f7d1a2a5042702167",
+          "message": "chore: ship gitleaks pre-commit hook (baseline item 4) (#308)\n\n* chore: ship gitleaks pre-commit hook (baseline item 4)\n\nCopies .githooks/pre-commit from repo-template and documents\n`git config core.hooksPath .githooks` in CONTRIBUTING.md's Getting\nStarted steps, matching the template's wording. The hook runs\n`gitleaks protect --staged --redact` on each commit and blocks on a\nhit; if the gitleaks CLI isn't installed it warns and lets the commit\nthrough, since pr.yaml's \"Secrets Scan (gitleaks)\" catches the same\nthing in CI.\n\nCloses #299\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* fix: make .gitleaks.toml extend the built-in rules -- it defined none\n\nCopilot flagged on the hook that an allowlist-only .gitleaks.toml has no\ndetection rules. Verified against gitleaks v8.24.0 source and by\nexperiment, and it is worse than the hook: cmd/root.go loads\n(source)/.gitleaks.toml IN PLACE of the defaults whenever the file\nexists, and config.Translate only merges the built-in rules when\n[extend] useDefault = true. pr.yaml's \"Secrets Scan (gitleaks)\" runs\n`gitleaks detect --source .` with no --config, so it has been loading\nthis rule-less file too -- the CI gate has been passing while scanning\nfor nothing.\n\nRepro (throwaway repo, one commit with a synthetic ghp_ token):\n  no .gitleaks.toml            -> leaks found: 1  (built-in rules)\n  this repo's file, as-was     -> no leaks found  (zero rules)\n  this repo's file + [extend]  -> leaks found: 1\n\nSafe to turn on here: a full-history scan of AuditTrail (437 commits)\nwith the fixed config finds nothing, so CI will not go red on merge.\n\nThe same allowlist-only file ships from repo-template and is present\nin every fleet repo -- tracked separately; this PR fixes AuditTrail only.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-15T22:25:14-04:00",
+          "tree_id": "9bed683e75521cfa498e41fa3ed0cb98d92fec63",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/f068e6421119856259bf034f7d1a2a5042702167"
+        },
+        "date": 1789526064220,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17685231.333333332,
+            "unit": "ns",
+            "range": "± 903435.8835503121"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 81605440.66666667,
+            "unit": "ns",
+            "range": "± 4040339.9496845976"
           }
         ]
       }
