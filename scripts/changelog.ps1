@@ -161,7 +161,9 @@ function Invoke-Check
     # Only files ADDED by this PR count as its fragment; editing or deleting an existing fragment does not.
     $added = @(& git diff --name-only --diff-filter=A "$BaseRef...HEAD")
     if ($LASTEXITCODE -ne 0) { throw "git diff --diff-filter=A against $BaseRef failed" }
-    $addedFragments = @($added | Where-Object { $_ -match "^$([regex]::Escape($FragmentDir))/" -and $_ -notmatch '/README\.md$' })
+    # Direct *.md children only, mirroring Get-Fragments: a nested path or a non-.md file under the
+    # fragment dir would satisfy the check here but never be validated or assembled.
+    $addedFragments = @($added | Where-Object { $_ -match "^$([regex]::Escape($FragmentDir))/[^/]+\.md$" -and $_ -notmatch '/README\.md$' })
     $waived = ($Labels -split ',' | ForEach-Object { $_.Trim() }) -contains 'no-changelog'
 
     Write-Host "src/ files changed: $($srcChanged.Count); fragments added: $($addedFragments.Count); no-changelog label: $waived"
