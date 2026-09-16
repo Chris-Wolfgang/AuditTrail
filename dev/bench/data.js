@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789570604067,
+  "lastUpdate": 1789572185186,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -6732,6 +6732,138 @@ window.BENCHMARK_DATA = {
             "value": 21686519.416666668,
             "unit": "ns",
             "range": "± 6130062.566914159"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "af91d11f2b6165aff20e72988bcc9fe716bbf384",
+          "message": "ci: add security-alert triage workflow (baseline item 20) (#310)\n\n* ci: add security-alert triage workflow (baseline item 20)\n\nCopies .github/workflows/security-alerts.yml and scripts/security-alerts.ps1\nfrom repo-template verbatim. The script ships in the same PR because the\nworkflow sparse-checks-out scripts/security-alerts.ps1 at run time -- a\nworkflow-only split would land a nightly job that can't find its own\nlogic (the protected-file-split \"needs supporting files\" lesson).\n\nNightly it opens one `security`-labelled issue per open code-scanning,\nsecret-scanning, and Dependabot alert, and closes each when its alert\ncloses; Mondays it posts a stale-alerts summary. Issues are matched by\na body marker, so the existing `security`-labelled baseline issues are\nignored, not touched.\n\nHeads-up for the first run: AuditTrail currently has 13 open\ncode-scanning alerts (10 Scorecard -- 7 of them the known\npull_request_target finding on pr.yaml -- and 3 InspectCode), so\nexpect ~13 new issues the first night. That is the intended\n\"surface them for triage\" behaviour, not a bug.\n\nSecret-scanning and Dependabot reads need a SECURITY_ALERTS_TOKEN\nrepository secret (fine-grained PAT: Secret scanning alerts read,\nDependabot alerts read, Metadata read). Without it those two kinds are\nskipped with a notice; code-scanning works on GITHUB_TOKEN alone.\n\nCloses #305\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* fix: harden security-alerts workflow and script per review\n\nFour Copilot findings, each checked against the code/API before acting:\n\n- Both privileged checkouts now pin `ref: main`. Without it a\n  workflow_dispatch checks out the branch selected at dispatch, so a\n  branch carrying an edited scripts/security-alerts.ps1 would run with\n  SECURITY_ALERTS_TOKEN (a PAT scoped to every repo's secret-scanning\n  alerts), issues: write and, in the autofix job, security-events:\n  write. Requires write access to trigger, but it is the same\n  trusted-from-main rule pr.yaml already applies to its config and\n  validator, and costs nothing on schedule runs (already main).\n\n- Get-TrackedIssues: the issues listing is newest-first (confirmed\n  against the live API) and state=all includes closed summaries, so the\n  last-assignment-wins loop let an older CLOSED summary displace the\n  newer OPEN one -- the next run would then open a duplicate summary\n  instead of commenting. Now keeps the OPEN summary (else the newest).\n\n- Autofix mode: a failed `gh issue comment` was piped to Out-Null and\n  never counted, contradicting the documented \"exit 1 if any issue\n  create/close/comment failed\" contract. Now counted, and the mode\n  exits 1 when any write failed. Deliberately NOT treating a rejected\n  autofix POST as a failure: 403/404 there means \"not enabled\" or \"no\n  autofix for this alert\", an expected outcome that is already\n  recorded on the issue -- failing the job for it would be noise.\n\nAll three script/workflow changes apply to repo-template's copies too;\nraised separately.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-16T11:14:43-04:00",
+          "tree_id": "70d4c09da8c1d49368955a3772071eca74009599",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/af91d11f2b6165aff20e72988bcc9fe716bbf384"
+        },
+        "date": 1789572183916,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 419998.6666666667,
+            "unit": "ns",
+            "range": "± 45419.23772881561"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 814870.0666666667,
+            "unit": "ns",
+            "range": "± 10880.999195627122"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 536745.1860465116,
+            "unit": "ns",
+            "range": "± 51426.64900899524"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 1586912.9375,
+            "unit": "ns",
+            "range": "± 29111.143506611006"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 488292.20967741933,
+            "unit": "ns",
+            "range": "± 14845.119427370842"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 969961.375,
+            "unit": "ns",
+            "range": "± 17972.98485273569"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 643407.3846153846,
+            "unit": "ns",
+            "range": "± 8065.718293477871"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 4426153.918367347,
+            "unit": "ns",
+            "range": "± 880183.0061437221"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1122302.0384615385,
+            "unit": "ns",
+            "range": "± 10472.719724880324"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 10813770.363636363,
+            "unit": "ns",
+            "range": "± 2422728.774872821"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 961289.2666666667,
+            "unit": "ns",
+            "range": "± 12312.988400562268"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 6703121.556701031,
+            "unit": "ns",
+            "range": "± 1209843.6509212232"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 2018035.5333333334,
+            "unit": "ns",
+            "range": "± 17094.449365914348"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 18389335.64,
+            "unit": "ns",
+            "range": "± 4190232.9138122844"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 6288994.989361702,
+            "unit": "ns",
+            "range": "± 898340.1336577387"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 20678751.01,
+            "unit": "ns",
+            "range": "± 10968748.260663355"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 3009048.7666666666,
+            "unit": "ns",
+            "range": "± 16062.617770403902"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 19040411.8,
+            "unit": "ns",
+            "range": "± 11361836.081249157"
           }
         ]
       }
