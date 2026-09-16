@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.4.1] — 2026-09-15
+## [0.4.1] - 2026-09-15
 
 Patch release. Zero source or public-API changes — `Abstractions`,
 `EntityFrameworkCore`, `TestKit.Xunit`, and `Cli` are a drop-in upgrade from
@@ -39,7 +39,7 @@ stays at 0.1.0.
   projects, including first-time `EnablePackageValidation` on the Npgsql
   package.
 
-## [0.4.0] — 2026-08-29
+## [0.4.0] - 2026-08-29
 
 Minor release. Ships the first concrete `IAuditBulkWriter` implementation —
 a new companion package targeting PostgreSQL's `COPY` protocol — and a
@@ -95,7 +95,7 @@ testing. No breaking changes; a drop-in upgrade from 0.3.0.
   a skipped test batch.
   ([#275](https://github.com/Chris-Wolfgang/AuditTrail/pull/275))
 
-## [0.3.0] — 2026-08-25
+## [0.3.0] - 2026-08-25
 
 Minor release. Adds a provider-neutral bulk-insert abstraction (no concrete
 provider writer yet — see [#248](https://github.com/Chris-Wolfgang/AuditTrail/issues/248)
@@ -149,7 +149,7 @@ breaking changes; a drop-in upgrade from 0.2.1.
   (it no longer holds an elevated token scope while building untrusted PR
   code).
 
-## [0.2.1] — 2026-07-24
+## [0.2.1] - 2026-07-24
 
 Maintenance and supply-chain-hardening release. **No public API changes** — a
 drop-in upgrade from 0.2.0. The compiled assemblies are unchanged; this release
@@ -183,7 +183,7 @@ adds build-integrity evidence and internal quality gates.
   benchmark dependencies
   ([#207](https://github.com/Chris-Wolfgang/AuditTrail/pull/207)).
 
-## [0.2.0] — 2026-07-05
+## [0.2.0] - 2026-07-05
 
 Minor release. Non-DI construction of the audit context no longer requires wiring
 the default serializers by hand. Drop-in upgrade from 0.1.x — no public API surface
@@ -199,7 +199,7 @@ change, and existing DI-based setups are unaffected.
   plain `new AuditOptions()`; previously it threw two sequential
   `ArgumentException`s. ([#185](https://github.com/Chris-Wolfgang/AuditTrail/issues/185))
 
-## [0.1.1] — 2026-07-02
+## [0.1.1] - 2026-07-02
 
 Maintenance release: dependency updates plus substantial internal test, CI, and
 documentation hardening. **No public API changes** — a drop-in upgrade from 0.1.0.
@@ -232,7 +232,7 @@ documentation hardening. **No public API changes** — a drop-in upgrade from 0.
 - New docs: Architecture Decision Records (`docs/adr/`), a STRIDE threat model,
   a major-version migration-guide template, and a mutation-testing guide.
 
-## [0.1.0] — 2026-06-28
+## [0.1.0] - 2026-06-28
 
 First tagged release. The `Wolfgang.AuditTrail.*` package family is published to
 NuGet.org. Multi-targets `netstandard2.0`, `net6.0`, `net8.0`, `net10.0` for
