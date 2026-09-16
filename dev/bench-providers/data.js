@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789572181733,
+  "lastUpdate": 1789573175908,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -672,6 +672,78 @@ window.BENCHMARK_DATA = {
             "value": 31699969.5,
             "unit": "ns",
             "range": "± 5026610.774073023"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "398492e2c0edab930643133d32b42e57ed30f22e",
+          "message": "ci: add changelog-fragment check to pr.yaml (baseline item 19, part 2 of 2) (#312)\n\n* ci: add changelog-fragment check to pr.yaml (baseline item 19, part 2 of 2)\n\nAdds the template's `changelog-check` job, placed before inspectcode as\nin the template, with the checkout pinned to the SHA this repo already\nuses. Fails any non-Dependabot PR that changes src/ without adding a\nfragment under changelog/unreleased/ (or carrying `no-changelog`).\n\nORDERING: merge only after #311 (scripts/changelog.ps1 + fragment dir)\nis on main. The job deliberately fails closed if the script is missing\nfrom origin/main, refusing to run a PR-controlled copy of its own\nvalidator -- so merging this first would fail every subsequent PR.\n\nCloses #304\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* fix: fetch main fully in changelog-check -- shallow base breaks the merge base\n\nCopilot flagged that `git fetch origin $BASE_SHA --depth=1` leaves the\nbase commit shallow. Reproduced: a PR branched 5 commits behind main,\nchecked out CI-style (PR head only, full depth), then main --depth=1\nand BASE_SHA --depth=1 -> `git diff BASE...HEAD` fails with \"fatal: no\nmerge base\". That is the normal state of any PR once anything else has\nmerged, so the template job as written would have failed valid PRs.\nDropping --depth=1 from both fetches keeps the repo unshallow;\nre-tested the same scenario and the check passes. Cost is negligible:\nthe PR head's history already contains most of main's.\n\nSame defect is in repo-template's pr.yaml; raised separately.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-16T11:32:19-04:00",
+          "tree_id": "1a4014060fe5bbc3f4eae8d737f6af7f8a702072",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/398492e2c0edab930643133d32b42e57ed30f22e"
+        },
+        "date": 1789573172397,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 5637759.666666667,
+            "unit": "ns",
+            "range": "± 85316.00343624479"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 39397910.5,
+            "unit": "ns",
+            "range": "± 12077200.026331475"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 9061646.666666666,
+            "unit": "ns",
+            "range": "± 1917357.4961934807"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 47505100,
+            "unit": "ns",
+            "range": "± 10653383.63682755"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 11907105.5,
+            "unit": "ns",
+            "range": "± 6193130.006615314"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 46601338,
+            "unit": "ns",
+            "range": "± 1803282.528527352"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 26671838.333333332,
+            "unit": "ns",
+            "range": "± 1061761.9716684779"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 188902635.66666666,
+            "unit": "ns",
+            "range": "± 19883860.834135063"
           }
         ]
       }
