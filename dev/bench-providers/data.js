@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789570595378,
+  "lastUpdate": 1789570599640,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -806,6 +806,42 @@ window.BENCHMARK_DATA = {
             "value": 81605440.66666667,
             "unit": "ns",
             "range": "± 4040339.9496845976"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "98f42d4f2411b6dd473bfd5a5e95dac1b715ea68",
+          "message": "chore: add changelog fragment tooling (baseline item 19, part 1 of 2) (#311)\n\n* chore: add changelog fragment tooling (baseline item 19, part 1 of 2)\n\nCopies scripts/changelog.ps1 and changelog/unreleased/README.md from\nrepo-template verbatim, and creates the `no-changelog` label the check\nhonours. This is the non-protected half; the pr.yaml `changelog-check`\njob follows in a separate protected PR and MUST merge after this one --\nthat job fails closed if scripts/changelog.ps1 is not already on main\n(it refuses to run a PR-controlled copy of its own validator).\n\nVerified against this repo's layout: `bump` reads the em-dash\n\"## [0.4.1] — 2026-09-15\" heading as 0.4.1 -> 0.4.2; `check` fails on\na src/ change with no fragment, passes with the no-changelog label or\nan added fragment, and rejects a malformed fragment.\n\nRefs #304\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* fix: close a fragment-check bypass; align CHANGELOG headings with the tool\n\nTwo Copilot findings on the changelog tooling, both verified:\n\n1. `check` counted ANY added path under changelog/unreleased/ as a\n   fragment, but Get-Fragments only enumerates direct *.md children --\n   so `changelog/unreleased/sub/x.md` or `y.txt` satisfied the gate while\n   never being validated or assembled. Reproduced (src/ change + only\n   those two files -> passed). Predicate now requires a direct .md child;\n   the same probe now fails, and a real fragment still passes.\n\n2. `assemble` writes `## [x.y.z] - date` (Keep-a-Changelog's hyphen) but\n   every existing heading here used an em dash. Fixed in CHANGELOG.md,\n   not the script: the file's own header claims Keep-a-Changelog, whose\n   format is the hyphen, and the script is shared template code.\n   Normalized the 7 existing headings; a scratch `assemble` now inserts\n   a heading identical in form to its neighbours.\n\nFix 1 also applies to repo-template's copy; raised separately.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-16T10:47:01-04:00",
+          "tree_id": "fe6fcee478794145ab3944da2da870d30ad5f38a",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/98f42d4f2411b6dd473bfd5a5e95dac1b715ea68"
+        },
+        "date": 1789570597977,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 20595333.166666668,
+            "unit": "ns",
+            "range": "± 3740847.181522433"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 88618107.66666667,
+            "unit": "ns",
+            "range": "± 7581413.123942022"
           }
         ]
       }
