@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789570599640,
+  "lastUpdate": 1789572178158,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -588,6 +588,90 @@ window.BENCHMARK_DATA = {
             "value": 45781192,
             "unit": "ns",
             "range": "± 4208350.43677199"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "af91d11f2b6165aff20e72988bcc9fe716bbf384",
+          "message": "ci: add security-alert triage workflow (baseline item 20) (#310)\n\n* ci: add security-alert triage workflow (baseline item 20)\n\nCopies .github/workflows/security-alerts.yml and scripts/security-alerts.ps1\nfrom repo-template verbatim. The script ships in the same PR because the\nworkflow sparse-checks-out scripts/security-alerts.ps1 at run time -- a\nworkflow-only split would land a nightly job that can't find its own\nlogic (the protected-file-split \"needs supporting files\" lesson).\n\nNightly it opens one `security`-labelled issue per open code-scanning,\nsecret-scanning, and Dependabot alert, and closes each when its alert\ncloses; Mondays it posts a stale-alerts summary. Issues are matched by\na body marker, so the existing `security`-labelled baseline issues are\nignored, not touched.\n\nHeads-up for the first run: AuditTrail currently has 13 open\ncode-scanning alerts (10 Scorecard -- 7 of them the known\npull_request_target finding on pr.yaml -- and 3 InspectCode), so\nexpect ~13 new issues the first night. That is the intended\n\"surface them for triage\" behaviour, not a bug.\n\nSecret-scanning and Dependabot reads need a SECURITY_ALERTS_TOKEN\nrepository secret (fine-grained PAT: Secret scanning alerts read,\nDependabot alerts read, Metadata read). Without it those two kinds are\nskipped with a notice; code-scanning works on GITHUB_TOKEN alone.\n\nCloses #305\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* fix: harden security-alerts workflow and script per review\n\nFour Copilot findings, each checked against the code/API before acting:\n\n- Both privileged checkouts now pin `ref: main`. Without it a\n  workflow_dispatch checks out the branch selected at dispatch, so a\n  branch carrying an edited scripts/security-alerts.ps1 would run with\n  SECURITY_ALERTS_TOKEN (a PAT scoped to every repo's secret-scanning\n  alerts), issues: write and, in the autofix job, security-events:\n  write. Requires write access to trigger, but it is the same\n  trusted-from-main rule pr.yaml already applies to its config and\n  validator, and costs nothing on schedule runs (already main).\n\n- Get-TrackedIssues: the issues listing is newest-first (confirmed\n  against the live API) and state=all includes closed summaries, so the\n  last-assignment-wins loop let an older CLOSED summary displace the\n  newer OPEN one -- the next run would then open a duplicate summary\n  instead of commenting. Now keeps the OPEN summary (else the newest).\n\n- Autofix mode: a failed `gh issue comment` was piped to Out-Null and\n  never counted, contradicting the documented \"exit 1 if any issue\n  create/close/comment failed\" contract. Now counted, and the mode\n  exits 1 when any write failed. Deliberately NOT treating a rejected\n  autofix POST as a failure: 403/404 there means \"not enabled\" or \"no\n  autofix for this alert\", an expected outcome that is already\n  recorded on the issue -- failing the job for it would be noise.\n\nAll three script/workflow changes apply to repo-template's copies too;\nraised separately.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-16T11:14:43-04:00",
+          "tree_id": "70d4c09da8c1d49368955a3772071eca74009599",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/af91d11f2b6165aff20e72988bcc9fe716bbf384"
+        },
+        "date": 1789572175849,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 1944451.3333333333,
+            "unit": "ns",
+            "range": "± 36897.20771729662"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 11631989.333333334,
+            "unit": "ns",
+            "range": "± 781158.8239675292"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3892443.6666666665,
+            "unit": "ns",
+            "range": "± 62777.85031628061"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 25492750.666666668,
+            "unit": "ns",
+            "range": "± 3434491.8994463114"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6169137.666666667,
+            "unit": "ns",
+            "range": "± 4717004.054745908"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 21078858.5,
+            "unit": "ns",
+            "range": "± 298677.1103934816"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12178473.833333334,
+            "unit": "ns",
+            "range": "± 105555.0485970867"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 55965549.833333336,
+            "unit": "ns",
+            "range": "± 6421507.208133487"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4678700.333333333,
+            "unit": "ns",
+            "range": "± 550622.4220228716"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 31699969.5,
+            "unit": "ns",
+            "range": "± 5026610.774073023"
           }
         ]
       }
