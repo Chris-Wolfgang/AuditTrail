@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789513233068,
+  "lastUpdate": 1789524316187,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -336,6 +336,90 @@ window.BENCHMARK_DATA = {
             "value": 47078923.5,
             "unit": "ns",
             "range": "± 5947502.7682044"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "e6bf9fd11e0354695f451de3cdb1507e409c830d",
+          "message": "Merge pull request #309 from Chris-Wolfgang/baseline/scorecard-badge\n\ndocs: add OpenSSF Scorecard badge to README (baseline item 17)",
+          "timestamp": "2026-09-15T21:56:06-04:00",
+          "tree_id": "dc07530abd5dbae8af140a69cedd71a586437922",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/e6bf9fd11e0354695f451de3cdb1507e409c830d"
+        },
+        "date": 1789524313833,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4800439.833333333,
+            "unit": "ns",
+            "range": "± 64393.53658818045"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 29745280.333333332,
+            "unit": "ns",
+            "range": "± 1746402.0060170377"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6484990.333333333,
+            "unit": "ns",
+            "range": "± 28955.690448223355"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 45867415.166666664,
+            "unit": "ns",
+            "range": "± 10945633.129262388"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 10498963.666666666,
+            "unit": "ns",
+            "range": "± 7042570.405147422"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 47098647.5,
+            "unit": "ns",
+            "range": "± 13590092.335881608"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 23343527,
+            "unit": "ns",
+            "range": "± 914240.4972418363"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 213703549.66666666,
+            "unit": "ns",
+            "range": "± 109615902.95145434"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 5817426.333333333,
+            "unit": "ns",
+            "range": "± 63532.800775137664"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 38547700.333333336,
+            "unit": "ns",
+            "range": "± 4050250.0563996457"
           }
         ]
       }
