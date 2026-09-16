@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789572185186,
+  "lastUpdate": 1789573183672,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -6864,6 +6864,138 @@ window.BENCHMARK_DATA = {
             "value": 19040411.8,
             "unit": "ns",
             "range": "± 11361836.081249157"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "398492e2c0edab930643133d32b42e57ed30f22e",
+          "message": "ci: add changelog-fragment check to pr.yaml (baseline item 19, part 2 of 2) (#312)\n\n* ci: add changelog-fragment check to pr.yaml (baseline item 19, part 2 of 2)\n\nAdds the template's `changelog-check` job, placed before inspectcode as\nin the template, with the checkout pinned to the SHA this repo already\nuses. Fails any non-Dependabot PR that changes src/ without adding a\nfragment under changelog/unreleased/ (or carrying `no-changelog`).\n\nORDERING: merge only after #311 (scripts/changelog.ps1 + fragment dir)\nis on main. The job deliberately fails closed if the script is missing\nfrom origin/main, refusing to run a PR-controlled copy of its own\nvalidator -- so merging this first would fail every subsequent PR.\n\nCloses #304\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* fix: fetch main fully in changelog-check -- shallow base breaks the merge base\n\nCopilot flagged that `git fetch origin $BASE_SHA --depth=1` leaves the\nbase commit shallow. Reproduced: a PR branched 5 commits behind main,\nchecked out CI-style (PR head only, full depth), then main --depth=1\nand BASE_SHA --depth=1 -> `git diff BASE...HEAD` fails with \"fatal: no\nmerge base\". That is the normal state of any PR once anything else has\nmerged, so the template job as written would have failed valid PRs.\nDropping --depth=1 from both fetches keeps the repo unshallow;\nre-tested the same scenario and the check passes. Cost is negligible:\nthe PR head's history already contains most of main's.\n\nSame defect is in repo-template's pr.yaml; raised separately.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-16T11:32:19-04:00",
+          "tree_id": "1a4014060fe5bbc3f4eae8d737f6af7f8a702072",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/398492e2c0edab930643133d32b42e57ed30f22e"
+        },
+        "date": 1789573182089,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 707505.4468085107,
+            "unit": "ns",
+            "range": "± 83736.40838164979"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1896897.5824175824,
+            "unit": "ns",
+            "range": "± 200264.19739678694"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 1014795.5531914893,
+            "unit": "ns",
+            "range": "± 88811.14998612143"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2817466.0714285714,
+            "unit": "ns",
+            "range": "± 48120.73671140491"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 810367.7272727273,
+            "unit": "ns",
+            "range": "± 44787.60000543236"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 2140340.8842105265,
+            "unit": "ns",
+            "range": "± 230942.18786255084"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 2104486.64893617,
+            "unit": "ns",
+            "range": "± 533556.7266129579"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 8822713.07142857,
+            "unit": "ns",
+            "range": "± 793356.1010393444"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 2826810.8571428573,
+            "unit": "ns",
+            "range": "± 36658.67104237968"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 18551565.06,
+            "unit": "ns",
+            "range": "± 4955133.50310691"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 2711970.4468085105,
+            "unit": "ns",
+            "range": "± 228984.57574225983"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 14489252.338709677,
+            "unit": "ns",
+            "range": "± 438151.0493176295"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 5332806.642857143,
+            "unit": "ns",
+            "range": "± 62319.22234580367"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 41176076.583333336,
+            "unit": "ns",
+            "range": "± 1052571.8897931334"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 12844664.226804124,
+            "unit": "ns",
+            "range": "± 1751698.7901589186"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 20645481.575,
+            "unit": "ns",
+            "range": "± 7690060.823919388"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 9825127.797979798,
+            "unit": "ns",
+            "range": "± 1333105.7516182016"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 26100580.28,
+            "unit": "ns",
+            "range": "± 16218882.352337392"
           }
         ]
       }
