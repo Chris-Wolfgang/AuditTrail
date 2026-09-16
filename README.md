@@ -9,6 +9,7 @@ The header/detail-per-column schema is the same shape that [Z.EntityFramework.Pl
 [![PR build](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/AuditTrail/pr.yaml?event=pull_request_target&label=PR%20build&logo=github)](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/pr.yaml)
 [![Release](https://img.shields.io/github/actions/workflow/status/Chris-Wolfgang/AuditTrail/release.yaml?label=release&logo=github)](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/release.yaml)
 [![CodeQL](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/codeql.yaml/badge.svg)](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/codeql.yaml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Chris-Wolfgang/AuditTrail/badge)](https://scorecard.dev/viewer/?uri=github.com/Chris-Wolfgang/AuditTrail)
 [![Benchmarks](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/benchmarks.yaml/badge.svg)](https://github.com/Chris-Wolfgang/AuditTrail/actions/workflows/benchmarks.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-Multi--Targeted-purple.svg)](https://dotnet.microsoft.com/)
