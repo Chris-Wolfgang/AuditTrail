@@ -44,7 +44,7 @@ jobs:
     if: github.repository != 'Chris-Wolfgang/repo-template'
     steps:
       - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
@@ -85,7 +85,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
@@ -220,7 +220,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
@@ -540,7 +540,7 @@ jobs:
 
       - name: Upload Linux coverage results
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-linux
           path: |
@@ -548,7 +548,7 @@ jobs:
             CoverageReport/
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: build-output
           path: |
@@ -566,7 +566,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
@@ -804,7 +804,7 @@ jobs:
 
       - name: Upload Windows coverage results
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-windows
           path: |
@@ -822,7 +822,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
@@ -1112,7 +1112,7 @@ jobs:
 
       - name: Upload macOS coverage results
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-macos
           path: |
@@ -1162,7 +1162,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
@@ -1250,7 +1250,7 @@ jobs:
 
       - name: Upload security scan results
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: devskim-results
           path: devskim-results.txt
@@ -1268,7 +1268,7 @@ jobs:
     if: github.event.pull_request.user.login != 'dependabot[bot]'
     steps:
       - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
@@ -1352,7 +1352,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
@@ -1469,7 +1469,7 @@ jobs:
       # inspectcode-upload-sarif job below, which never touches PR code.
       - name: Upload SARIF artifact
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: inspectcode-sarif
           path: inspect.sarif
