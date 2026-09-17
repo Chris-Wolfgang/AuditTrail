@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789610099247,
+  "lastUpdate": 1789610101935,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -1154,6 +1154,42 @@ window.BENCHMARK_DATA = {
             "value": 68644053.83333333,
             "unit": "ns",
             "range": "± 1273858.161500853"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "64d2d49c9711d11675700c1d6d1bee9ef0e21c83",
+          "message": "ci: pin every workflow action to a commit SHA with an exact # vX.Y.Z comment (#315)\n\nRan repo-template's scripts/pin-actions.ps1 -PinTags: tag references become\nSHA pins and major-only comments (# v7) become the exact tag on the pinned\ncommit (# v7.0.1), so zizmor's ref-version-mismatch stops firing when the\nmajor tag moves on. Only the ref/comment text changed. Dependabot keeps the\nprecision it finds, so this stays converted.\n\n51 already exact, 51 line(s) rewritten, 0 tag reference(s), 0 pinned SHA(s) with no tag\n\nRefs Chris-Wolfgang/repo-template#447\n\nCo-authored-by: Chris Wolfgang <cwolfgan@ptd.net>\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-16T21:44:54-04:00",
+          "tree_id": "e31eae5f75be0c8b264e6550539eb55482e906d6",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/64d2d49c9711d11675700c1d6d1bee9ef0e21c83"
+        },
+        "date": 1789610100844,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 13139189,
+            "unit": "ns",
+            "range": "± 569745.039880998"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 59776882.166666664,
+            "unit": "ns",
+            "range": "± 3006933.6948849293"
           }
         ]
       }
