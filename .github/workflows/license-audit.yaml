@@ -1,104 +1,84 @@
-name: License audit
+name: License Audit
 
-# Audits the licenses of the shipped packages' transitive dependencies against
-# an allowlist, and generates THIRD-PARTY-NOTICES.md attribution. Dev-only
-# tooling (analyzers / SourceLink / framework shims — all PrivateAssets, never
-# shipped) is filtered out via .github/license/packages-filter.json. Fails the
-# run if a runtime dependency carries a license outside the allowlist.
+# License audit of transitive dependencies. Validates every src/ project's full
+# (direct + transitive) dependency closure against an allow-list of OSI-permissive
+# licenses using the `nuget-license` tool, and FAILS if any dependency's license is
+# not allowed (e.g. a copyleft or non-OSI license slipping in via a bump).
+#
+# Config lives in .github/license-audit/:
+#  - allowed-licenses.json     — the licenses we accept: OSI-permissive ones plus one
+#    explicit non-OSI exception, MS-.NET-Library (the Microsoft .NET Library license
+#    some older System.* packages ship under - proprietary, but freely redistributable
+#    with the package, so it imposes nothing on consumers of ours).
+#  - url-license-mappings.json — maps packages that expose a license URL (not an SPDX
+#    expression) to a license identifier: the dotnet/standard LICENSE.TXT is MIT, the
+#    go.microsoft.com LinkId=329770 URL is MS-.NET-Library.
+#  - ignored-packages.json     — SonarAnalyzer.CSharp: a build-time analyzer
+#    (PrivateAssets=all, not shipped) under the non-OSI SONAR Source-Available
+#    License, so it imposes no obligation on consumers of the package.
+#
+# Skips automatically when the repo has no src/ project (e.g. the template repo).
 
 on:
   pull_request:
-    paths:
-      - '**/*.csproj'
-      - 'Directory.Build.props'
-      - '.github/license/**'
-      - '.github/workflows/license-audit.yaml'
   push:
-    branches: [ main ]
+    branches: [main]
+  # Weekly re-audit of main: a package can change its license between the
+  # versions Dependabot bumps, or a transitive can be re-licensed upstream
+  # without any PR touching this repo. Tuesdays 06:15 UTC, off the Monday
+  # Scorecard / Sunday CodeQL+Stryker slots.
   schedule:
-    - cron: '15 6 * * 1'   # Mondays 06:15 UTC
+    - cron: '15 6 * * 2'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: license-audit-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   license-audit:
-    name: Audit dependency licenses
+    name: License audit
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           persist-credentials: false
 
-      - name: Set up .NET
-        # 7.0.x (EOL) is installed only because the dotnet-project-licenses tool
-        # targets net7.0; the runner image no longer ships it, so the tool fails
-        # to launch without an explicit install. Do not remove.
-        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
-        with:
-          dotnet-version: |
-            7.0.x
-            8.0.x
-            10.0.x
-
-      - name: Install dotnet-project-licenses
-        run: dotnet tool install --global dotnet-project-licenses --version 2.7.1
-
-      - name: Restore (populates project.assets.json)
-        run: dotnet restore
-
-      - name: Audit licenses + generate notices
-        shell: bash
+      - name: Detect src projects
+        id: detect
         run: |
-          export PATH="$PATH:$HOME/.dotnet/tools"
-          projects=(
-            src/Wolfgang.AuditTrail.Abstractions/Wolfgang.AuditTrail.Abstractions.csproj
-            src/Wolfgang.AuditTrail.EntityFrameworkCore/Wolfgang.AuditTrail.EntityFrameworkCore.csproj
-            src/Wolfgang.AuditTrail.TestKit.Xunit/Wolfgang.AuditTrail.TestKit.Xunit.csproj
-          )
-          {
-            echo "# Third-party notices"
-            echo
-            echo "Licenses of the transitive runtime dependencies of the shipped"
-            echo "\`Wolfgang.AuditTrail.*\` packages. Dev-only tooling (analyzers,"
-            echo "SourceLink, framework shims) is excluded — it is never distributed."
-            echo
-          } > THIRD-PARTY-NOTICES.md
+          if git ls-files 'src/**/*.csproj' 'src/*.csproj' | grep -q .; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No src/**/*.csproj found — skipping license audit."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
 
-          fail=0
-          for proj in "${projects[@]}"; do
-            name=$(basename "$proj" .csproj)
-            echo "::group::License audit — $name"
-            if ! dotnet-project-licenses \
-                --input "$proj" \
-                --use-project-assets-json -t \
-                --packages-filter .github/license/packages-filter.json \
-                --licenseurl-to-license-mappings .github/license/licenseurl-mappings.json \
-                --allowed-license-types .github/license/allowed-licenses.json \
-                --outfile "notices-$name.md" --md
-            then
-              echo "::error::Disallowed license in $name — see the log above."
-              fail=1
-            fi
-            echo "::endgroup::"
-            {
-              echo "## $name"
-              echo
-              cat "notices-$name.md" 2>/dev/null || true
-              echo
-            } >> THIRD-PARTY-NOTICES.md
-          done
-          exit $fail
-
-      - name: Upload notices
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - name: Setup .NET
+        if: steps.detect.outputs.found == 'true'
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68  # v6.0.0
         with:
-          name: third-party-notices
-          path: THIRD-PARTY-NOTICES.md
-          retention-days: 30
+          dotnet-version: '10.0.x'
+
+      - name: Install nuget-license
+        if: steps.detect.outputs.found == 'true'
+        run: dotnet tool install --global nuget-license
+
+      # Gate: fail if any src project's dependency license is not on the allow-list.
+      - name: Audit licenses (gate on allow-list)
+        if: steps.detect.outputs.found == 'true'
+        run: |
+          while IFS= read -r proj; do
+            echo "== $proj =="
+            dotnet restore "$proj"
+            nuget-license -i "$proj" -t \
+              -a .github/license-audit/allowed-licenses.json \
+              -ignore .github/license-audit/ignored-packages.json \
+              -mapping .github/license-audit/url-license-mappings.json \
+              -o Table
+          done < <(git ls-files 'src/**/*.csproj' 'src/*.csproj')
