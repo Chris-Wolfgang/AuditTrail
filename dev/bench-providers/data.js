@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789693327080,
+  "lastUpdate": 1789693331347,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -1274,6 +1274,42 @@ window.BENCHMARK_DATA = {
             "value": 59776882.166666664,
             "unit": "ns",
             "range": "± 3006933.6948849293"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "def5bca69c42fbb03b15caf5884cf1ca0a7cbadf",
+          "message": "chore: take template updates via scripts/upgrade.ps1 (safe bucket) + .template-version (#339)\n\n* chore: take template updates via scripts/upgrade.ps1 (safe bucket) and stamp .template-version\n\nBase = repo-template 44d150679 (last template sync in this repo's history).\nIn sync : 3 file(s);Safe    : 23 file(s);Review  : 20 file(s);\n\nApplied the safe bucket (template changed, local untouched since the base, or\nnew in the template), plus: license-audit.yaml taken from the template where\nthe local allowlist was a subset (old .github/license/ layout removed),\ntfm-parity wired into pr.yaml Stage 2 + build-pr.ps1 where the anchors exist,\nand .template-version stamped with this repo's placeholder values. Review\nbucket (customised here AND changed upstream) untouched; sidecars discarded.\n\nRelease build of the solution after the change: ok\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* chore: keep this repo's own license-audit workflow (generates the packed THIRD-PARTY-NOTICES.md); drop the template's config\n\nThe sweep took the template's nuget-license workflow because the allowlist was a\nsubset, but AuditTrail's workflow is a different tool (dotnet-project-licenses)\nthat also generates THIRD-PARTY-NOTICES.md, which every src package includes.\nRestored the original workflow and .github/license/; removed the unconsumed\n.github/license-audit/*. Template follow-up: notices generation.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* chore: review follow-ups (round 4)\n\n- `scripts/Setup-BranchRuleset.ps1` updated to the template version (the old copy lacked `-RequireLinearHistory`, which `Fix-BranchRuleset.ps1` now passes); repository placeholder filled\n- `.github/workflows/sbom.yaml`: updated to the template version from repo-template#572 (exact net10.0 match / workload restore)\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Chris Wolfgang <cwolfgan@ptd.net>\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-17T20:53:06-04:00",
+          "tree_id": "ee65819005040b0b858d2bf84d19909d6daba449",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/def5bca69c42fbb03b15caf5884cf1ca0a7cbadf"
+        },
+        "date": 1789693329902,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 16743231.666666666,
+            "unit": "ns",
+            "range": "± 517778.8797327807"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 76135179,
+            "unit": "ns",
+            "range": "± 1242377.9728371718"
           }
         ]
       }
