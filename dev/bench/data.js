@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789610105035,
+  "lastUpdate": 1789693334748,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -7128,6 +7128,138 @@ window.BENCHMARK_DATA = {
             "value": 20098782.260869566,
             "unit": "ns",
             "range": "± 14224239.395611888"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "def5bca69c42fbb03b15caf5884cf1ca0a7cbadf",
+          "message": "chore: take template updates via scripts/upgrade.ps1 (safe bucket) + .template-version (#339)\n\n* chore: take template updates via scripts/upgrade.ps1 (safe bucket) and stamp .template-version\n\nBase = repo-template 44d150679 (last template sync in this repo's history).\nIn sync : 3 file(s);Safe    : 23 file(s);Review  : 20 file(s);\n\nApplied the safe bucket (template changed, local untouched since the base, or\nnew in the template), plus: license-audit.yaml taken from the template where\nthe local allowlist was a subset (old .github/license/ layout removed),\ntfm-parity wired into pr.yaml Stage 2 + build-pr.ps1 where the anchors exist,\nand .template-version stamped with this repo's placeholder values. Review\nbucket (customised here AND changed upstream) untouched; sidecars discarded.\n\nRelease build of the solution after the change: ok\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* chore: keep this repo's own license-audit workflow (generates the packed THIRD-PARTY-NOTICES.md); drop the template's config\n\nThe sweep took the template's nuget-license workflow because the allowlist was a\nsubset, but AuditTrail's workflow is a different tool (dotnet-project-licenses)\nthat also generates THIRD-PARTY-NOTICES.md, which every src package includes.\nRestored the original workflow and .github/license/; removed the unconsumed\n.github/license-audit/*. Template follow-up: notices generation.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* chore: review follow-ups (round 4)\n\n- `scripts/Setup-BranchRuleset.ps1` updated to the template version (the old copy lacked `-RequireLinearHistory`, which `Fix-BranchRuleset.ps1` now passes); repository placeholder filled\n- `.github/workflows/sbom.yaml`: updated to the template version from repo-template#572 (exact net10.0 match / workload restore)\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Chris Wolfgang <cwolfgan@ptd.net>\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-17T20:53:06-04:00",
+          "tree_id": "ee65819005040b0b858d2bf84d19909d6daba449",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/def5bca69c42fbb03b15caf5884cf1ca0a7cbadf"
+        },
+        "date": 1789693333297,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 538577.5476190476,
+            "unit": "ns",
+            "range": "± 12386.856528095377"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1342031.7222222222,
+            "unit": "ns",
+            "range": "± 27742.199570977566"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 794132.15,
+            "unit": "ns",
+            "range": "± 14808.217612901717"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2582264.7333333334,
+            "unit": "ns",
+            "range": "± 42673.349231553126"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 731443.3294117647,
+            "unit": "ns",
+            "range": "± 63555.80853983448"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1566012.2857142857,
+            "unit": "ns",
+            "range": "± 21524.04336185135"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1268899.8076923077,
+            "unit": "ns",
+            "range": "± 10880.596945822224"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 8852693.257894738,
+            "unit": "ns",
+            "range": "± 766988.0530692457"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 2367139.6666666665,
+            "unit": "ns",
+            "range": "± 18230.190601882154"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 15594320.081967212,
+            "unit": "ns",
+            "range": "± 606793.9390495286"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1868581.5,
+            "unit": "ns",
+            "range": "± 20536.943843305336"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 13057029.483870968,
+            "unit": "ns",
+            "range": "± 1296971.8016878662"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 4841662.416666667,
+            "unit": "ns",
+            "range": "± 31837.593426235006"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 22593880.23,
+            "unit": "ns",
+            "range": "± 12172529.917653218"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 13944750.670103094,
+            "unit": "ns",
+            "range": "± 1668364.9952563697"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 19627241.30487805,
+            "unit": "ns",
+            "range": "± 5225131.509370068"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 9441513.714285715,
+            "unit": "ns",
+            "range": "± 167147.25289635095"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 18964057.925287355,
+            "unit": "ns",
+            "range": "± 7930667.931469317"
           }
         ]
       }
