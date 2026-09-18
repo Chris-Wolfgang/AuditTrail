@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789610101935,
+  "lastUpdate": 1789693327080,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -828,6 +828,90 @@ window.BENCHMARK_DATA = {
             "value": 36344259.666666664,
             "unit": "ns",
             "range": "± 4280296.9746647645"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "def5bca69c42fbb03b15caf5884cf1ca0a7cbadf",
+          "message": "chore: take template updates via scripts/upgrade.ps1 (safe bucket) + .template-version (#339)\n\n* chore: take template updates via scripts/upgrade.ps1 (safe bucket) and stamp .template-version\n\nBase = repo-template 44d150679 (last template sync in this repo's history).\nIn sync : 3 file(s);Safe    : 23 file(s);Review  : 20 file(s);\n\nApplied the safe bucket (template changed, local untouched since the base, or\nnew in the template), plus: license-audit.yaml taken from the template where\nthe local allowlist was a subset (old .github/license/ layout removed),\ntfm-parity wired into pr.yaml Stage 2 + build-pr.ps1 where the anchors exist,\nand .template-version stamped with this repo's placeholder values. Review\nbucket (customised here AND changed upstream) untouched; sidecars discarded.\n\nRelease build of the solution after the change: ok\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* chore: keep this repo's own license-audit workflow (generates the packed THIRD-PARTY-NOTICES.md); drop the template's config\n\nThe sweep took the template's nuget-license workflow because the allowlist was a\nsubset, but AuditTrail's workflow is a different tool (dotnet-project-licenses)\nthat also generates THIRD-PARTY-NOTICES.md, which every src package includes.\nRestored the original workflow and .github/license/; removed the unconsumed\n.github/license-audit/*. Template follow-up: notices generation.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* chore: review follow-ups (round 4)\n\n- `scripts/Setup-BranchRuleset.ps1` updated to the template version (the old copy lacked `-RequireLinearHistory`, which `Fix-BranchRuleset.ps1` now passes); repository placeholder filled\n- `.github/workflows/sbom.yaml`: updated to the template version from repo-template#572 (exact net10.0 match / workload restore)\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Chris Wolfgang <cwolfgan@ptd.net>\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-17T20:53:06-04:00",
+          "tree_id": "ee65819005040b0b858d2bf84d19909d6daba449",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/def5bca69c42fbb03b15caf5884cf1ca0a7cbadf"
+        },
+        "date": 1789693324522,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4740367.666666667,
+            "unit": "ns",
+            "range": "± 21385.45571956168"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 29141268.666666668,
+            "unit": "ns",
+            "range": "± 2447280.3670708295"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6157758.666666667,
+            "unit": "ns",
+            "range": "± 110791.19120820632"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 38817859.5,
+            "unit": "ns",
+            "range": "± 213625.39181239667"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 10239201.666666666,
+            "unit": "ns",
+            "range": "± 6685163.642980352"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 39079953.5,
+            "unit": "ns",
+            "range": "± 1045171.2693625863"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 24047899,
+            "unit": "ns",
+            "range": "± 1012443.453206647"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 452069222,
+            "unit": "ns",
+            "range": "± 552591021.374873"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6210002.5,
+            "unit": "ns",
+            "range": "± 233064.1237020404"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 39559388.333333336,
+            "unit": "ns",
+            "range": "± 4734329.524683758"
           }
         ]
       }
