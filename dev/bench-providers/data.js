@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789824279441,
+  "lastUpdate": 1789840568535,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -996,6 +996,90 @@ window.BENCHMARK_DATA = {
             "value": 43159934.666666664,
             "unit": "ns",
             "range": "± 3897416.856171577"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "3119c13cc468b35bdf5a576b9162cda335d5512f",
+          "message": "ci(guard): find the merge base on a shallow checkout and fail closed when it cannot (#342)\n\nrepo-template#584: the detect job's checkout is depth 1, so the guard's\nthree-dot diff had no merge base, failed silently and reported \"no protected\nconfiguration files changed\" for every PR. Deepen the PR head until a merge\nbase exists, diff against it explicitly, and error out if none can be found.\n\nCo-authored-by: Chris Wolfgang <cwolfgan@ptd.net>\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-19T13:46:48-04:00",
+          "tree_id": "0c0b1b53d52504339dc4e826fc9aed3de5b6f0d2",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/3119c13cc468b35bdf5a576b9162cda335d5512f"
+        },
+        "date": 1789840566102,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6912897.833333333,
+            "unit": "ns",
+            "range": "± 35170.08469329202"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 56775813.5,
+            "unit": "ns",
+            "range": "± 2245930.8216187335"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7385236.666666667,
+            "unit": "ns",
+            "range": "± 184684.74514786905"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 42870173.166666664,
+            "unit": "ns",
+            "range": "± 1054009.2027322785"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12178173,
+            "unit": "ns",
+            "range": "± 7070133.966159976"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 56051848.833333336,
+            "unit": "ns",
+            "range": "± 4407257.715394499"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 87036063.83333333,
+            "unit": "ns",
+            "range": "± 72287315.7245898"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 260270259.16666666,
+            "unit": "ns",
+            "range": "± 146141387.4298534"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7755064.666666667,
+            "unit": "ns",
+            "range": "± 134861.73653165426"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 42636025.5,
+            "unit": "ns",
+            "range": "± 4507471.5414344"
           }
         ]
       }
