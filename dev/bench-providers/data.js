@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789840568535,
+  "lastUpdate": 1789840571862,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -1514,6 +1514,42 @@ window.BENCHMARK_DATA = {
             "value": 83918310,
             "unit": "ns",
             "range": "± 3329714.336109481"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "3119c13cc468b35bdf5a576b9162cda335d5512f",
+          "message": "ci(guard): find the merge base on a shallow checkout and fail closed when it cannot (#342)\n\nrepo-template#584: the detect job's checkout is depth 1, so the guard's\nthree-dot diff had no merge base, failed silently and reported \"no protected\nconfiguration files changed\" for every PR. Deepen the PR head until a merge\nbase exists, diff against it explicitly, and error out if none can be found.\n\nCo-authored-by: Chris Wolfgang <cwolfgan@ptd.net>\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-19T13:46:48-04:00",
+          "tree_id": "0c0b1b53d52504339dc4e826fc9aed3de5b6f0d2",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/3119c13cc468b35bdf5a576b9162cda335d5512f"
+        },
+        "date": 1789840570495,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17274449.333333332,
+            "unit": "ns",
+            "range": "± 218885.93144680024"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 83043948.33333333,
+            "unit": "ns",
+            "range": "± 1063561.5860401941"
           }
         ]
       }
