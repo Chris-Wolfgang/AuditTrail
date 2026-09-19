@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789693331347,
+  "lastUpdate": 1789824275901,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -912,6 +912,90 @@ window.BENCHMARK_DATA = {
             "value": 39559388.333333336,
             "unit": "ns",
             "range": "± 4734329.524683758"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "5259cfa2882d2a0af4368c264cbe4509110f4ba6",
+          "message": "ci(guard): configuration-only PRs pass the protected-file guard; mixed PRs fail and cannot be bypassed (#341)\n\nTemplate change repo-template#582: a PR whose only changes are protected files\n(workflows, Directory.Build.props, .editorconfig, ...) passes the guard with a\nwarning banner and merges on review with the ruleset active; a PR that mixes\nprotected files with anything else fails and must be split. The diff is now\ntaken against the merge base with main, so a PR that is merely behind main is\nnot blamed for files main changed since it branched. Ends the\ndisable-ruleset / merge / re-enable routine.\n\nCo-authored-by: Chris Wolfgang <cwolfgan@ptd.net>\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-19T09:15:23-04:00",
+          "tree_id": "86c36e908103869e23f769e219ce60b1603c88a7",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/5259cfa2882d2a0af4368c264cbe4509110f4ba6"
+        },
+        "date": 1789824273429,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6682954,
+            "unit": "ns",
+            "range": "± 82240.85886589464"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 49823735.5,
+            "unit": "ns",
+            "range": "± 13146095.197309503"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6493584.666666667,
+            "unit": "ns",
+            "range": "± 133474.0818336404"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 38857890.833333336,
+            "unit": "ns",
+            "range": "± 869790.4370653504"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 11577995,
+            "unit": "ns",
+            "range": "± 6795235.653126313"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 56043997.333333336,
+            "unit": "ns",
+            "range": "± 8584916.814714417"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 163994001.16666666,
+            "unit": "ns",
+            "range": "± 188427406.4185728"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 561719759.3333334,
+            "unit": "ns",
+            "range": "± 473611993.5180991"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6757167.166666667,
+            "unit": "ns",
+            "range": "± 313744.89768812706"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 43159934.666666664,
+            "unit": "ns",
+            "range": "± 3897416.856171577"
           }
         ]
       }
