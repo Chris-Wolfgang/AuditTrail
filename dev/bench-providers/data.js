@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789824275901,
+  "lastUpdate": 1789824279441,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -1394,6 +1394,42 @@ window.BENCHMARK_DATA = {
             "value": 76135179,
             "unit": "ns",
             "range": "± 1242377.9728371718"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "5259cfa2882d2a0af4368c264cbe4509110f4ba6",
+          "message": "ci(guard): configuration-only PRs pass the protected-file guard; mixed PRs fail and cannot be bypassed (#341)\n\nTemplate change repo-template#582: a PR whose only changes are protected files\n(workflows, Directory.Build.props, .editorconfig, ...) passes the guard with a\nwarning banner and merges on review with the ruleset active; a PR that mixes\nprotected files with anything else fails and must be split. The diff is now\ntaken against the merge base with main, so a PR that is merely behind main is\nnot blamed for files main changed since it branched. Ends the\ndisable-ruleset / merge / re-enable routine.\n\nCo-authored-by: Chris Wolfgang <cwolfgan@ptd.net>\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-19T09:15:23-04:00",
+          "tree_id": "86c36e908103869e23f769e219ce60b1603c88a7",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/5259cfa2882d2a0af4368c264cbe4509110f4ba6"
+        },
+        "date": 1789824278066,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17074237,
+            "unit": "ns",
+            "range": "± 703212.5173651277"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 83918310,
+            "unit": "ns",
+            "range": "± 3329714.336109481"
           }
         ]
       }
