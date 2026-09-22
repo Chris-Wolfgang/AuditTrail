@@ -293,7 +293,7 @@ jobs:
       # self-contained and alert-comparable once thresholds are tuned.
       - name: Store + push net10.0 provider chart history
         if: steps.filter-net10.outputs.empty != 'true'
-        uses: benchmark-action/github-action-benchmark@52576c92bccf6ac60c8223ec7eb2565637cae9ba # v1.22.1
+        uses: benchmark-action/github-action-benchmark@4322e5726e6334590d251fc4f92bec0efafc45dc # v1.22.2
         with:
           name: Audit Interceptor Provider Benchmarks (net10.0)
           tool: 'benchmarkdotnet'
@@ -306,7 +306,7 @@ jobs:
 
       - name: Store + push net8.0 provider (MySQL) chart history
         if: steps.filter-net8.outputs.empty != 'true'
-        uses: benchmark-action/github-action-benchmark@52576c92bccf6ac60c8223ec7eb2565637cae9ba # v1.22.1
+        uses: benchmark-action/github-action-benchmark@4322e5726e6334590d251fc4f92bec0efafc45dc # v1.22.2
         with:
           name: Audit Interceptor Provider Benchmarks (MySQL net8.0)
           tool: 'benchmarkdotnet'
@@ -328,7 +328,7 @@ jobs:
       # means both provider charts are already pushed by the time this can
       # fail.
       - name: Store + push SQLite chart history
-        uses: benchmark-action/github-action-benchmark@52576c92bccf6ac60c8223ec7eb2565637cae9ba # v1.22.1
+        uses: benchmark-action/github-action-benchmark@4322e5726e6334590d251fc4f92bec0efafc45dc # v1.22.2
         with:
           name: Audit Interceptor Benchmarks
           tool: 'benchmarkdotnet'
