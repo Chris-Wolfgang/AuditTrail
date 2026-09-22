@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790096413127,
+  "lastUpdate": 1790098103253,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -7656,6 +7656,138 @@ window.BENCHMARK_DATA = {
             "value": 24380870.10824742,
             "unit": "ns",
             "range": "± 15356638.354282022"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c82bcc17b0a9456708c00cd78e9336683c26c7fc",
+          "message": "Bump the dotnet-dependencies group with 14 updates (#349)\n\nBumps Meziantou.Analyzer from 3.0.228 to 3.0.259\nBumps Microsoft.AspNetCore.Identity.EntityFrameworkCore from 10.0.11 to 10.0.12\nBumps Microsoft.Bcl.TimeProvider from 10.0.11 to 10.0.12\nBumps Microsoft.Data.SqlClient from 7.0.2 to 7.0.3\nBumps Microsoft.EntityFrameworkCore.Design from 10.0.11 to 10.0.12\nBumps Microsoft.EntityFrameworkCore.SqlServer from 9.0.19 to 9.0.20\nBumps Microsoft.EntityFrameworkCore.Tasks from 10.0.11 to 10.0.12\nBumps Microsoft.Extensions.DependencyInjection.Abstractions from 10.0.11 to 10.0.12\nBumps Microsoft.Extensions.Hosting from 10.0.11 to 10.0.12\nBumps Microsoft.Extensions.Logging.Abstractions from 10.0.11 to 10.0.12\nBumps Microsoft.SourceLink.GitHub from 10.0.400 to 10.0.401\nBumps SonarAnalyzer.CSharp from 10.33.0.1635 to 10.34.0.3385\nBumps System.Configuration.ConfigurationManager from 10.0.11 to 10.0.12\nBumps System.Security.Cryptography.Xml from 10.0.11 to 10.0.12\n\n---\nupdated-dependencies:\n- dependency-name: Meziantou.Analyzer\n  dependency-version: 3.0.259\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.AspNetCore.Identity.EntityFrameworkCore\n  dependency-version: 10.0.12\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.Bcl.TimeProvider\n  dependency-version: 10.0.12\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.Data.SqlClient\n  dependency-version: 7.0.3\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.EntityFrameworkCore.Design\n  dependency-version: 10.0.12\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.EntityFrameworkCore.SqlServer\n  dependency-version: 9.0.20\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.EntityFrameworkCore.Tasks\n  dependency-version: 10.0.12\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.Extensions.DependencyInjection.Abstractions\n  dependency-version: 10.0.12\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.Extensions.Hosting\n  dependency-version: 10.0.12\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.Extensions.Logging.Abstractions\n  dependency-version: 10.0.12\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.SourceLink.GitHub\n  dependency-version: 10.0.401\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: SonarAnalyzer.CSharp\n  dependency-version: 10.34.0.3385\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: dotnet-dependencies\n- dependency-name: System.Configuration.ConfigurationManager\n  dependency-version: 10.0.12\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: System.Security.Cryptography.Xml\n  dependency-version: 10.0.12\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\nCo-authored-by: Chris Wolfgang <210299580+Chris-Wolfgang@users.noreply.github.com>",
+          "timestamp": "2026-09-22T13:17:49-04:00",
+          "tree_id": "e8c43eb41e38b34e4be108da981d703b70288a88",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/c82bcc17b0a9456708c00cd78e9336683c26c7fc"
+        },
+        "date": 1790098101620,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 674995.5217391305,
+            "unit": "ns",
+            "range": "± 54692.84348638217"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1285807.9736842106,
+            "unit": "ns",
+            "range": "± 23628.309730228324"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 771830.5384615385,
+            "unit": "ns",
+            "range": "± 7064.517152825387"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2339133.6666666665,
+            "unit": "ns",
+            "range": "± 45354.97842834118"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 713535.1176470588,
+            "unit": "ns",
+            "range": "± 14232.08313056434"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1477689.0666666667,
+            "unit": "ns",
+            "range": "± 27286.861049300078"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1516005.224489796,
+            "unit": "ns",
+            "range": "± 224536.9718727615"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 7690950.611111111,
+            "unit": "ns",
+            "range": "± 1311101.450170848"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1984642.6333333333,
+            "unit": "ns",
+            "range": "± 33960.63897864843"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 15159238.649484536,
+            "unit": "ns",
+            "range": "± 2945499.571435934"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1646298,
+            "unit": "ns",
+            "range": "± 28681.557715716906"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 12506645.9,
+            "unit": "ns",
+            "range": "± 1173044.1984094635"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 5096522.8877551025,
+            "unit": "ns",
+            "range": "± 744213.7138654182"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 21890556.66,
+            "unit": "ns",
+            "range": "± 9326282.92999471"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 7206928.583333333,
+            "unit": "ns",
+            "range": "± 63691.056732634745"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 20058043.411111113,
+            "unit": "ns",
+            "range": "± 10918711.914080633"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 8249406.7,
+            "unit": "ns",
+            "range": "± 1258184.497399127"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 48365415.8125,
+            "unit": "ns",
+            "range": "± 930762.5191023912"
           }
         ]
       }
