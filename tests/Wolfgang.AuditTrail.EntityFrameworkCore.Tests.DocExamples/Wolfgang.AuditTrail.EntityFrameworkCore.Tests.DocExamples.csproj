@@ -34,7 +34,7 @@
          third-party base (IdentityDbContext<TUser>), the real-world scenario
          that extension exists for. Referenced only so that example compiles;
          not used by production code. -->
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.12" />
   </ItemGroup>
 
   <ItemGroup>
