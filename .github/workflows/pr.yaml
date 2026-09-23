@@ -4,17 +4,23 @@
 # Stage 3: macOS tests (only if Stage 2 passes)
 #
 # SECURITY NOTE:
-# - Uses pull_request_target to run workflow from the trusted main branch, not from the PR branch
-# - This prevents malicious workflow YAML changes in untrusted PR branches from taking effect
-# - All checkout steps use PR refs (refs/pull/*/head) to check out PR code from the base repo
-# - After checkout, configuration files (.editorconfig, BannedSymbols.txt, etc.) are fetched from
-#   the main branch to prevent malicious PRs from disabling analyzers or bypassing code quality checks
-# - If a PR changes any of these protected configuration files, CI explicitly fails with instructions
-#   for a maintainer to manually review and verify the changes before merging
+# - Runs on `pull_request`: the PR's own code AND its own copies of this workflow and of every
+#   analyzer/config file are what get built and tested, so a PR is validated exactly as it will
+#   merge. GitHub hands a pull_request run a read-only GITHUB_TOKEN and no secrets for forks;
+#   nothing here uses a secret, and `permissions: contents: read` applies to same-repo PRs too.
+#   There is nothing for untrusted code to reach. The previous `pull_request_target` model ran
+#   main's copy of this file but checked out `refs/pull/*/head` in the same job - the pattern
+#   Scorecard flags as DangerousWorkflow, because trusted context and untrusted code met.
+# - Gate integrity lives in protected-files.yaml: a separate `pull_request_target` workflow that
+#   never checks out PR code, lists the PR's changed files through the API, and fails any PR that
+#   mixes a protected file (this workflow, .editorconfig, Directory.Build.props, .globalconfig,
+#   .DotSettings, BannedSymbols.txt, coverlet.runsettings, .gitleaks.toml, the CI scripts it runs)
+#   with other changes. A PR therefore cannot weaken the checks it is subject to without either
+#   failing that guard or being a configuration-only PR that a maintainer reviews on its own.
+# - The only write scope in this file is `security-events: write` on inspectcode-upload-sarif, a
+#   job that has no checkout step at all.
 # - persist-credentials: false prevents the checkout token from being written to git config for subsequent git commands
 #   (it does NOT, by itself, prevent steps from accessing github.token / GITHUB_TOKEN if you explicitly expose it)
-# - After checkout, configuration files (.editorconfig, BannedSymbols.txt, etc.) are fetched from
-#   the main branch to prevent malicious PRs from disabling analyzers or bypassing code quality checks
 # - Default GITHUB_TOKEN permissions are restricted to read-only repository contents to limit impact if exposed
 
 name: PR Checks v3 (Gated)
@@ -26,13 +32,17 @@ env:
   CODECOV_MINIMUM: 90
   
 on:
-  # zizmor: ignore[dangerous-triggers]
-  pull_request_target:  # Runs from the main branch, not from PR branch
+  pull_request:
     branches:
       - main
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  # The event name is part of the group on purpose: while this repository migrates to
+  # `pull_request`, main's previous `pull_request_target` copy of this workflow still
+  # fires on every PR and carries the REQUIRED check names. In one group the new run
+  # cancels it and the PR is blocked on "cancelled" required checks; in separate
+  # groups both complete.
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -47,7 +57,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
           fetch-depth: 0
 
@@ -88,7 +97,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
       
       - name: Fetch trusted configuration files from main branch
@@ -238,7 +246,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
       
       - name: Fetch trusted configuration files from main branch
@@ -584,7 +591,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
       
       - name: Fetch trusted configuration files from main branch
@@ -867,7 +873,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
       
       - name: Fetch trusted configuration files from main branch
@@ -1207,7 +1212,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
       
       - name: Fetch trusted configuration files from main branch
@@ -1313,7 +1317,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
           fetch-depth: 0
 
@@ -1397,7 +1400,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/head
           persist-credentials: false
 
       # Same defense-in-depth pattern as detect-projects and the test stages:
@@ -1551,11 +1553,19 @@ jobs:
     # Runs even if inspectcode's gate step failed, so findings still reach
     # Security -> Code scanning on a failing PR, matching the previous
     # behavior's `if: always()` on the upload step.
-    if: always() && needs.inspectcode.result != 'skipped'
+    # Under pull_request a fork's token - and Dependabot's - is read-only and cannot write Code
+    # Scanning, so this job would fail rather than skip. Those PRs still get the InspectCode gate
+    # above; they just do not upload SARIF. This condition was unnecessary under
+    # pull_request_target, where the token always came from the base repository.
+    if: >-
+      always() && needs.inspectcode.result != 'skipped'
+      && github.event.pull_request.head.repo.full_name == github.repository
+      && github.actor != 'dependabot[bot]'
     timeout-minutes: 5
     permissions:
       contents: read
       security-events: write   # required for upload-sarif
+      actions: read            # upload-sarif reads the workflow run to associate the analysis
     steps:
       - name: Download SARIF artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
