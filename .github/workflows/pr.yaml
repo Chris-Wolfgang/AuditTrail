@@ -35,6 +35,13 @@ on:
   pull_request:
     branches:
       - main
+  # A push to main re-runs the same gates on the merged result. Without it the
+  # InspectCode alert set on main is never refreshed: a pull_request run attributes
+  # its SARIF to refs/pull/N/merge, so main's alerts freeze at whatever the last
+  # pull_request_target run uploaded and a finding stays open after it is fixed.
+  push:
+    branches:
+      - main
 
 concurrency:
   # The event name is part of the group on purpose: while this repository migrates to
@@ -153,7 +160,8 @@ jobs:
         # are legitimate. The guard's threat model is human PR authors disabling analyzers
         # in their own PRs; it does not apply to a trusted GitHub-controlled bot whose
         # only action is package-version updates.
-        if: github.event.pull_request.user.login != 'dependabot[bot]'
+        # pull_request only: there is no PR diff to classify on a push to main.
+        if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           # persist-credentials:false on the checkout, so the deepening fetch below needs the
@@ -1312,7 +1320,8 @@ jobs:
   changelog-check:
     name: "Changelog Fragment Check"
     runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login != 'dependabot[bot]'
+    # pull_request only: the check diffs against the PR's base, which a push does not have.
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1559,8 +1568,9 @@ jobs:
     # pull_request_target, where the token always came from the base repository.
     if: >-
       always() && needs.inspectcode.result != 'skipped'
-      && github.event.pull_request.head.repo.full_name == github.repository
-      && github.actor != 'dependabot[bot]'
+      && (github.event_name == 'push'
+          || (github.event.pull_request.head.repo.full_name == github.repository
+              && github.actor != 'dependabot[bot]'))
     timeout-minutes: 5
     permissions:
       contents: read
