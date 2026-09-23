@@ -31,11 +31,18 @@ internal class Program
         // hosting integration binds it) so Ctrl+C during a long-running migration
         // is observable instead of the process just being killed mid-write.
         using var cancellation = new CancellationTokenSource();
-        Console.CancelKeyPress += (_, e) =>
+
+        // Console.CancelKeyPress is a STATIC event, so a handler added here outlives this method
+        // unless it is removed. Left subscribed, a Ctrl+C arriving after `cancellation` has been
+        // disposed would call Cancel() on a disposed source and throw during shutdown. Held in a
+        // variable so the finally block can unsubscribe it.
+        ConsoleCancelEventHandler onCancelKeyPress = (_, e) =>
         {
             e.Cancel = true; // let the app observe cancellation instead of dying immediately
             cancellation.Cancel();
         };
+
+        Console.CancelKeyPress += onCancelKeyPress;
 
         try
         {
@@ -63,6 +70,7 @@ internal class Program
         }
         finally
         {
+            Console.CancelKeyPress -= onCancelKeyPress;
             await Log.CloseAndFlushAsync().ConfigureAwait(false);
         }
     }
