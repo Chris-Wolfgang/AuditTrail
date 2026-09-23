@@ -18,9 +18,16 @@
       added). Default is the ProjectReference (current source); pass
       -p:UseBaselinePackage=true -p:BaselineVersion=X.Y.Z to switch to the
       published package instead.
+
+      BaselineVersion must be bumped to the new version AFTER each release,
+      alongside PackageValidationBaselineVersion in the src projects. Left
+      behind, this gate silently stops measuring what it is for: it compares
+      main against a package several releases old, so accumulated change reads
+      as a regression and a regression introduced since the last release is
+      invisible against the larger delta.
     -->
     <UseBaselinePackage Condition="'$(UseBaselinePackage)' == ''">false</UseBaselinePackage>
-    <BaselineVersion Condition="'$(BaselineVersion)' == ''">0.2.1</BaselineVersion>
+    <BaselineVersion Condition="'$(BaselineVersion)' == ''">0.4.1</BaselineVersion>
 
     <!--
       Example/demo-style code: relax the strict-library analyzers that don't
