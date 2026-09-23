@@ -100,7 +100,7 @@ internal class Program
     {
         private readonly CancellationTokenSource _cancellation;
         private readonly ConsoleCancelEventHandler _handler;
-        private readonly object _gate = new();
+        private readonly Lock _gate = new();
         private bool _shuttingDown;
 
 
