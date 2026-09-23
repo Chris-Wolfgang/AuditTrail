@@ -68,7 +68,10 @@ jobs:
           fetch-depth: 0
 
       - name: Fetch trusted gitleaks config from main
-        # Prevent PR from modifying .gitleaks.toml to bypass the scan
+        # Prevent PR from modifying .gitleaks.toml to bypass the scan. pull_request only: on a
+        # push the checked-out .gitleaks.toml is already main's, and fetching the moving ref would
+        # scan the pushed commit with a later commit's allowlist.
+        if: github.event_name == 'pull_request'
         run: |
           git fetch origin main --depth=1
           git checkout origin/main -- .gitleaks.toml 2>/dev/null || true
@@ -110,7 +113,10 @@ jobs:
         # Skip for Dependabot — its package-version bumps to protected files (e.g.
         # Directory.Build.props) are legitimate and should not be overwritten by main's
         # older versions. Dependabot's identity is GitHub-controlled and not spoofable.
-        if: github.event.pull_request.user.login != 'dependabot[bot]'
+        # pull_request only. On a push the checked-out files ARE the trusted configuration, and
+        # restoring would fetch the MOVING main ref: if another commit lands mid-run, SHA A would
+        # be built with SHA B's configuration.
+        if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
         run: |
           echo "Fetching configuration files from main branch to prevent malicious overrides..."
           
@@ -260,7 +266,10 @@ jobs:
         # Skip for Dependabot — its package-version bumps to protected files (e.g.
         # Directory.Build.props) are legitimate and should not be overwritten by main's
         # older versions. Dependabot's identity is GitHub-controlled and not spoofable.
-        if: github.event.pull_request.user.login != 'dependabot[bot]'
+        # pull_request only. On a push the checked-out files ARE the trusted configuration, and
+        # restoring would fetch the MOVING main ref: if another commit lands mid-run, SHA A would
+        # be built with SHA B's configuration.
+        if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
         run: |
           echo "Fetching configuration files from main branch to prevent malicious overrides..."
           
@@ -605,7 +614,10 @@ jobs:
         # Skip for Dependabot — its package-version bumps to protected files (e.g.
         # Directory.Build.props) are legitimate and should not be overwritten by main's
         # older versions. Dependabot's identity is GitHub-controlled and not spoofable.
-        if: github.event.pull_request.user.login != 'dependabot[bot]'
+        # pull_request only. On a push the checked-out files ARE the trusted configuration, and
+        # restoring would fetch the MOVING main ref: if another commit lands mid-run, SHA A would
+        # be built with SHA B's configuration.
+        if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
         shell: pwsh
         run: |
           Write-Host "Fetching configuration files from main branch to prevent malicious overrides..."
@@ -887,7 +899,10 @@ jobs:
         # Skip for Dependabot — its package-version bumps to protected files (e.g.
         # Directory.Build.props) are legitimate and should not be overwritten by main's
         # older versions. Dependabot's identity is GitHub-controlled and not spoofable.
-        if: github.event.pull_request.user.login != 'dependabot[bot]'
+        # pull_request only. On a push the checked-out files ARE the trusted configuration, and
+        # restoring would fetch the MOVING main ref: if another commit lands mid-run, SHA A would
+        # be built with SHA B's configuration.
+        if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
         run: |
           echo "Fetching configuration files from main branch to prevent malicious overrides..."
           
@@ -1226,7 +1241,10 @@ jobs:
         # Skip for Dependabot — its package-version bumps to protected files (e.g.
         # Directory.Build.props) are legitimate and should not be overwritten by main's
         # older versions. Dependabot's identity is GitHub-controlled and not spoofable.
-        if: github.event.pull_request.user.login != 'dependabot[bot]'
+        # pull_request only. On a push the checked-out files ARE the trusted configuration, and
+        # restoring would fetch the MOVING main ref: if another commit lands mid-run, SHA A would
+        # be built with SHA B's configuration.
+        if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
         run: |
           echo "Fetching configuration files from main branch to prevent malicious overrides..."
           
@@ -1420,7 +1438,10 @@ jobs:
       - name: Fetch trusted configuration files from main branch
         # Skip for Dependabot — its package-version bumps to protected files are
         # legitimate and should not be overwritten by main's older versions.
-        if: github.event.pull_request.user.login != 'dependabot[bot]'
+        # pull_request only. On a push the checked-out files ARE the trusted configuration, and
+        # restoring would fetch the MOVING main ref: if another commit lands mid-run, SHA A would
+        # be built with SHA B's configuration.
+        if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
         run: |
           echo "Fetching configuration files from main branch to prevent malicious overrides..."
 
