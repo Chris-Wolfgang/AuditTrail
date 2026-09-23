@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790175482991,
+  "lastUpdate": 1790175486494,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -1874,6 +1874,42 @@ window.BENCHMARK_DATA = {
             "value": 57496759.833333336,
             "unit": "ns",
             "range": "± 3338114.871247593"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c0b4bbeb8d1ae7b33815b65f47c53a1b2db49b0c",
+          "message": "security(ci): silence zizmor self-repository on the docfx call, with the reason (#352)\n\nzizmor flags `uses: ./.github/workflows/docfx.yaml` and asks for GitHub's\ndedicated `$/` self-repository syntax. We cannot switch yet: actionlint is a\nrequired check here and rejects `$/` until rhysd/actionlint#732 ships. The\nalert has therefore been sitting open with nothing to do about it.\n\nrepo-template resolved this by keeping `./` and carrying a rule-specific inline\nignore plus the reason and the exit condition. This takes the same four lines,\nso the alert closes and the next reader learns why the preferred syntax is not\nin use and when to switch.\n\nNo behaviour change: the workflow call is byte-identical apart from the comment.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-23T10:47:56-04:00",
+          "tree_id": "c98ddde8b1c5f41f6af4b1310d4992e481e7d859",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/c0b4bbeb8d1ae7b33815b65f47c53a1b2db49b0c"
+        },
+        "date": 1790175485199,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 18438430.833333332,
+            "unit": "ns",
+            "range": "± 602583.6919211582"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 84934808,
+            "unit": "ns",
+            "range": "± 4178800.7827759627"
           }
         ]
       }
