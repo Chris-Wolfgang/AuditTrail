@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790214013291,
+  "lastUpdate": 1790214016428,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -2234,6 +2234,42 @@ window.BENCHMARK_DATA = {
             "value": 78769743,
             "unit": "ns",
             "range": "± 3434203.338117299"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "6a2838fddc4442e9a936159b9c98758eeba316da",
+          "message": "fix(ci): keep the benchmark-regression label description under GitHub's limit (#357)\n\nSurfaced by the run behind #354:\n\n  HTTP 422: Validation Failed (.../labels)\n  description is too long (maximum is 100 characters)\n\nThe description is 104 characters. `|| true` keeps that from failing the step,\nso the consequence is quiet rather than loud: the label is never created or\nupdated from this workflow, and every run logs a 422 that reads like a real\nfailure while triaging something else - which is exactly what it cost while\ntriaging #354.\n\nShortened to 82 characters. The comment above the call already explains why\nlabel creation matters here (the first real run of this handler failed outright\nbecause `gh issue create --label` hard-fails on a missing label), so the fix\nbelongs with it.\n\nChecked the other three label-creating workflows in this repository -\ncoyote.yaml (53), fuzz.yaml (54) and shadow.yaml (73) are all within the limit.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-23T21:30:57-04:00",
+          "tree_id": "622c33b204ff2aaa5c2157fc16df67d295780e7e",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/6a2838fddc4442e9a936159b9c98758eeba316da"
+        },
+        "date": 1790214014933,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 15475629,
+            "unit": "ns",
+            "range": "± 727575.7715846509"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 78505900,
+            "unit": "ns",
+            "range": "± 2068327.225396649"
           }
         ]
       }
