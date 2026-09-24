@@ -791,9 +791,33 @@ jobs:
       # with `gh attestation verify <pkg> --repo Chris-Wolfgang/AuditTrail`.
       # See SECURITY.md → "Verifying the supply chain".
       - name: Attest build provenance for packages
+        id: attest
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: './nuget-packages/*.nupkg'
+
+      # The attestation above lives in GitHub's attestation store, which is what
+      # `gh attestation verify` reads. Tooling that audits the RELEASE PAGE does not
+      # query that store - OpenSSF Scorecard's Signed-Releases check looks for an asset
+      # ending in .intoto.jsonl, sees only .nupkg and .bom.json, and scores 0 on a
+      # repository that has attested every release since #47. The bundle the action
+      # writes IS that document, so it is attached below under a deterministic name.
+      #
+      # Nothing cryptographic changes: the attestation was already real and already
+      # verifiable. This only puts the same evidence where tools and people look.
+      - name: Stage the provenance bundle for the release
+        shell: bash
+        env:
+          BUNDLE_PATH: ${{ steps.attest.outputs.bundle-path }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          if [ ! -f "$BUNDLE_PATH" ]; then
+            echo "::error::attest-build-provenance reported no bundle at '$BUNDLE_PATH'"
+            exit 1
+          fi
+          cp "$BUNDLE_PATH" "./AuditTrail-${RELEASE_TAG}.intoto.jsonl"
+          ls -l "./AuditTrail-${RELEASE_TAG}.intoto.jsonl"
 
       - name: Attach artifacts to release
         # Uses the runner-bundled `gh` CLI instead of an external action — the
@@ -808,6 +832,7 @@ jobs:
           gh release upload "$RELEASE_TAG" \
             ./nuget-packages/*.nupkg \
             ./nuget-packages/*.bom.json \
+            "./AuditTrail-${RELEASE_TAG}.intoto.jsonl" \
             release-coverage.zip \
             reproducible-build-manifest.json \
             --clobber
