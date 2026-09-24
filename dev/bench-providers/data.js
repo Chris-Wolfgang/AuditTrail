@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790214016428,
+  "lastUpdate": 1790216898443,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -1584,6 +1584,90 @@ window.BENCHMARK_DATA = {
             "value": 38668538.5,
             "unit": "ns",
             "range": "± 4028332.1148198545"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "094696ac88e1d6f48b63d7dd8d415bbefced1dc9",
+          "message": "fix(shadow): compare against 0.4.1, not a package three releases old (#356)\n\nTriaging #347 turned up why the shadow gate fired: BaselineVersion is still\n0.2.1, while 0.3.0, 0.4.0 and 0.4.1 have all shipped since.\nPackageValidationBaselineVersion was bumped to 0.4.1 after the release; this\nproperty was not.\n\nThe gate is therefore not measuring what it is for. It compares main against a\npackage three releases old, so every accumulated change since 0.2.1 reads as a\nregression - and, worse in the other direction, a regression introduced since\n0.4.1 is invisible inside that larger delta. Both failure modes are silent.\n\nBumped to 0.4.1 and the comment now says the property must be bumped after each\nrelease alongside PackageValidationBaselineVersion, so the next release does not\nrepeat it.\n\nVerified the baseline package restores and the sample builds against it\n(-p:UseBaselinePackage=true, 0 Error(s)).\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-23T22:19:23-04:00",
+          "tree_id": "6a4da2281d87c90f0618cb80d2ba6bffe65ec168",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/094696ac88e1d6f48b63d7dd8d415bbefced1dc9"
+        },
+        "date": 1790216895066,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3685229.3333333335,
+            "unit": "ns",
+            "range": "± 44307.99585101241"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 22141755.166666668,
+            "unit": "ns",
+            "range": "± 2033373.2008995134"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 10665292.666666666,
+            "unit": "ns",
+            "range": "± 10066202.070955576"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 26238870.333333332,
+            "unit": "ns",
+            "range": "± 93505.44044243272"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7876903.5,
+            "unit": "ns",
+            "range": "± 5306063.292393241"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 30085501.666666668,
+            "unit": "ns",
+            "range": "± 596871.5736004969"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 35446639,
+            "unit": "ns",
+            "range": "± 31092826.00127137"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 93117091,
+            "unit": "ns",
+            "range": "± 6152145.429585763"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6461284.5,
+            "unit": "ns",
+            "range": "± 3096458.993941467"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 31748464,
+            "unit": "ns",
+            "range": "± 2834696.0987190497"
           }
         ]
       }
