@@ -24,7 +24,11 @@ on:
     # label from the event payload, and a re-run replays the ORIGINAL payload - so a
     # label added after a red run is invisible to it and the only way through was an
     # empty commit, which re-runs every workflow rather than this one.
-    types: [opened, synchronize, reopened, labeled]
+    #
+    # `unlabeled` for the symmetric case: without it, removing the override after an
+    # acknowledged run leaves the green check and its comment standing, still claiming
+    # an acknowledgement that no longer exists.
+    types: [opened, synchronize, reopened, labeled, unlabeled]
     branches:
       - main
     paths:
@@ -61,10 +65,11 @@ env:
 jobs:
   perf-delta:
     name: Benchmark delta vs base
-    # A label event only re-runs this for the override itself; every other label would
-    # otherwise pay for a full base-and-head BenchmarkDotNet run.
+    # A label event re-runs this only for the override itself, added or removed; every
+    # other label would otherwise pay for a full base-and-head BenchmarkDotNet run.
+    # `github.event.label` is populated for both actions.
     if: >-
-      github.event.action != 'labeled'
+      (github.event.action != 'labeled' && github.event.action != 'unlabeled')
       || github.event.label.name == 'perf-impact-acknowledged'
     runs-on: ubuntu-latest
     timeout-minutes: 30
