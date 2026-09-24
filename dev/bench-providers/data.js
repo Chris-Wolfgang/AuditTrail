@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790208783084,
+  "lastUpdate": 1790208787167,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -1994,6 +1994,42 @@ window.BENCHMARK_DATA = {
             "value": 84934808,
             "unit": "ns",
             "range": "± 4178800.7827759627"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "a3bbe78a1cb788e154b474652db065170b627466",
+          "message": "fix(cli): unsubscribe the Ctrl+C handler before the token source is disposed (#355)\n\n* fix(cli): unsubscribe the Ctrl+C handler before the token source is disposed\n\nClears the repository's three open InspectCode warnings. Each was checked\nagainst the code rather than taken on the analyzer's word; all three were real.\n\nAccessToDisposedClosure, Cli/Program.cs:37 — the genuine bug. Console.CancelKeyPress\nis a STATIC event, so the handler added in Main outlives the method. `cancellation`\nis a `using` local, so once Main returns the CancellationTokenSource is disposed\nwhile the handler is still subscribed; a Ctrl+C arriving in that window calls\nCancel() on a disposed source and throws during shutdown. The handler is now held\nin a variable and removed in the existing finally block.\n\nRedundantCast, EntityFrameworkCore/Internal/AuditCapture.cs:91 — correct, and this\nis the finding class that most often is not, so it was verified: ReadKeyValues\nreturns IReadOnlyList<object?> and object?[] converts to it but not the reverse,\nso best-common-type resolution already produces IReadOnlyList<object?> and the\ncast changes nothing. Rather than just deleting it, the variable now states its\ntype and the conditional is target-typed - which is what the sibling\nResolvePostSaveKey already does, via its return type.\n\nInvalidXmlDocComment, Npgsql test support — <paramref name=\"connection\"/> on a\nCLASS summary, where there is no such parameter; `connection` belongs to\nBeginBinaryImport. Now <c>connection</c>. Documentation only.\n\nTEST-CODE CHANGE: one XML doc comment in\ntests/.../TestSupport/FakeNpgsqlBinaryImporterFactory.cs. No behaviour, no\nassertions, no coverage effect.\n\nVerified locally: EntityFrameworkCore builds clean on net6.0, net8.0 and net10.0\n(0 Error(s)); tests pass 286/307/309 across those three TFMs, Npgsql unit 23/23,\nCli unit 30/30.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* chore: re-fire CI so the perf-impact-acknowledged label is visible to the gate\n\nEmpty on purpose. pr-benchmarks.yaml reads the override label from the event\npayload:\n\n  LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}\n\nand its trigger has no `labeled` type, so adding the label neither starts a run\nnor reaches a re-run - a re-run replays the original payload, which predates the\nlabel. A fresh `synchronize` event is the only way to make the documented\noverride take effect.\n\nThe three benchmarks over threshold are all _without_audit control paths, which\nthis PR cannot touch: it changes a CLI event-handler unsubscribe, a redundant\ncast whose removal emits identical IL, and an XML doc comment. Every audited path\nis flat or faster in the same run and allocations are unchanged. Reasoning in full\non the PR.\n\nWorth fixing separately: adding `labeled` to that workflow's trigger types would\nmake the override work as documented, without an empty commit.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* fix(cli): close the shutdown race the unsubscribe alone left open\n\nReview finding on Program.cs:74, and it is right. Removing the handler stops\nFUTURE invocations; it does not wait for one already dispatched.\nConsole.CancelKeyPress runs handlers on their own thread, so a Ctrl+C that\narrived moments before Main returned can still be inside the lambda when the\n`using` disposes the CancellationTokenSource - reproducing the exact\nObjectDisposedException the previous commit claimed to prevent. A narrower\nwindow than the original bug, but the same bug, and the claim was wrong.\n\nMoved into ConsoleCancellationBridge. Disposal unsubscribes and then takes the\nsame lock the callback holds, so it cannot return until any in-flight callback\nhas left; the callback re-checks a shutdown flag under that lock and does\nnothing if it lost the race. The bridge is declared AFTER `cancellation` in\nMain, so `using` disposes it FIRST - unsubscribe and drain, then dispose the\nsource.\n\nExtracting it was not only for tidiness: the inline lock pushed Main to 70 lines\nand MA0051 (max 60) failed the Release build locally. Caught before pushing.\n\nVerified: build 0 Error(s), Cli unit tests 30/30, and `audittrail --help` runs\nand exits 0.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* fix(cli): use System.Threading.Lock for the shutdown gate\n\nThe bridge added in 4bde2c3 guarded itself with a plain `object`, which tripped\nMA0158 (\"Use System.Threading.Lock\") - a NEW InspectCode alert introduced by the\nvery PR that clears three of them.\n\nSystem.Threading.Lock exists on net9.0+ and this project targets net10.0 only,\nso there is no multi-TFM conditional to worry about. C# 13 recognises it in a\n`lock` statement, so the statement bodies are unchanged; it takes the dedicated\nlock path rather than Monitor.\n\nVerified: build 0 Error(s), Cli unit tests 30/30.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-23T20:03:57-04:00",
+          "tree_id": "e7b2ffd330decff928254b446c8c03a18cb81695",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/a3bbe78a1cb788e154b474652db065170b627466"
+        },
+        "date": 1790208785604,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 18580131.833333332,
+            "unit": "ns",
+            "range": "± 485053.9963553886"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 93508000,
+            "unit": "ns",
+            "range": "± 11478967.134757074"
           }
         ]
       }
