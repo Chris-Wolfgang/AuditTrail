@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790261464651,
+  "lastUpdate": 1790261470194,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -2474,6 +2474,42 @@ window.BENCHMARK_DATA = {
             "value": 57571341,
             "unit": "ns",
             "range": "± 1116515.722517153"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b9e798fc6af7a0429f1e15cedc345ce8e8f46eb3",
+          "message": "ci(release): attach the SLSA provenance bundle to the GitHub Release (#359)\n\nAuditTrail has attested every release since #47 - attest-build-provenance binds\neach .nupkg by SHA-256 to this repository, commit and workflow run, signed\nkeylessly through the job's OIDC identity. That lands in GitHub's attestation\nstore, which is what `gh attestation verify` reads, exactly as SECURITY.md\ndocuments.\n\nTooling that audits the RELEASE PAGE never queries that store. OpenSSF\nScorecard's Signed-Releases check looks for an asset whose name ends in\n.intoto.jsonl, finds .nupkg and .bom.json, and scores 0 - a false negative on a\nrepository that has been doing this correctly for months. Anyone reading the\nrelease page without the gh CLI is in the same position.\n\nThe bundle the action writes IS that document. It is now copied to\nAuditTrail-<tag>.intoto.jsonl and attached alongside the packages.\n\nTo be exact about what this buys: NOTHING cryptographic. The attestation was\nalready real and already verifiable. This only makes the same evidence visible\nwhere tools and people look for it.\n\nUnlike repo-template, attesting and attaching already happen in the same job\nhere (update-release-artifacts holds contents/id-token/attestations write), so\nno artifact round-trip is needed. Staging fails loudly if the action reports no\nbundle, rather than letting the upload quietly omit it.\n\nSame change at source in repo-template#647.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-24T10:41:35-04:00",
+          "tree_id": "aea83e2cd8afd8ca30690dea3ce1bcca4d0659a9",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b9e798fc6af7a0429f1e15cedc345ce8e8f46eb3"
+        },
+        "date": 1790261467545,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17007338.166666668,
+            "unit": "ns",
+            "range": "± 651138.3307395851"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 90660613.16666667,
+            "unit": "ns",
+            "range": "± 8945284.549604911"
           }
         ]
       }
