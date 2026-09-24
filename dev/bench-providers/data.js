@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790216902063,
+  "lastUpdate": 1790261464651,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -1668,6 +1668,90 @@ window.BENCHMARK_DATA = {
             "value": 31748464,
             "unit": "ns",
             "range": "± 2834696.0987190497"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b9e798fc6af7a0429f1e15cedc345ce8e8f46eb3",
+          "message": "ci(release): attach the SLSA provenance bundle to the GitHub Release (#359)\n\nAuditTrail has attested every release since #47 - attest-build-provenance binds\neach .nupkg by SHA-256 to this repository, commit and workflow run, signed\nkeylessly through the job's OIDC identity. That lands in GitHub's attestation\nstore, which is what `gh attestation verify` reads, exactly as SECURITY.md\ndocuments.\n\nTooling that audits the RELEASE PAGE never queries that store. OpenSSF\nScorecard's Signed-Releases check looks for an asset whose name ends in\n.intoto.jsonl, finds .nupkg and .bom.json, and scores 0 - a false negative on a\nrepository that has been doing this correctly for months. Anyone reading the\nrelease page without the gh CLI is in the same position.\n\nThe bundle the action writes IS that document. It is now copied to\nAuditTrail-<tag>.intoto.jsonl and attached alongside the packages.\n\nTo be exact about what this buys: NOTHING cryptographic. The attestation was\nalready real and already verifiable. This only makes the same evidence visible\nwhere tools and people look for it.\n\nUnlike repo-template, attesting and attaching already happen in the same job\nhere (update-release-artifacts holds contents/id-token/attestations write), so\nno artifact round-trip is needed. Staging fails loudly if the action reports no\nbundle, rather than letting the upload quietly omit it.\n\nSame change at source in repo-template#647.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-24T10:41:35-04:00",
+          "tree_id": "aea83e2cd8afd8ca30690dea3ce1bcca4d0659a9",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b9e798fc6af7a0429f1e15cedc345ce8e8f46eb3"
+        },
+        "date": 1790261461598,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7021746.333333333,
+            "unit": "ns",
+            "range": "± 113889.18388650141"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 51846461.833333336,
+            "unit": "ns",
+            "range": "± 2636887.5173886986"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7043967,
+            "unit": "ns",
+            "range": "± 262306.2498473874"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 43599082.166666664,
+            "unit": "ns",
+            "range": "± 1364042.0680995632"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12035994,
+            "unit": "ns",
+            "range": "± 6788721.640034521"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 51177149.666666664,
+            "unit": "ns",
+            "range": "± 2809659.718655683"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 26309522,
+            "unit": "ns",
+            "range": "± 1169598.8795817993"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 145636483.33333334,
+            "unit": "ns",
+            "range": "± 33445631.914907455"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6603751.166666667,
+            "unit": "ns",
+            "range": "± 161922.67252405803"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 51557481.666666664,
+            "unit": "ns",
+            "range": "± 10742607.345699942"
           }
         ]
       }
