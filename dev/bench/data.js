@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790216905856,
+  "lastUpdate": 1790261475809,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -8448,6 +8448,138 @@ window.BENCHMARK_DATA = {
             "value": 21890903.2979798,
             "unit": "ns",
             "range": "± 14591402.378654808"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b9e798fc6af7a0429f1e15cedc345ce8e8f46eb3",
+          "message": "ci(release): attach the SLSA provenance bundle to the GitHub Release (#359)\n\nAuditTrail has attested every release since #47 - attest-build-provenance binds\neach .nupkg by SHA-256 to this repository, commit and workflow run, signed\nkeylessly through the job's OIDC identity. That lands in GitHub's attestation\nstore, which is what `gh attestation verify` reads, exactly as SECURITY.md\ndocuments.\n\nTooling that audits the RELEASE PAGE never queries that store. OpenSSF\nScorecard's Signed-Releases check looks for an asset whose name ends in\n.intoto.jsonl, finds .nupkg and .bom.json, and scores 0 - a false negative on a\nrepository that has been doing this correctly for months. Anyone reading the\nrelease page without the gh CLI is in the same position.\n\nThe bundle the action writes IS that document. It is now copied to\nAuditTrail-<tag>.intoto.jsonl and attached alongside the packages.\n\nTo be exact about what this buys: NOTHING cryptographic. The attestation was\nalready real and already verifiable. This only makes the same evidence visible\nwhere tools and people look for it.\n\nUnlike repo-template, attesting and attaching already happen in the same job\nhere (update-release-artifacts holds contents/id-token/attestations write), so\nno artifact round-trip is needed. Staging fails loudly if the action reports no\nbundle, rather than letting the upload quietly omit it.\n\nSame change at source in repo-template#647.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-24T10:41:35-04:00",
+          "tree_id": "aea83e2cd8afd8ca30690dea3ce1bcca4d0659a9",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b9e798fc6af7a0429f1e15cedc345ce8e8f46eb3"
+        },
+        "date": 1790261474102,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 690801.4791666666,
+            "unit": "ns",
+            "range": "± 110018.00092903261"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1842460.7325581396,
+            "unit": "ns",
+            "range": "± 169333.1851992622"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 870411.4,
+            "unit": "ns",
+            "range": "± 25965.463027472368"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 3615307.3988764044,
+            "unit": "ns",
+            "range": "± 289404.7782205136"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 737718.2,
+            "unit": "ns",
+            "range": "± 16790.06499501542"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1860210.1153846155,
+            "unit": "ns",
+            "range": "± 30619.68917090892"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1686516.357142857,
+            "unit": "ns",
+            "range": "± 21854.276679184095"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 10856267.635416666,
+            "unit": "ns",
+            "range": "± 733657.2660320796"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 3502279.875,
+            "unit": "ns",
+            "range": "± 67315.14299459917"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 23888363.112244897,
+            "unit": "ns",
+            "range": "± 953008.9287519996"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 3272582.8333333335,
+            "unit": "ns",
+            "range": "± 264460.96534659073"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 16055017.92,
+            "unit": "ns",
+            "range": "± 2793067.3094887407"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 8628858.65625,
+            "unit": "ns",
+            "range": "± 523195.2212117241"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 27338004.88,
+            "unit": "ns",
+            "range": "± 16239270.040013988"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 17526196.63207547,
+            "unit": "ns",
+            "range": "± 726388.2795378007"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 21209619.151898734,
+            "unit": "ns",
+            "range": "± 2220958.906246105"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 13086466.833333334,
+            "unit": "ns",
+            "range": "± 134886.97029218968"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 22392271.744186047,
+            "unit": "ns",
+            "range": "± 7035689.495566567"
           }
         ]
       }
