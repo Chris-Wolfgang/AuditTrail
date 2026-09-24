@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790216898443,
+  "lastUpdate": 1790216902063,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -2354,6 +2354,42 @@ window.BENCHMARK_DATA = {
             "value": 78505900,
             "unit": "ns",
             "range": "± 2068327.225396649"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "094696ac88e1d6f48b63d7dd8d415bbefced1dc9",
+          "message": "fix(shadow): compare against 0.4.1, not a package three releases old (#356)\n\nTriaging #347 turned up why the shadow gate fired: BaselineVersion is still\n0.2.1, while 0.3.0, 0.4.0 and 0.4.1 have all shipped since.\nPackageValidationBaselineVersion was bumped to 0.4.1 after the release; this\nproperty was not.\n\nThe gate is therefore not measuring what it is for. It compares main against a\npackage three releases old, so every accumulated change since 0.2.1 reads as a\nregression - and, worse in the other direction, a regression introduced since\n0.4.1 is invisible inside that larger delta. Both failure modes are silent.\n\nBumped to 0.4.1 and the comment now says the property must be bumped after each\nrelease alongside PackageValidationBaselineVersion, so the next release does not\nrepeat it.\n\nVerified the baseline package restores and the sample builds against it\n(-p:UseBaselinePackage=true, 0 Error(s)).\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-23T22:19:23-04:00",
+          "tree_id": "6a4da2281d87c90f0618cb80d2ba6bffe65ec168",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/094696ac88e1d6f48b63d7dd8d415bbefced1dc9"
+        },
+        "date": 1790216900613,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 13052362,
+            "unit": "ns",
+            "range": "± 2335800.9506865093"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 57571341,
+            "unit": "ns",
+            "range": "± 1116515.722517153"
           }
         ]
       }
