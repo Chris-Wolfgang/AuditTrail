@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790261475809,
+  "lastUpdate": 1790275367203,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -8580,6 +8580,138 @@ window.BENCHMARK_DATA = {
             "value": 22392271.744186047,
             "unit": "ns",
             "range": "± 7035689.495566567"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "f0d326e87d84895b2dc807431c7d6672ca067615",
+          "message": "ci(benchmarks): let the perf-impact-acknowledged label re-trigger the gate (#361)\n\n* ci(benchmarks): let the perf-impact-acknowledged label re-trigger the gate\n\nThe workflow documents an override - \"Add the 'perf-impact-acknowledged' label to\noverride\" - that could not work. The gate reads the label from the event payload:\n\n  LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}\n\nand the trigger had no `labeled` type, so adding the label started nothing, and a\nre-run replays the ORIGINAL payload, which predates the label. On #355 the only\nway through was an empty commit, which re-runs every workflow on the PR rather\nthan this one.\n\n`labeled` added to the trigger types (with the three defaults spelled out, since\nnaming any type replaces them all). The job then ignores label events other than\nthe override, so an unrelated label does not pay for a full base-and-head\nBenchmarkDotNet run.\n\nKnown trade-off: on an unrelated label the job is skipped, and that skipped check\nrun becomes the latest for \"Benchmark delta vs base\" - visually superseding an\nearlier failure. It is not a required check so nothing is unblocked by it, but\nthe alternative is re-running the whole suite on every label. Raised on the PR so\nthe choice is visible rather than buried here.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* ci(benchmarks): re-evaluate when the override label is removed too\n\nReview finding, and it is the symmetric half of what this PR set out to fix.\nAdding the label now re-runs the gate; removing it did not. So an acknowledged\nrun stayed green after the acknowledgement was withdrawn - the check and its\ncomment kept asserting an override that no longer existed, which is worse than\nthe original bug because it reads as a pass rather than as something stuck.\n\n`unlabeled` added to the trigger types, and the job guard now covers both label\nactions while still ignoring every other label, so an unrelated add or remove\ndoes not pay for a full base-and-head BenchmarkDotNet run. `github.event.label`\nis populated for both actions, so the same condition works for each.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-24T14:28:15-04:00",
+          "tree_id": "9a90e29341169940736d80e742b1e1f66efc6e72",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/f0d326e87d84895b2dc807431c7d6672ca067615"
+        },
+        "date": 1790275365513,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 538247.8823529412,
+            "unit": "ns",
+            "range": "± 17139.706467845986"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1050142.8421052631,
+            "unit": "ns",
+            "range": "± 22447.24442693519"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 705741.6,
+            "unit": "ns",
+            "range": "± 61274.18363390183"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 1835144.625,
+            "unit": "ns",
+            "range": "± 34303.24477728018"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 654719.9175824176,
+            "unit": "ns",
+            "range": "± 51631.89799383623"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1614490.8936170214,
+            "unit": "ns",
+            "range": "± 239990.77667418125"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 885674.5666666667,
+            "unit": "ns",
+            "range": "± 16107.04424630357"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 5546240.026881721,
+            "unit": "ns",
+            "range": "± 910854.454084181"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1493602.6,
+            "unit": "ns",
+            "range": "± 15664.739552802748"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 10388064.424242424,
+            "unit": "ns",
+            "range": "± 1927484.2381893692"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1270609.6538461538,
+            "unit": "ns",
+            "range": "± 19054.440002469037"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 8852366.235294119,
+            "unit": "ns",
+            "range": "± 264385.80863144016"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 2470248.714285714,
+            "unit": "ns",
+            "range": "± 26666.883355804588"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 19185494.41836735,
+            "unit": "ns",
+            "range": "± 4721521.738161278"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 5360052.357142857,
+            "unit": "ns",
+            "range": "± 36606.42393100538"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 22346368.01,
+            "unit": "ns",
+            "range": "± 12938440.054328619"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 6235424.36,
+            "unit": "ns",
+            "range": "± 991285.3610430108"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 19874769.05,
+            "unit": "ns",
+            "range": "± 10985247.569809109"
           }
         ]
       }
