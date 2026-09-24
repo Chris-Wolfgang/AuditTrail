@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790275359922,
+  "lastUpdate": 1790275363454,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -2594,6 +2594,42 @@ window.BENCHMARK_DATA = {
             "value": 90660613.16666667,
             "unit": "ns",
             "range": "± 8945284.549604911"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "f0d326e87d84895b2dc807431c7d6672ca067615",
+          "message": "ci(benchmarks): let the perf-impact-acknowledged label re-trigger the gate (#361)\n\n* ci(benchmarks): let the perf-impact-acknowledged label re-trigger the gate\n\nThe workflow documents an override - \"Add the 'perf-impact-acknowledged' label to\noverride\" - that could not work. The gate reads the label from the event payload:\n\n  LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}\n\nand the trigger had no `labeled` type, so adding the label started nothing, and a\nre-run replays the ORIGINAL payload, which predates the label. On #355 the only\nway through was an empty commit, which re-runs every workflow on the PR rather\nthan this one.\n\n`labeled` added to the trigger types (with the three defaults spelled out, since\nnaming any type replaces them all). The job then ignores label events other than\nthe override, so an unrelated label does not pay for a full base-and-head\nBenchmarkDotNet run.\n\nKnown trade-off: on an unrelated label the job is skipped, and that skipped check\nrun becomes the latest for \"Benchmark delta vs base\" - visually superseding an\nearlier failure. It is not a required check so nothing is unblocked by it, but\nthe alternative is re-running the whole suite on every label. Raised on the PR so\nthe choice is visible rather than buried here.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* ci(benchmarks): re-evaluate when the override label is removed too\n\nReview finding, and it is the symmetric half of what this PR set out to fix.\nAdding the label now re-runs the gate; removing it did not. So an acknowledged\nrun stayed green after the acknowledgement was withdrawn - the check and its\ncomment kept asserting an override that no longer existed, which is worse than\nthe original bug because it reads as a pass rather than as something stuck.\n\n`unlabeled` added to the trigger types, and the job guard now covers both label\nactions while still ignoring every other label, so an unrelated add or remove\ndoes not pay for a full base-and-head BenchmarkDotNet run. `github.event.label`\nis populated for both actions, so the same condition works for each.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-24T14:28:15-04:00",
+          "tree_id": "9a90e29341169940736d80e742b1e1f66efc6e72",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/f0d326e87d84895b2dc807431c7d6672ca067615"
+        },
+        "date": 1790275362214,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 110006575.16666667,
+            "unit": "ns",
+            "range": "± 172239638.23879156"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 99277097.83333333,
+            "unit": "ns",
+            "range": "± 62680939.5539836"
           }
         ]
       }
