@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790208787167,
+  "lastUpdate": 1790211690840,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -1416,6 +1416,90 @@ window.BENCHMARK_DATA = {
             "value": 46421435.833333336,
             "unit": "ns",
             "range": "± 2636890.0876263944"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "f98d1ee6611ba33f10e8c43fb1dc449cccd292f4",
+          "message": "ci: re-run the gates on push to main so main's InspectCode alerts refresh (#358)\n\n* ci: re-run the gates on push to main so main's InspectCode alerts refresh\n\n#351 swapped this workflow from pull_request_target to pull_request. That fixed\neight critical DangerousWorkflow alerts, but it silently broke something I did\nnot port at the time: under pull_request_target the InspectCode SARIF was\nattributed to refs/heads/main, and under pull_request it is attributed to\nrefs/pull/N/merge. Main is therefore never re-scanned, and an alert stays open\nafter the code that caused it is fixed - which is exactly what #355 would have\nleft behind for alerts #528/#531/#536 and issues #333/#334/#335.\n\nrepo-template's pr.yaml has carried the push trigger and this rationale all\nalong. Porting it is four changes, not one, because this workflow still has the\nPR-shaped pieces the template moved out:\n\n- push: branches [main] added.\n- The protected-file classifier is gated to pull_request. It diffs the PR\n  against its merge base; on a push there is no PR and it would fail closed.\n- changelog-check is gated to pull_request. It reads\n  github.event.pull_request.base.sha, which a push does not have.\n- inspectcode-upload-sarif now allows push. Its fork/Dependabot guard, added in\n  #351, tests github.event.pull_request.head.repo.full_name - empty on a push,\n  so without this the one job the trigger exists for would skip and the change\n  would accomplish nothing.\n\nChecked every remaining github.event.pull_request reference for push behaviour:\nthe concurrency group falls back to github.ref, and the six \"fetch trusted\nconfiguration from main\" steps are no-ops when the run is already on main.\n\nCost, stated plainly: one full matrix run per merge to main.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* ci: gate the trusted-config restoration to pull_request\n\nReview finding on this PR, and it corrects something I asserted. When I added the\npush trigger I checked every github.event.pull_request reference and called the\nsix \"fetch trusted configuration from main\" steps harmless on push - \"no-ops when\nthe run is already on main\". That is only true if main does not move.\n\nIt does. Those steps run `git fetch origin main:main-branch` and overwrite the\nchecked-out files from the MOVING main ref, not from the pushed SHA. If another\ncommit lands while the run is executing - routine here, several PRs often merge\nin a row - the run for SHA A is built and scanned with SHA B's configuration, so\nit no longer validates the merged result the trigger exists to validate.\n\nThe gitleaks job had the same problem and no guard at all: it fetched\n.gitleaks.toml from main unconditionally, so a push run could be scanned with a\nlater commit's allowlist.\n\nAll seven are now pull_request only. This does not weaken anything: on a push the\nchecked-out files ARE the trusted configuration, because the run is on main at\nthe pushed commit. Restoring them was never doing useful work there.\n\nRe-audited every remaining github.event.pull_request reference: PR_NUMBER sits\ninside the step gated above it, BASE_SHA/PR_LABELS inside changelog-check's\njob-level gate, and the SARIF upload's reference is the || branch after\ngithub.event_name == 'push' short-circuits.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-23T20:45:40-04:00",
+          "tree_id": "db08246bb2e711bf616cac9ac2a050498e801ef9",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/f98d1ee6611ba33f10e8c43fb1dc449cccd292f4"
+        },
+        "date": 1790211688240,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4886286.666666667,
+            "unit": "ns",
+            "range": "± 28138.686826739682"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 28740946.666666668,
+            "unit": "ns",
+            "range": "± 2440282.8586334684"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6311180.166666667,
+            "unit": "ns",
+            "range": "± 276038.3657108796"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 49317428.666666664,
+            "unit": "ns",
+            "range": "± 12656820.554457478"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 10218553,
+            "unit": "ns",
+            "range": "± 6940939.454600292"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 40257021.333333336,
+            "unit": "ns",
+            "range": "± 800723.00950849"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 21491064.666666668,
+            "unit": "ns",
+            "range": "± 1121765.0324744186"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 125246766.33333333,
+            "unit": "ns",
+            "range": "± 15092932.859293595"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6752833,
+            "unit": "ns",
+            "range": "± 107281.4540729198"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 36879214.333333336,
+            "unit": "ns",
+            "range": "± 4531192.7060989505"
           }
         ]
       }
