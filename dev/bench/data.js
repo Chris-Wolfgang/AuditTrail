@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790175489803,
+  "lastUpdate": 1790208791182,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -7920,6 +7920,138 @@ window.BENCHMARK_DATA = {
             "value": 23158568.36781609,
             "unit": "ns",
             "range": "± 6870365.452093178"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "a3bbe78a1cb788e154b474652db065170b627466",
+          "message": "fix(cli): unsubscribe the Ctrl+C handler before the token source is disposed (#355)\n\n* fix(cli): unsubscribe the Ctrl+C handler before the token source is disposed\n\nClears the repository's three open InspectCode warnings. Each was checked\nagainst the code rather than taken on the analyzer's word; all three were real.\n\nAccessToDisposedClosure, Cli/Program.cs:37 — the genuine bug. Console.CancelKeyPress\nis a STATIC event, so the handler added in Main outlives the method. `cancellation`\nis a `using` local, so once Main returns the CancellationTokenSource is disposed\nwhile the handler is still subscribed; a Ctrl+C arriving in that window calls\nCancel() on a disposed source and throws during shutdown. The handler is now held\nin a variable and removed in the existing finally block.\n\nRedundantCast, EntityFrameworkCore/Internal/AuditCapture.cs:91 — correct, and this\nis the finding class that most often is not, so it was verified: ReadKeyValues\nreturns IReadOnlyList<object?> and object?[] converts to it but not the reverse,\nso best-common-type resolution already produces IReadOnlyList<object?> and the\ncast changes nothing. Rather than just deleting it, the variable now states its\ntype and the conditional is target-typed - which is what the sibling\nResolvePostSaveKey already does, via its return type.\n\nInvalidXmlDocComment, Npgsql test support — <paramref name=\"connection\"/> on a\nCLASS summary, where there is no such parameter; `connection` belongs to\nBeginBinaryImport. Now <c>connection</c>. Documentation only.\n\nTEST-CODE CHANGE: one XML doc comment in\ntests/.../TestSupport/FakeNpgsqlBinaryImporterFactory.cs. No behaviour, no\nassertions, no coverage effect.\n\nVerified locally: EntityFrameworkCore builds clean on net6.0, net8.0 and net10.0\n(0 Error(s)); tests pass 286/307/309 across those three TFMs, Npgsql unit 23/23,\nCli unit 30/30.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* chore: re-fire CI so the perf-impact-acknowledged label is visible to the gate\n\nEmpty on purpose. pr-benchmarks.yaml reads the override label from the event\npayload:\n\n  LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}\n\nand its trigger has no `labeled` type, so adding the label neither starts a run\nnor reaches a re-run - a re-run replays the original payload, which predates the\nlabel. A fresh `synchronize` event is the only way to make the documented\noverride take effect.\n\nThe three benchmarks over threshold are all _without_audit control paths, which\nthis PR cannot touch: it changes a CLI event-handler unsubscribe, a redundant\ncast whose removal emits identical IL, and an XML doc comment. Every audited path\nis flat or faster in the same run and allocations are unchanged. Reasoning in full\non the PR.\n\nWorth fixing separately: adding `labeled` to that workflow's trigger types would\nmake the override work as documented, without an empty commit.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* fix(cli): close the shutdown race the unsubscribe alone left open\n\nReview finding on Program.cs:74, and it is right. Removing the handler stops\nFUTURE invocations; it does not wait for one already dispatched.\nConsole.CancelKeyPress runs handlers on their own thread, so a Ctrl+C that\narrived moments before Main returned can still be inside the lambda when the\n`using` disposes the CancellationTokenSource - reproducing the exact\nObjectDisposedException the previous commit claimed to prevent. A narrower\nwindow than the original bug, but the same bug, and the claim was wrong.\n\nMoved into ConsoleCancellationBridge. Disposal unsubscribes and then takes the\nsame lock the callback holds, so it cannot return until any in-flight callback\nhas left; the callback re-checks a shutdown flag under that lock and does\nnothing if it lost the race. The bridge is declared AFTER `cancellation` in\nMain, so `using` disposes it FIRST - unsubscribe and drain, then dispose the\nsource.\n\nExtracting it was not only for tidiness: the inline lock pushed Main to 70 lines\nand MA0051 (max 60) failed the Release build locally. Caught before pushing.\n\nVerified: build 0 Error(s), Cli unit tests 30/30, and `audittrail --help` runs\nand exits 0.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* fix(cli): use System.Threading.Lock for the shutdown gate\n\nThe bridge added in 4bde2c3 guarded itself with a plain `object`, which tripped\nMA0158 (\"Use System.Threading.Lock\") - a NEW InspectCode alert introduced by the\nvery PR that clears three of them.\n\nSystem.Threading.Lock exists on net9.0+ and this project targets net10.0 only,\nso there is no multi-TFM conditional to worry about. C# 13 recognises it in a\n`lock` statement, so the statement bodies are unchanged; it takes the dedicated\nlock path rather than Monitor.\n\nVerified: build 0 Error(s), Cli unit tests 30/30.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-23T20:03:57-04:00",
+          "tree_id": "e7b2ffd330decff928254b446c8c03a18cb81695",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/a3bbe78a1cb788e154b474652db065170b627466"
+        },
+        "date": 1790208789544,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 570360.5,
+            "unit": "ns",
+            "range": "± 15621.359705864275"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1521262.1,
+            "unit": "ns",
+            "range": "± 19790.62476383343"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 865494.5,
+            "unit": "ns",
+            "range": "± 13195.877239326857"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2994446,
+            "unit": "ns",
+            "range": "± 21603.644503493695"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 731393.1666666666,
+            "unit": "ns",
+            "range": "± 18734.494701222793"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1801636.4,
+            "unit": "ns",
+            "range": "± 30383.577161260746"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1705845.2,
+            "unit": "ns",
+            "range": "± 16331.66965132469"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 9028343.76923077,
+            "unit": "ns",
+            "range": "± 83518.58704120283"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 3597381.066666667,
+            "unit": "ns",
+            "range": "± 47860.26535576051"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 23911265.785714287,
+            "unit": "ns",
+            "range": "± 560096.08277171"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 2670178.214285714,
+            "unit": "ns",
+            "range": "± 18097.960833617824"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 15382853.016483517,
+            "unit": "ns",
+            "range": "± 1373724.1091112741"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 8099597.47368421,
+            "unit": "ns",
+            "range": "± 599763.1162447325"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 25866598.262626264,
+            "unit": "ns",
+            "range": "± 14605752.222075505"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 17697585.807692308,
+            "unit": "ns",
+            "range": "± 136583.66645295025"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 20888877.897435896,
+            "unit": "ns",
+            "range": "± 1976113.29771236"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 11635521.07,
+            "unit": "ns",
+            "range": "± 2941455.7755958433"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 21049579.75,
+            "unit": "ns",
+            "range": "± 5447282.096687636"
           }
         ]
       }
