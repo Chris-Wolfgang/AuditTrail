@@ -31,11 +31,10 @@ internal class Program
         // hosting integration binds it) so Ctrl+C during a long-running migration
         // is observable instead of the process just being killed mid-write.
         using var cancellation = new CancellationTokenSource();
-        Console.CancelKeyPress += (_, e) =>
-        {
-            e.Cancel = true; // let the app observe cancellation instead of dying immediately
-            cancellation.Cancel();
-        };
+
+        // Declared second so it is disposed FIRST: the bridge unsubscribes and waits for any
+        // in-flight handler before `cancellation` is disposed below it.
+        using var cancelBridge = new ConsoleCancellationBridge(cancellation);
 
         try
         {
@@ -81,5 +80,64 @@ internal class Program
         logger.LogDebug("Starting {Command}", GetType().Name);
         application.ShowHelp();
         return ExitCode.Success;
+    }
+
+
+
+    /// <summary>
+    /// Bridges Ctrl+C to a <see cref="CancellationTokenSource"/> and guarantees the handler can
+    /// never touch it after it has been disposed.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="Console.CancelKeyPress"/> is a static event, so a handler outlives the method
+    /// that added it. Unsubscribing is necessary but not sufficient: the handler runs on its own
+    /// thread, so one already dispatched can still be inside the callback afterwards. Disposal
+    /// unsubscribes and then takes the same lock the callback holds, which cannot return until any
+    /// in-flight callback has left.
+    /// </remarks>
+    [ExcludeFromCodeCoverage]
+    private sealed class ConsoleCancellationBridge : IDisposable
+    {
+        private readonly CancellationTokenSource _cancellation;
+        private readonly ConsoleCancelEventHandler _handler;
+        private readonly Lock _gate = new();
+        private bool _shuttingDown;
+
+
+
+        public ConsoleCancellationBridge(CancellationTokenSource cancellation)
+        {
+            _cancellation = cancellation;
+            _handler = OnCancelKeyPress;
+            Console.CancelKeyPress += _handler;
+        }
+
+
+
+        public void Dispose()
+        {
+            Console.CancelKeyPress -= _handler;
+
+            lock (_gate)
+            {
+                _shuttingDown = true;
+            }
+        }
+
+
+
+        private void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e)
+        {
+            lock (_gate)
+            {
+                if (_shuttingDown)
+                {
+                    return; // shutting down: let Ctrl+C take the process down directly
+                }
+
+                e.Cancel = true; // let the app observe cancellation instead of dying immediately
+                _cancellation.Cancel();
+            }
+        }
     }
 }
