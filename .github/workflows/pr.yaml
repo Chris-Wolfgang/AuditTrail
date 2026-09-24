@@ -984,9 +984,12 @@ jobs:
 
   # ============================================================================
   # CHANGELOG: every PR that touches src/ must add a fragment under
-  # changelog/unreleased/ (or carry the `no-changelog` label). The script is
-  # taken from main so a PR cannot weaken its own check; the fragments and the
-  # diff come from the PR head. See changelog/unreleased/README.md.
+  # changelog/unreleased/ (or carry the `no-changelog` label). The script, the
+  # fragments and the diff all come from the PR head. Integrity comes from the
+  # guard rather than from fetching main: scripts/changelog.ps1 is a protected
+  # file, so protected-files.yaml fails any PR that changes it alongside anything
+  # else, and a change to it can only land as a configuration-only PR reviewed on
+  # its own. See changelog/unreleased/README.md.
   # ============================================================================
   changelog-check:
     name: "Changelog Fragment Check"
