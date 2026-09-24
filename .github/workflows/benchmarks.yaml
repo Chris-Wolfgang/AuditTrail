@@ -363,7 +363,7 @@ jobs:
           # it, so a labeling hiccup can never silently swallow the one
           # thing this step exists to guarantee -- a human gets notified.
           gh label create benchmark-regression --color B60205 \
-            --description "The push-to-main benchmark trend run found a performance/allocation regression, or the run itself failed" || true
+            --description "Push-to-main benchmark run: a performance/allocation regression, or the run failed" || true
 
           # Dedup by TITLE, not by label. If a prior run's labeled creation
           # failed and fell through to the unlabeled fallback below, that
