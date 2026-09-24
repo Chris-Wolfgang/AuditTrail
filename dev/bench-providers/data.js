@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790211695063,
+  "lastUpdate": 1790214013291,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -1500,6 +1500,90 @@ window.BENCHMARK_DATA = {
             "value": 36879214.333333336,
             "unit": "ns",
             "range": "± 4531192.7060989505"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "6a2838fddc4442e9a936159b9c98758eeba316da",
+          "message": "fix(ci): keep the benchmark-regression label description under GitHub's limit (#357)\n\nSurfaced by the run behind #354:\n\n  HTTP 422: Validation Failed (.../labels)\n  description is too long (maximum is 100 characters)\n\nThe description is 104 characters. `|| true` keeps that from failing the step,\nso the consequence is quiet rather than loud: the label is never created or\nupdated from this workflow, and every run logs a 422 that reads like a real\nfailure while triaging something else - which is exactly what it cost while\ntriaging #354.\n\nShortened to 82 characters. The comment above the call already explains why\nlabel creation matters here (the first real run of this handler failed outright\nbecause `gh issue create --label` hard-fails on a missing label), so the fix\nbelongs with it.\n\nChecked the other three label-creating workflows in this repository -\ncoyote.yaml (53), fuzz.yaml (54) and shadow.yaml (73) are all within the limit.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-23T21:30:57-04:00",
+          "tree_id": "622c33b204ff2aaa5c2157fc16df67d295780e7e",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/6a2838fddc4442e9a936159b9c98758eeba316da"
+        },
+        "date": 1790214010379,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4793798,
+            "unit": "ns",
+            "range": "± 71315.88913418945"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 29140780,
+            "unit": "ns",
+            "range": "± 2701046.747545292"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6117592.5,
+            "unit": "ns",
+            "range": "± 187691.68470659535"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 38944242.5,
+            "unit": "ns",
+            "range": "± 900777.1774934132"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 10189886.333333334,
+            "unit": "ns",
+            "range": "± 6751319.495386982"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 40025322.166666664,
+            "unit": "ns",
+            "range": "± 284873.70281641185"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 23162559.666666668,
+            "unit": "ns",
+            "range": "± 1229897.3267798957"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 211781448,
+            "unit": "ns",
+            "range": "± 57572560.84714833"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6212646,
+            "unit": "ns",
+            "range": "± 141090.6507356175"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 38668538.5,
+            "unit": "ns",
+            "range": "± 4028332.1148198545"
           }
         ]
       }
