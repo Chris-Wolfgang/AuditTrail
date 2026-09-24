@@ -6,7 +6,7 @@ namespace Wolfgang.AuditTrail.Npgsql.Tests.Unit.TestSupport;
 /// <summary>
 /// Records every COPY command text passed to it and hands back a
 /// <see cref="FakeNpgsqlBinaryImporter"/> instead of opening a real PostgreSQL
-/// connection. Never touches <paramref name="connection"/> — the real
+/// connection. Never touches the <c>connection</c> it is handed — the real
 /// <see cref="NpgsqlConnection"/> instance is only there to match the interface
 /// shape callers depend on.
 /// </summary>

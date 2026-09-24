@@ -87,8 +87,8 @@ internal static class AuditCapture
         }
 
         var keyProperties = entry.Metadata.FindPrimaryKey()?.Properties;
-        var keyValuesBeforeSave = keyProperties is null
-            ? (IReadOnlyList<object?>)Array.Empty<object?>()
+        IReadOnlyList<object?> keyValuesBeforeSave = keyProperties is null
+            ? Array.Empty<object?>()
             : ReadKeyValues(entry, keyProperties);
 
         return new PendingAuditEntry
