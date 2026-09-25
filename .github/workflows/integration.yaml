@@ -49,9 +49,12 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
-          # Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration targets net8.0
-          # only (Pomelo.EntityFrameworkCore.MySql lags EF Core by one major; bump TFM
-          # + this SDK list together when it ships a stable 10.x). The Npgsql-only
+          # Both SDKs are needed because the provider set straddles two EF Core
+          # majors. Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration and
+          # Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration each
+          # carry MySQL on a net8.0 slot (Pomelo.EntityFrameworkCore.MySql lags EF
+          # Core by one major; bump those TFMs + this SDK list together when it
+          # ships a stable 10.x) and the rest on net10.0. The Npgsql-only
           # Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.Tests.Integration has no
           # such constraint and targets net10.0.
           dotnet-version: |
@@ -67,6 +70,7 @@ jobs:
         run: |
           dotnet restore tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration.csproj
           dotnet restore tests/Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.Tests.Integration/Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.Tests.Integration.csproj
+          dotnet restore tests/Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration/Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration.csproj
 
       - name: Build
         run: |
@@ -74,6 +78,9 @@ jobs:
             --no-restore \
             --configuration Release
           dotnet build tests/Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.Tests.Integration/Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.Tests.Integration.csproj \
+            --no-restore \
+            --configuration Release
+          dotnet build tests/Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration/Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration.csproj \
             --no-restore \
             --configuration Release
 
@@ -90,6 +97,12 @@ jobs:
             --configuration Release \
             --logger "console;verbosity=normal" \
             --logger "trx;LogFileName=npgsql-integration.trx" \
+            --results-directory TestResults
+          dotnet test tests/Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration/Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration.csproj \
+            --no-build \
+            --configuration Release \
+            --logger "console;verbosity=normal" \
+            --logger "trx;LogFileName=schema-integration.trx" \
             --results-directory TestResults
 
       - name: Upload test results
