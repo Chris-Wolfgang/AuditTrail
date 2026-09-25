@@ -17,8 +17,12 @@ public interface ISchemaProviderFixture
     /// <summary>Friendly name for test output (SqlServer / PostgreSQL).</summary>
     string ProviderName { get; }
 
-    /// <summary>Schema name to use for the "custom schema" tests on this provider.</summary>
-    string CustomSchema { get; }
+    /// <summary>
+    /// Schema name to use for the custom-naming test on this provider, or
+    /// <c>null</c> where the provider has no schema namespace separate from the
+    /// database (MySQL). The test then asserts on table names alone.
+    /// </summary>
+    string? CustomSchema { get; }
 
     /// <summary>Returns a context bound to a unique database on the running container.</summary>
     Task<AuditMigrationsDbContext> CreateContextAsync(AuditOptions options);

@@ -31,6 +31,19 @@ public abstract class AuditSchemaMigratorIntegrationTestsBase
 
 
 
+    /// <summary>
+    /// True when <paramref name="table"/> sits in the schema the custom-naming
+    /// test asked for, or unconditionally on providers that have no schema
+    /// namespace to place it in.
+    /// </summary>
+    private bool InCustomSchema(TableInfo table)
+    {
+        return _fixture.CustomSchema is null
+            || string.Equals(table.Schema, _fixture.CustomSchema, StringComparison.Ordinal);
+    }
+
+
+
     private static AuditOptions BuildOptions(string? schema = null, string? header = null, string? detail = null) => new()
     {
         Schema              = schema,
@@ -61,6 +74,12 @@ public abstract class AuditSchemaMigratorIntegrationTestsBase
 
 
 
+    /// <summary>
+    /// Asserts the audit tables land under the names the consumer configured.
+    /// On providers with no schema namespace of their own (MySQL, where the
+    /// schema is the database) <see cref="ISchemaProviderFixture.CustomSchema"/>
+    /// is <c>null</c> and only the table names are asserted.
+    /// </summary>
     [Fact]
     public async Task RunAsync_honors_custom_schema_and_table_names()
     {
@@ -74,9 +93,9 @@ public abstract class AuditSchemaMigratorIntegrationTestsBase
         await AuditSchemaMigrator.RunAsync(context);
 
         var tables = await _fixture.ListTablesAsync(_fixture.CustomSchema);
-        Assert.Contains(tables, t => string.Equals(t.Schema, _fixture.CustomSchema, StringComparison.Ordinal) && string.Equals(t.Name, "CustomHeader", StringComparison.Ordinal));
-        Assert.Contains(tables, t => string.Equals(t.Schema, _fixture.CustomSchema, StringComparison.Ordinal) && string.Equals(t.Name, "CustomDetail", StringComparison.Ordinal));
-        Assert.Contains(tables, t => string.Equals(t.Schema, _fixture.CustomSchema, StringComparison.Ordinal) && string.Equals(t.Name, AuditSchemaConstants.VersionTableName, StringComparison.Ordinal));
+        Assert.Contains(tables, t => InCustomSchema(t) && string.Equals(t.Name, "CustomHeader", StringComparison.Ordinal));
+        Assert.Contains(tables, t => InCustomSchema(t) && string.Equals(t.Name, "CustomDetail", StringComparison.Ordinal));
+        Assert.Contains(tables, t => InCustomSchema(t) && string.Equals(t.Name, AuditSchemaConstants.VersionTableName, StringComparison.Ordinal));
 
         // And no spurious AuditHeader/AuditDetail under any schema.
         Assert.DoesNotContain(tables, t => string.Equals(t.Name, "AuditHeader", StringComparison.Ordinal));

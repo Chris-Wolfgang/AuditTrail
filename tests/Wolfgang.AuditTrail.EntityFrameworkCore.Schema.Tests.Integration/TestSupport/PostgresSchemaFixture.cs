@@ -22,7 +22,7 @@ public sealed class PostgresSchemaFixture : IAsyncLifetime, ISchemaProviderFixtu
 
     public string ProviderName => "PostgreSQL";
 
-    public string CustomSchema => "audit";
+    public string? CustomSchema => "audit";
 
 
 

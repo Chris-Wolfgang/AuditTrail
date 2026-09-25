@@ -20,7 +20,7 @@ public sealed class SqlServerSchemaFixture : IAsyncLifetime, ISchemaProviderFixt
 
     public string ProviderName => "SqlServer";
 
-    public string CustomSchema => "audit";
+    public string? CustomSchema => "audit";
 
 
 
