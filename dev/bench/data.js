@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790275367203,
+  "lastUpdate": 1790295548307,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -8712,6 +8712,138 @@ window.BENCHMARK_DATA = {
             "value": 19874769.05,
             "unit": "ns",
             "range": "± 10985247.569809109"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "a266291ac5939eb729d8f39d1dde6ff26743429f",
+          "message": "ci: retire the inline guard and the trusted-config restoration (#362)\n\n* ci: retire the inline guard and the trusted-config restoration\n\nFinishes the migration #351 started. That PR moved pr.yaml to `pull_request` and\nadded protected-files.yaml; this removes what the old pull_request_target model\nneeded and the new one does not. repo-template completed the same migration and\ncarries none of these steps.\n\nRemoved, 429 lines across eight jobs:\n\n- \"Detect protected configuration file changes\" (61 run-lines) inside the\n  REQUIRED \"Detect .NET Projects\" job. Protected Files Guard now does this\n  properly - from main, with no checkout, reading the PR's file list through the\n  API - and is a required check as of today. The inline copy ran from the PR's\n  OWN pr.yaml under `pull_request`, so it looked like a gate and was not one. A\n  required check that cannot be trusted is worse than no check there.\n- Seven \"Fetch trusted configuration files from main branch\" steps, plus the\n  gitleaks and changelog-script equivalents. Under `pull_request` the PR's own\n  copies are what run and what reviewers see; restoring main's versions over them\n  made CI validate something other than the merged result. They were also the\n  source of the race found on #358 (the fetch takes the MOVING main ref) and of\n  the .editorconfig-collapse bug recorded in the fleet notes.\n\nWhat replaces them: a PR cannot weaken a gate and pass it in the same change,\nbecause Protected Files Guard fails any PR mixing a protected file with anything\nelse, and nothing bypasses it. A configuration-only PR runs CI with the new\nconfiguration and is reviewed on its own - the documented, intended behaviour.\n\nKept deliberately: the TFM-parity step's own fetch of scripts/tfm-parity.ps1 from\nmain. Different purpose (the script may not be on the branch yet) and it skips\ngracefully; not part of this pattern.\n\ndetect-projects keeps its has-projects output and every required job name still\nexists.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* docs(ci): the changelog check runs the PR's own script now, so say that\n\nReview finding. Removing \"Fetch trusted changelog script from main\" left the\ncomment above changelog-check still claiming the script \"is taken from main so a\nPR cannot weaken its own check\". That is now false, and falsely reassuring - it\ndescribes an integrity mechanism this workflow no longer has.\n\nThe comment now says what is true: the script, the fragments and the diff all\ncome from the PR head, and integrity comes from the guard instead -\nscripts/changelog.ps1 is a protected file, so protected-files.yaml fails any PR\nchanging it alongside anything else, and a change to it can only land as a\nconfiguration-only PR reviewed on its own.\n\nChecked the other comments the removal could have stranded. The tfm-parity one at\nline 440 makes the same claim and is still TRUE - that step's own fetch of\nscripts/tfm-parity.ps1 from main was deliberately kept - so it is left alone.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-24T20:09:18-04:00",
+          "tree_id": "b18f1596e31fc0944f1c0264c893c15255cb366d",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/a266291ac5939eb729d8f39d1dde6ff26743429f"
+        },
+        "date": 1790295547076,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 714333.5393258428,
+            "unit": "ns",
+            "range": "± 77194.25645218576"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 2031584.391304348,
+            "unit": "ns",
+            "range": "± 192821.30094006425"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 865551.8076923077,
+            "unit": "ns",
+            "range": "± 13412.258847689896"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 3011426.4615384615,
+            "unit": "ns",
+            "range": "± 27904.223296290307"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 827451.213483146,
+            "unit": "ns",
+            "range": "± 52904.16538581642"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 2231459.675824176,
+            "unit": "ns",
+            "range": "± 165608.7663308782"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1718126.8157894737,
+            "unit": "ns",
+            "range": "± 28877.93009674541"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 11758989.69587629,
+            "unit": "ns",
+            "range": "± 1108910.0733949742"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 3475558.933333333,
+            "unit": "ns",
+            "range": "± 30472.76847206996"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 19962264.06,
+            "unit": "ns",
+            "range": "± 5453784.6644324465"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 2824756.5,
+            "unit": "ns",
+            "range": "± 35783.74935154009"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 16359412.196969697,
+            "unit": "ns",
+            "range": "± 2916888.4168490455"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 8787146.103092784,
+            "unit": "ns",
+            "range": "± 789136.8444509812"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 24932988.808080807,
+            "unit": "ns",
+            "range": "± 14847741.088475248"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 15266672.409090908,
+            "unit": "ns",
+            "range": "± 3497798.2787677883"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 23109199.297468353,
+            "unit": "ns",
+            "range": "± 4787399.367320082"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 11561173.877551021,
+            "unit": "ns",
+            "range": "± 3267947.3732743924"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 22123674.578313254,
+            "unit": "ns",
+            "range": "± 6913854.257553676"
           }
         ]
       }
