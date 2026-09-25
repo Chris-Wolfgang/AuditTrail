@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790275363454,
+  "lastUpdate": 1790295541883,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -1836,6 +1836,90 @@ window.BENCHMARK_DATA = {
             "value": 302141322,
             "unit": "ns",
             "range": "± 228961955.80742916"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "a266291ac5939eb729d8f39d1dde6ff26743429f",
+          "message": "ci: retire the inline guard and the trusted-config restoration (#362)\n\n* ci: retire the inline guard and the trusted-config restoration\n\nFinishes the migration #351 started. That PR moved pr.yaml to `pull_request` and\nadded protected-files.yaml; this removes what the old pull_request_target model\nneeded and the new one does not. repo-template completed the same migration and\ncarries none of these steps.\n\nRemoved, 429 lines across eight jobs:\n\n- \"Detect protected configuration file changes\" (61 run-lines) inside the\n  REQUIRED \"Detect .NET Projects\" job. Protected Files Guard now does this\n  properly - from main, with no checkout, reading the PR's file list through the\n  API - and is a required check as of today. The inline copy ran from the PR's\n  OWN pr.yaml under `pull_request`, so it looked like a gate and was not one. A\n  required check that cannot be trusted is worse than no check there.\n- Seven \"Fetch trusted configuration files from main branch\" steps, plus the\n  gitleaks and changelog-script equivalents. Under `pull_request` the PR's own\n  copies are what run and what reviewers see; restoring main's versions over them\n  made CI validate something other than the merged result. They were also the\n  source of the race found on #358 (the fetch takes the MOVING main ref) and of\n  the .editorconfig-collapse bug recorded in the fleet notes.\n\nWhat replaces them: a PR cannot weaken a gate and pass it in the same change,\nbecause Protected Files Guard fails any PR mixing a protected file with anything\nelse, and nothing bypasses it. A configuration-only PR runs CI with the new\nconfiguration and is reviewed on its own - the documented, intended behaviour.\n\nKept deliberately: the TFM-parity step's own fetch of scripts/tfm-parity.ps1 from\nmain. Different purpose (the script may not be on the branch yet) and it skips\ngracefully; not part of this pattern.\n\ndetect-projects keeps its has-projects output and every required job name still\nexists.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* docs(ci): the changelog check runs the PR's own script now, so say that\n\nReview finding. Removing \"Fetch trusted changelog script from main\" left the\ncomment above changelog-check still claiming the script \"is taken from main so a\nPR cannot weaken its own check\". That is now false, and falsely reassuring - it\ndescribes an integrity mechanism this workflow no longer has.\n\nThe comment now says what is true: the script, the fragments and the diff all\ncome from the PR head, and integrity comes from the guard instead -\nscripts/changelog.ps1 is a protected file, so protected-files.yaml fails any PR\nchanging it alongside anything else, and a change to it can only land as a\nconfiguration-only PR reviewed on its own.\n\nChecked the other comments the removal could have stranded. The tfm-parity one at\nline 440 makes the same claim and is still TRUE - that step's own fetch of\nscripts/tfm-parity.ps1 from main was deliberately kept - so it is left alone.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-24T20:09:18-04:00",
+          "tree_id": "b18f1596e31fc0944f1c0264c893c15255cb366d",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/a266291ac5939eb729d8f39d1dde6ff26743429f"
+        },
+        "date": 1790295539681,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7017833.333333333,
+            "unit": "ns",
+            "range": "± 116980.52616710754"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 48000857,
+            "unit": "ns",
+            "range": "± 5723768.0177064305"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7701802.5,
+            "unit": "ns",
+            "range": "± 684105.9094343507"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 41720622.666666664,
+            "unit": "ns",
+            "range": "± 471963.5607992775"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12877320,
+            "unit": "ns",
+            "range": "± 7815435.863052744"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 51482139.333333336,
+            "unit": "ns",
+            "range": "± 396408.04975344957"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 52823286.333333336,
+            "unit": "ns",
+            "range": "± 4731696.425858947"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 134045153.33333333,
+            "unit": "ns",
+            "range": "± 16638942.380016414"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7407394.5,
+            "unit": "ns",
+            "range": "± 1111731.4910049099"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 44594288.666666664,
+            "unit": "ns",
+            "range": "± 2818722.812016878"
           }
         ]
       }
