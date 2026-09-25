@@ -25,6 +25,13 @@ public interface ISchemaProviderFixture
 
     /// <summary>Lists user-table names in the most recently created database.</summary>
     Task<IReadOnlyList<TableInfo>> ListTablesAsync(string? schema);
+
+    /// <summary>
+    /// Lists the column names of one table in the most recently created
+    /// database. Used to assert that an upgrade actually altered the table,
+    /// rather than inferring it from the version row.
+    /// </summary>
+    Task<IReadOnlyList<string>> ListColumnsAsync(string? schema, string table);
 }
 
 

@@ -81,6 +81,28 @@ public sealed class SqlServerSchemaFixture : IAsyncLifetime, ISchemaProviderFixt
 
 
 
+    public async Task<IReadOnlyList<string>> ListColumnsAsync(string? schema, string table)
+    {
+        var columns = new List<string>();
+        await using var conn = new SqlConnection(ConnectionStringFor(_currentDatabase));
+        await conn.OpenAsync();
+        await using var cmd = conn.CreateCommand();
+        cmd.CommandText =
+            "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS " +
+            "WHERE TABLE_NAME = @table " +
+            "AND (@schema IS NULL OR TABLE_SCHEMA = @schema)";
+        cmd.Parameters.AddWithValue("@table", table);
+        cmd.Parameters.AddWithValue("@schema", (object?)schema ?? DBNull.Value);
+        await using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            columns.Add(reader.GetString(0));
+        }
+        return columns;
+    }
+
+
+
     private async Task EnsureDatabaseAsync(string database)
     {
         var master = new SqlConnectionStringBuilder(_container.GetConnectionString())
