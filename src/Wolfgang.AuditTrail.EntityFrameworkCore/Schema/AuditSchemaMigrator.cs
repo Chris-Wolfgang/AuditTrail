@@ -47,14 +47,17 @@ namespace Wolfgang.AuditTrail.Schema;
 /// </para>
 /// <para>
 /// <strong>Providers that implicitly commit DDL (MySQL and MariaDB) cannot
-/// honour that guarantee.</strong> There, a failed upgrade can leave some
+/// honour that guarantee.</strong> There, a failed upgrade leaves the earlier
 /// operations persisted while the version row still reads the old value, and
 /// re-running does not recover: the migrator replays the whole step from the
 /// old version, and the operations are not idempotent, so a replayed
 /// <c>ADD COLUMN</c> fails on the column that already exists. Recovery on those
 /// providers is manual: reconcile the tables against the target shape, then set
-/// the version row by hand. This path has no integration coverage either, since
-/// Pomelo caps at EF Core 9.x while the test project is on EF Core 10.
+/// the version row by hand. This is observed behaviour rather than an
+/// assumption. <c>MySqlAuditSchemaMigratorTests</c>
+/// .<c>RunAsync_when_a_step_fails_part_way_leaves_earlier_DDL_committed</c>
+/// asserts it against a real MySQL container, and fails if MySQL ever makes
+/// multi-statement DDL transactional.
 /// </para>
 /// </remarks>
 public static class AuditSchemaMigrator

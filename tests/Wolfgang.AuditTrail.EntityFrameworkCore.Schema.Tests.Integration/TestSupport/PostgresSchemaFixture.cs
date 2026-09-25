@@ -18,7 +18,9 @@ public sealed class PostgresSchemaFixture : IAsyncLifetime, ISchemaProviderFixtu
 
     private string _currentDatabase = "audit_root";
 
-    public string CustomSchema => "audit";
+    public string ProviderName => "PostgreSQL";
+
+    public string? CustomSchema => "audit";
 
 
 

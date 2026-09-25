@@ -16,7 +16,9 @@ public sealed class SqlServerSchemaFixture : IAsyncLifetime, ISchemaProviderFixt
 
     private string _currentDatabase = "master";
 
-    public string CustomSchema => "audit";
+    public string ProviderName => "SqlServer";
+
+    public string? CustomSchema => "audit";
 
 
 

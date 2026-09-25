@@ -49,16 +49,24 @@ internal sealed class StubSchemaUpgrades : IAuditSchemaUpgrades
     /// </summary>
     public static IReadOnlyList<MigrationOperation> AddHeaderColumn(AuditSchemaUpgradeContext context, string name)
     {
-        return new MigrationOperation[]
+        return new[] { AddColumn(context.HeaderTable, context.Schema, name) };
+    }
+
+
+
+    /// <summary>
+    /// One nullable <c>bigint</c> column on an arbitrary table. Nullable so the
+    /// operation applies to a populated table without a default.
+    /// </summary>
+    public static MigrationOperation AddColumn(string table, string? schema, string name)
+    {
+        return new AddColumnOperation
         {
-            new AddColumnOperation
-            {
-                Table      = context.HeaderTable,
-                Schema     = context.Schema,
-                Name       = name,
-                ClrType    = typeof(long),
-                IsNullable = true,
-            },
+            Table      = table,
+            Schema     = schema,
+            Name       = name,
+            ClrType    = typeof(long),
+            IsNullable = true,
         };
     }
 }
