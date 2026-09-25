@@ -20,7 +20,10 @@ public sealed class SqlServerSchemaFixture : IAsyncLifetime, ISchemaProviderFixt
 
     public string ProviderName => "SqlServer";
 
-    public string? CustomSchema => "audit";
+    // Non-nullable here although ISchemaProviderFixture declares it nullable:
+    // this provider always has a schema to place the tables in. Only MySQL,
+    // where the schema is the database, returns null.
+    public string CustomSchema => "audit";
 
 
 
