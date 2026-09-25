@@ -458,9 +458,15 @@ public sealed class AuditSchemaUpgradeTests : IDisposable
         using var context = CreateContext();
         var upgradeContext = AuditSchemaUpgradeContext.FromModel(DesignTimeModel(context));
 
-        Assert.Equal(AuditSchemaConstants.CurrentSchemaVersion, AuditSchemaUpgrades.Instance.CurrentVersion);
+        // Read the bound off the instance rather than the const: the const
+        // folds to `version < 1` today, which analysers flag as an expression
+        // that is always false. The property carries the same value and keeps
+        // the loop honest once the version moves.
+        var currentVersion = AuditSchemaUpgrades.Instance.CurrentVersion;
 
-        for (var version = 1; version < AuditSchemaConstants.CurrentSchemaVersion; version++)
+        Assert.Equal(AuditSchemaConstants.CurrentSchemaVersion, currentVersion);
+
+        for (var version = 1; version < currentVersion; version++)
         {
             var operations = AuditSchemaUpgrades.Instance.StepFrom(version, upgradeContext);
 

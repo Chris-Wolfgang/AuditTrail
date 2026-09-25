@@ -47,22 +47,11 @@ internal sealed class AuditSchemaUpgrades : IAuditSchemaUpgrades
 
         // Version 1 is the only audit schema this library has ever installed,
         // so there are no steps yet and every call lands on the throw below.
-        // The first arm arrives with the SequenceNumber column (#344):
-        //
-        //     if (fromVersion == 1)
-        //     {
-        //         return new MigrationOperation[]
-        //         {
-        //             new AddColumnOperation
-        //             {
-        //                 Table      = context.HeaderTable,
-        //                 Schema     = context.Schema,
-        //                 Name       = nameof(AuditHeader.SequenceNumber),
-        //                 ClrType    = typeof(long),
-        //                 IsNullable = false,
-        //             },
-        //         };
-        //     }
+        // The first step arrives with #344, as a branch on fromVersion == 1
+        // returning an AddColumnOperation whose Table and Schema come from the
+        // context. A non-nullable column must carry a DefaultValue: the target
+        // is an existing, populated table, and ADD COLUMN NOT NULL without one
+        // fails on every row already there.
         throw new NotSupportedException
         (
             $"No upgrade step is defined from audit schema version {fromVersion}. " +
