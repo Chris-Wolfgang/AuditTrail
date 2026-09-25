@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790348287679,
+  "lastUpdate": 1790348291824,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -2834,6 +2834,42 @@ window.BENCHMARK_DATA = {
             "value": 86935654.83333333,
             "unit": "ns",
             "range": "± 7213286.43447079"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "ee20d5b6fb699b3c02a328c48c6c32373d8d0cf2",
+          "message": "ci: run the schema integration tests in the integration workflow (#366)\n\nWolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration has\nnever run in CI. integration.yaml names two projects explicitly and this\nis not one of them, and pr.yaml's sweep over ./tests reaches it but\nleaves IsTestProject false without RunIntegrationTests, so it discovers\nno test framework and runs nothing. The whole suite covering\nAuditSchemaMigrator against real SQL Server and PostgreSQL containers has\nonly ever been run by hand.\n\nAdd it to the restore, build and test steps alongside the other two. Both\nSDKs were already installed, so the project's net8.0 and net10.0 slots\nboth run without further setup.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-25T10:48:44-04:00",
+          "tree_id": "a8f2d1f6e8af5e7c1e3f3327a1594367f8e88a05",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/ee20d5b6fb699b3c02a328c48c6c32373d8d0cf2"
+        },
+        "date": 1790348290185,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17655971.166666668,
+            "unit": "ns",
+            "range": "± 1109790.8768021718"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 85117879.5,
+            "unit": "ns",
+            "range": "± 5513007.7985913465"
           }
         ]
       }
