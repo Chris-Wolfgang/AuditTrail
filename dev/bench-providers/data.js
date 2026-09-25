@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790295545259,
+  "lastUpdate": 1790348287679,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -1920,6 +1920,90 @@ window.BENCHMARK_DATA = {
             "value": 44594288.666666664,
             "unit": "ns",
             "range": "± 2818722.812016878"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "ee20d5b6fb699b3c02a328c48c6c32373d8d0cf2",
+          "message": "ci: run the schema integration tests in the integration workflow (#366)\n\nWolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration has\nnever run in CI. integration.yaml names two projects explicitly and this\nis not one of them, and pr.yaml's sweep over ./tests reaches it but\nleaves IsTestProject false without RunIntegrationTests, so it discovers\nno test framework and runs nothing. The whole suite covering\nAuditSchemaMigrator against real SQL Server and PostgreSQL containers has\nonly ever been run by hand.\n\nAdd it to the restore, build and test steps alongside the other two. Both\nSDKs were already installed, so the project's net8.0 and net10.0 slots\nboth run without further setup.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-09-25T10:48:44-04:00",
+          "tree_id": "a8f2d1f6e8af5e7c1e3f3327a1594367f8e88a05",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/ee20d5b6fb699b3c02a328c48c6c32373d8d0cf2"
+        },
+        "date": 1790348284307,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6844508.666666667,
+            "unit": "ns",
+            "range": "± 34264.124391750236"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 51588691.666666664,
+            "unit": "ns",
+            "range": "± 15889311.423367482"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6594932.333333333,
+            "unit": "ns",
+            "range": "± 117355.72786333581"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 50012078.333333336,
+            "unit": "ns",
+            "range": "± 12841830.920420278"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12261447.166666666,
+            "unit": "ns",
+            "range": "± 7295298.831412552"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 49331976.666666664,
+            "unit": "ns",
+            "range": "± 1011378.941100878"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 61068739,
+            "unit": "ns",
+            "range": "± 17235463.9172767"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 175877505,
+            "unit": "ns",
+            "range": "± 58813578.41473786"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6874997.666666667,
+            "unit": "ns",
+            "range": "± 915193.2694531431"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 41611504.666666664,
+            "unit": "ns",
+            "range": "± 3600825.784522813"
           }
         ]
       }
