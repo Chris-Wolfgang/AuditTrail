@@ -2,13 +2,18 @@
 
   <PropertyGroup>
     <!--
-      Targets net10.0 because AuditSchemaMigrator itself is net8.0+ (EF Core 7+
-      design-time model requirement). MySQL is omitted from this project for
-      the same reason it's omitted from the CLI: Pomelo 9.0.0 caps at EF Core
-      9.x and the rest of the stack is on 10. SQL Server + PostgreSQL via
-      Testcontainers; SQLite covered by Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit.
+      net8.0 is the floor because AuditSchemaMigrator itself is net8.0+ (EF Core
+      7+ design-time model requirement). Multi-targeted for the same reason
+      Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration is: the providers
+      split across two EF Core majors. Pomelo caps at EF Core 9 (forcing it onto
+      10 throws MissingMethodException, probed in the sibling project), while
+      SQL Server and PostgreSQL are carried here on their EF Core 10 packages.
+      Each provider's fixture and test file is TFM-scoped below via Compile
+      Remove, so the net8.0 build sees only MySQL and the net10.0 build only
+      SQL Server + PostgreSQL. SQLite is covered by
+      Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit.
     -->
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
@@ -36,6 +41,24 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 
+  </ItemGroup>
+
+  <!--
+    EF Core 9 provider: MySQL via Pomelo. Kept on its own TFM slot because
+    Pomelo has no EF Core 10 build.
+  -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
+    <PackageReference Include="Testcontainers.MySql" Version="4.15.0" />
+
+    <Compile Remove="SqlServerAuditSchemaMigratorTests.cs" />
+    <Compile Remove="PostgresAuditSchemaMigratorTests.cs" />
+    <Compile Remove="TestSupport\SqlServerSchemaFixture.cs" />
+    <Compile Remove="TestSupport\PostgresSchemaFixture.cs" />
+  </ItemGroup>
+
+  <!-- EF Core 10 providers: SQL Server, PostgreSQL. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.3" />
@@ -43,6 +66,9 @@
 
     <PackageReference Include="Testcontainers.MsSql" Version="4.15.0" />
     <PackageReference Include="Testcontainers.PostgreSql" Version="4.15.0" />
+
+    <Compile Remove="MySqlAuditSchemaMigratorTests.cs" />
+    <Compile Remove="TestSupport\MySqlSchemaFixture.cs" />
   </ItemGroup>
 
 </Project>

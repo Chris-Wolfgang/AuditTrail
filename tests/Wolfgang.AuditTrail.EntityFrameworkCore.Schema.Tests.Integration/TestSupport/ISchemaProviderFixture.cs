@@ -17,14 +17,25 @@ public interface ISchemaProviderFixture
     /// <summary>Friendly name for test output (SqlServer / PostgreSQL).</summary>
     string ProviderName { get; }
 
-    /// <summary>Schema name to use for the "custom schema" tests on this provider.</summary>
-    string CustomSchema { get; }
+    /// <summary>
+    /// Schema name to use for the custom-naming test on this provider, or
+    /// <c>null</c> where the provider has no schema namespace separate from the
+    /// database (MySQL). The test then asserts on table names alone.
+    /// </summary>
+    string? CustomSchema { get; }
 
     /// <summary>Returns a context bound to a unique database on the running container.</summary>
     Task<AuditMigrationsDbContext> CreateContextAsync(AuditOptions options);
 
     /// <summary>Lists user-table names in the most recently created database.</summary>
     Task<IReadOnlyList<TableInfo>> ListTablesAsync(string? schema);
+
+    /// <summary>
+    /// Lists the column names of one table in the most recently created
+    /// database. Used to assert that an upgrade actually altered the table,
+    /// rather than inferring it from the version row.
+    /// </summary>
+    Task<IReadOnlyList<string>> ListColumnsAsync(string? schema, string table);
 }
 
 

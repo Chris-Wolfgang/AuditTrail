@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using NpgsqlTypes;
 using Testcontainers.PostgreSql;
 using Wolfgang.AuditTrail;
 using Wolfgang.AuditTrail.Schema;
@@ -21,6 +22,9 @@ public sealed class PostgresSchemaFixture : IAsyncLifetime, ISchemaProviderFixtu
 
     public string ProviderName => "PostgreSQL";
 
+    // Non-nullable here although ISchemaProviderFixture declares it nullable:
+    // this provider always has a schema to place the tables in. Only MySQL,
+    // where the schema is the database, returns null.
     public string CustomSchema => "audit";
 
 
@@ -76,6 +80,31 @@ public sealed class PostgresSchemaFixture : IAsyncLifetime, ISchemaProviderFixtu
             rows.Add(new TableInfo(reader.GetString(0), reader.GetString(1)));
         }
         return rows;
+    }
+
+
+
+    public async Task<IReadOnlyList<string>> ListColumnsAsync(string? schema, string table)
+    {
+        var columns = new List<string>();
+        await using var conn = new NpgsqlConnection(ConnectionStringFor(_currentDatabase));
+        await conn.OpenAsync();
+        await using var cmd = conn.CreateCommand();
+        cmd.CommandText =
+            "SELECT column_name FROM information_schema.columns " +
+            "WHERE table_name = @table " +
+            "AND (@schema IS NULL OR table_schema = @schema)";
+        // Both parameters are typed explicitly: PostgreSQL cannot infer the type
+        // of a parameter whose only use is `@schema IS NULL`, and an untyped
+        // NULL there fails with 42P08.
+        cmd.Parameters.Add(new NpgsqlParameter("table", NpgsqlDbType.Text) { Value = table });
+        cmd.Parameters.Add(new NpgsqlParameter("schema", NpgsqlDbType.Text) { Value = (object?)schema ?? DBNull.Value });
+        await using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            columns.Add(reader.GetString(0));
+        }
+        return columns;
     }
 
 
