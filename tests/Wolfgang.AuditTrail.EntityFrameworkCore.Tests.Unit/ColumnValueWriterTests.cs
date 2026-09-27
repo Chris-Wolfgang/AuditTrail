@@ -1,3 +1,4 @@
+using System;
 using Wolfgang.AuditTrail.Entities;
 using Wolfgang.AuditTrail.Internal;
 using Wolfgang.AuditTrail.Serializers;

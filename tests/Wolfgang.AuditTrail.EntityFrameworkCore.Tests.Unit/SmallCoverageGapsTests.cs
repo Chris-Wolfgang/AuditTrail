@@ -1,4 +1,5 @@
 using System.Data.Common;
+using System.Linq;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Wolfgang.AuditTrail.Entities;

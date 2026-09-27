@@ -1,4 +1,6 @@
 #if NET8_0_OR_GREATER
+using System;
+using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Wolfgang.AuditTrail.Entities;

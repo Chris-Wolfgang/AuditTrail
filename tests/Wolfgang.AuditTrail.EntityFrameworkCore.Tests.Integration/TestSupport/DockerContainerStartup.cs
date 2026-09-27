@@ -1,3 +1,6 @@
+using System;
+using System.Threading.Tasks;
+
 namespace Wolfgang.AuditTrail.Tests.Integration.TestSupport;
 
 
