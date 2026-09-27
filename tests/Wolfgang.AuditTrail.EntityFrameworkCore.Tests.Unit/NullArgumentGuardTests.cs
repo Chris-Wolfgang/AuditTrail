@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Wolfgang.AuditTrail.Schema;
 using Wolfgang.AuditTrail.Serializers;

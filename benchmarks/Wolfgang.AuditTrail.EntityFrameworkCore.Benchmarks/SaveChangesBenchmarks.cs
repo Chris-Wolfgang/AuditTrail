@@ -1,4 +1,5 @@
 using System.Data.Common;
+using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;

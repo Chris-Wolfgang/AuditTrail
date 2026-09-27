@@ -1,6 +1,8 @@
 #if NET10_0
+using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using VerifyTests;
 using VerifyXunit;
 using Wolfgang.AuditTrail.Schema;
 using Wolfgang.AuditTrail.Serializers;

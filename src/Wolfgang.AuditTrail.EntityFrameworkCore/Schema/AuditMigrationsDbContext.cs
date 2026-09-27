@@ -1,3 +1,4 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 #if NET8_0_OR_GREATER
 using Microsoft.EntityFrameworkCore.Infrastructure;

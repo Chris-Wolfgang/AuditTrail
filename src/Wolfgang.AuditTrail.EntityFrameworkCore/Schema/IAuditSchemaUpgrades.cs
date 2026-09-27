@@ -1,4 +1,6 @@
 #if NET8_0_OR_GREATER
+using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace Wolfgang.AuditTrail.Schema;

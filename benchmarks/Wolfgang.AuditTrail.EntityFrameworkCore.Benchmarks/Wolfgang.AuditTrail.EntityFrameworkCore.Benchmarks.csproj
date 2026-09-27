@@ -13,7 +13,6 @@
     -->
     <TargetFrameworks>net10.0;net8.0</TargetFrameworks>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
     <!-- CA1001 suppressed because BDN owns disposable lifecycle via [GlobalSetup]/[GlobalCleanup]. -->
     <!-- MA0048 (file-name == type-name) suppressed: benchmark entities are
