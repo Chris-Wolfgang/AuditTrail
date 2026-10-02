@@ -52,7 +52,11 @@ public class ConcurrentSchemaInstallTests
     private static async Task RunConcurrentInstallsAsync()
     {
         var dbPath = Path.Combine(Path.GetTempPath(), $"coyote-schema-install-{Guid.NewGuid():N}.db");
-        var connectionString = $"Data Source={dbPath}";
+        // Pooling=False: each simulated replica owns its connection outright, as two
+        // separate processes would (they never share an ADO.NET pool). It also means
+        // disposing the context closes the native SQLite handle immediately, so the
+        // cleanup below can delete the file without racing a pooled handle.
+        var connectionString = $"Data Source={dbPath};Pooling=False";
 
         try
         {
@@ -62,17 +66,7 @@ public class ConcurrentSchemaInstallTests
         }
         finally
         {
-            // Best-effort cleanup: SQLite connection-pool teardown can outlive
-            // `await using`'s DisposeAsync, so an immediate delete can lose a
-            // race against the native file handle still closing. That's a
-            // harness cleanup detail, not the thing under test.
-            try
-            {
-                File.Delete(dbPath);
-            }
-            catch (IOException)
-            {
-            }
+            File.Delete(dbPath);
         }
     }
 
