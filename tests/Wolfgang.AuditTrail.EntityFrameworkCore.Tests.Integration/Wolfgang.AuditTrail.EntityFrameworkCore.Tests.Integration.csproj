@@ -17,6 +17,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
+    <!-- Needs Linux containers (Testcontainers): pr.yaml Stages 2/3 (Windows/macOS) and release.yaml skip it; Stage 1 (Linux) runs it. -->
+    <RequiresLinuxContainers>true</RequiresLinuxContainers>
     <!--
       pr.yaml enumerates every *.csproj under ./tests and invokes `dotnet test`
       on each one (see the "Run tests with coverage" step in .github/workflows/pr.yaml).
