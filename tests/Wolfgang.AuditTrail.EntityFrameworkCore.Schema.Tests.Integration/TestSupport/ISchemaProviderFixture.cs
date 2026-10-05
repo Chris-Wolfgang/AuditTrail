@@ -14,9 +14,6 @@ namespace Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration.TestS
 /// </summary>
 public interface ISchemaProviderFixture
 {
-    /// <summary>Friendly name for test output (SqlServer / PostgreSQL).</summary>
-    string ProviderName { get; }
-
     /// <summary>Schema name to use for the "custom schema" tests on this provider.</summary>
     string CustomSchema { get; }
 

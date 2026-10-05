@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using IBM.Data.Db2;
@@ -10,7 +9,6 @@ using Xunit;
 
 namespace Wolfgang.AuditTrail.Tests.Integration.TestSupport;
 
-[ExcludeFromCodeCoverage]
 public sealed class Db2Fixture : IAsyncLifetime, IProviderFixture
 {
     // On Linux, IBM.EntityFrameworkCore-lnx's native driver (clidriver/lib/*.so)
@@ -36,7 +34,7 @@ public sealed class Db2Fixture : IAsyncLifetime, IProviderFixture
 
 
 
-    private static IntPtr ResolveNativeLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+    internal static IntPtr ResolveNativeLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
     {
         var candidate = Path.Combine(AppContext.BaseDirectory, "clidriver", "lib", libraryName);
         return File.Exists(candidate) && NativeLibrary.TryLoad(candidate, out var handle) ? handle : IntPtr.Zero;
