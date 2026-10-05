@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using NpgsqlTypes;
 
 namespace Wolfgang.AuditTrail.Npgsql.Tests.Unit.TestSupport;
@@ -8,7 +7,6 @@ namespace Wolfgang.AuditTrail.Npgsql.Tests.Unit.TestSupport;
 /// so <see cref="NpgsqlCopyAuditBulkWriter"/>'s row-building logic (column order,
 /// null handling, the <c>Operation</c> char encoding) can be asserted directly.
 /// </summary>
-[ExcludeFromCodeCoverage]
 internal sealed class FakeNpgsqlBinaryImporter : INpgsqlBinaryImporter
 {
     public List<List<object?>> Rows { get; } = new();

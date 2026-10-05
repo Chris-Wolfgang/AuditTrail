@@ -156,7 +156,7 @@ public class CoverageLiftTests
 
         var eventData = new DbContextEventData(
             eventDefinition:  null!,
-            messageGenerator: static (_, _) => string.Empty,
+            messageGenerator: NoDiagnosticMessage.Format,
             context:          null);
 
         await sut.SaveChangesCanceledAsync(eventData);
@@ -178,7 +178,7 @@ public class CoverageLiftTests
 
         var eventData = new DbContextEventData(
             eventDefinition:  null!,
-            messageGenerator: static (_, _) => string.Empty,
+            messageGenerator: NoDiagnosticMessage.Format,
             context:          ctx);
 
         await sut.SaveChangesCanceledAsync(eventData);
@@ -205,7 +205,7 @@ public class CoverageLiftTests
 
         var errorData = new DbContextErrorEventData(
             eventDefinition:  null!,
-            messageGenerator: static (_, _) => string.Empty,
+            messageGenerator: NoDiagnosticMessage.Format,
             context:          ctx,
             exception:        new InvalidOperationException("simulated user-pass failure"));
 
@@ -240,7 +240,7 @@ public class CoverageLiftTests
 
         var errorData = new DbContextErrorEventData(
             eventDefinition:  null!,
-            messageGenerator: static (_, _) => string.Empty,
+            messageGenerator: NoDiagnosticMessage.Format,
             context:          ctx,
             exception:        new InvalidOperationException("simulated user-pass failure"));
 
@@ -252,6 +252,18 @@ public class CoverageLiftTests
         Assert.True(throwingTx.RollbackAttempted);
         Assert.True(throwingTx.Disposed);
         Assert.Null(ctx.GetItem<IDbContextTransaction>("Wolfgang.AuditTrail.OwnedTransaction"));
+    }
+
+
+
+    [Fact]
+    public async Task ThrowingTransaction_Commit_and_CommitAsync_throw_NotSupportedException()
+    {
+        // Pins the "should never happen" Commit guards of the fake below.
+        var tx = new ThrowingTransaction();
+
+        Assert.Throws<NotSupportedException>(() => tx.Commit());
+        await Assert.ThrowsAsync<NotSupportedException>(() => tx.CommitAsync());
     }
 
 
@@ -268,7 +280,6 @@ public class CoverageLiftTests
         // AbortAuditAsync never call Commit -- that's a separate, already-
         // covered success path using a real transaction). Commit/CommitAsync
         // exist solely as a "should never happen" guard.
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "Dead by design -- AbortAudit/AbortAuditAsync never call Commit.")]
         public void Commit()  => throw new NotSupportedException();
         public void Rollback()
         {
@@ -276,7 +287,6 @@ public class CoverageLiftTests
             throw new InvalidOperationException("simulated rollback failure");
         }
 
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "Dead by design -- AbortAudit/AbortAuditAsync never call Commit.")]
         public Task CommitAsync(CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 

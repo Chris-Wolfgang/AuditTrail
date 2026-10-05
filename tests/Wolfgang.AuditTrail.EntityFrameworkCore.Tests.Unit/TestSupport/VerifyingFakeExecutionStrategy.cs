@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -21,7 +20,6 @@ namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;
 /// <c>AuditingDbContext.VerifyAuditCommitted{,Async}</c> we need a strategy
 /// that calls the probe unconditionally so the delegate body runs in tests.
 /// </remarks>
-[ExcludeFromCodeCoverage]
 internal sealed class VerifyingFakeExecutionStrategy : IExecutionStrategy
 {
     private readonly DbContext _context;
@@ -84,7 +82,6 @@ internal sealed class VerifyingFakeExecutionStrategy : IExecutionStrategy
 /// <see cref="VerifyingFakeExecutionStrategy"/> instances bound to the
 /// current <see cref="DbContext"/>.
 /// </summary>
-[ExcludeFromCodeCoverage]
 internal sealed class VerifyingFakeExecutionStrategyFactory : IExecutionStrategyFactory
 {
     private readonly ICurrentDbContext _current;

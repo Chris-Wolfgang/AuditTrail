@@ -1,8 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Wolfgang.AuditTrail.Tests.Smoke.TestSupport;
 
-[ExcludeFromCodeCoverage]
 public class Order
 {
     public int OrderId { get; set; }

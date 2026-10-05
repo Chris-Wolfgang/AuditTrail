@@ -1,8 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Wolfgang.AuditTrail.Npgsql.Tests.Unit.TestSupport;
 
-[ExcludeFromCodeCoverage]
 public sealed class StaticAuditUserProvider : IAuditUserProvider
 {
     private readonly AuditUser _user;

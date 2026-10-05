@@ -1,5 +1,4 @@
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Wolfgang.AuditTrail.Serializers;
@@ -14,7 +13,6 @@ namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;
 /// <c>AddInterceptors</c>. Mirrors how a real consumer would compose
 /// <c>AddDbContext(...).UseAuditing(serviceProvider)</c>.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public sealed class InterceptorFixture : IDisposable
 {
     private readonly DbConnection _connection;

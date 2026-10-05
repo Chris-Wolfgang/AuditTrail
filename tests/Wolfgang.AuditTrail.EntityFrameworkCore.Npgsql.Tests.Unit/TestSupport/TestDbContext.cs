@@ -1,9 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 namespace Wolfgang.AuditTrail.Npgsql.Tests.Unit.TestSupport;
 
-[ExcludeFromCodeCoverage]
 public class TestDbContext : AuditingDbContext
 {
     public TestDbContext

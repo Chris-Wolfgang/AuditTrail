@@ -71,7 +71,7 @@ public static class DocExampleSource
     /// </summary>
     public static IReadOnlyList<DocExample> DiscoverAll()
     {
-        var sourceDirectory = LocateSourceDirectory();
+        var sourceDirectory = LocateSourceDirectory(AppContext.BaseDirectory);
         var examples = new List<DocExample>();
 
         foreach (var file in Directory.EnumerateFiles(sourceDirectory, "*.cs", SearchOption.AllDirectories))
@@ -184,9 +184,9 @@ public static class DocExampleSource
     // both Wolfgang.AuditTrail.Abstractions and Wolfgang.AuditTrail.EntityFrameworkCore.
     // A future example in a src project this test project doesn't reference (Cli, TestKit,
     // TestKit.Xunit) would fail to compile -- add the reference alongside the example.
-    private static string LocateSourceDirectory()
+    internal static string LocateSourceDirectory(string startDirectory)
     {
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        var directory = new DirectoryInfo(startDirectory);
         while (directory is not null)
         {
             var candidate = Path.Combine(directory.FullName, "src");
@@ -200,6 +200,6 @@ public static class DocExampleSource
         }
 
         throw new DirectoryNotFoundException(
-            $"Could not locate 'src' above '{AppContext.BaseDirectory}'.");
+            $"Could not locate 'src' above '{startDirectory}'.");
     }
 }
