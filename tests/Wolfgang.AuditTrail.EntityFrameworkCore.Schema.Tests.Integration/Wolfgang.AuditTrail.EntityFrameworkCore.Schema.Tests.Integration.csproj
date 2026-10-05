@@ -12,6 +12,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
+    <!-- Needs Linux containers (Testcontainers): pr.yaml Stages 2/3 (Windows/macOS) and release.yaml skip it; Stage 1 (Linux) runs it. -->
+    <RequiresLinuxContainers>true</RequiresLinuxContainers>
     <!--
       Mirrors Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration: default to a no-op so
       pr.yaml's blanket `dotnet test` doesn't try to spin Docker on a runner
