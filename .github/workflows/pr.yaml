@@ -453,11 +453,11 @@ jobs:
                 # fix is obvious without downloading the coverage artifact.
                 if [ "$kind" = "test" ]; then
                   echo "  Classes below ${applies}%:"
-                  awk -v asm="$module" '
+                  awk -v asm="$module" -v min="$applies" '
                     /^[^ ]/ { in_asm = ($1 == asm) }
                     in_asm && /^  / && /[0-9]+(\.[0-9]+)?%$/ {
                       p = $NF; gsub("%","",p);
-                      if (p + 0 < 100) printf "    %s  %s\n", $NF, $1
+                      if (p + 0 < min + 0) printf "    %s  %s\n", $NF, $1
                     }' CoverageReport/Summary.txt
                 fi
               else
