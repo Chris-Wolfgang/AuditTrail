@@ -29,7 +29,7 @@ public sealed class TestSupportTests
 
         Assert.Throws<NotSupportedException>
         (
-            () => strategy.Execute<int, int>(0, static (_, state) => state, verifySucceeded: null)
+            () => strategy.Execute(0, static (_, state) => state, verifySucceeded: null)
         );
     }
 
@@ -42,7 +42,7 @@ public sealed class TestSupportTests
 
         await Assert.ThrowsAsync<NotSupportedException>
         (
-            () => strategy.ExecuteAsync<int, int>(0, static (_, state, _) => Task.FromResult(state), verifySucceeded: null, CancellationToken.None)
+            () => strategy.ExecuteAsync(0, static (_, state, _) => Task.FromResult(state), verifySucceeded: null, CancellationToken.None)
         );
     }
 
