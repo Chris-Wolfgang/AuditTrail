@@ -13,14 +13,23 @@ internal static class DockerContainerStartup
 
 
 
-    public static async Task<FixtureAvailability> TryStartAsync(Func<Task> startAsync, string providerName)
+    public static Task<FixtureAvailability> TryStartAsync(Func<Task> startAsync, string providerName)
+    {
+        return TryStartAsync(startAsync, providerName, rethrow: IsRunningInCi());
+    }
+
+
+
+    // rethrow is IsRunningInCi() in production use; tests pass it directly so both the
+    // CI (rethrow) and local (skippable) outcomes run wherever the suite runs.
+    internal static async Task<FixtureAvailability> TryStartAsync(Func<Task> startAsync, string providerName, bool rethrow)
     {
         try
         {
             await startAsync().ConfigureAwait(false);
             return new FixtureAvailability(true, null);
         }
-        catch (Exception ex) when (!IsRunningInCi())
+        catch (Exception ex) when (!rethrow)
         {
             return new FixtureAvailability(
                 false,

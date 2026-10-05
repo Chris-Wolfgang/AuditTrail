@@ -200,20 +200,27 @@ public static class DocExampleCompiler
         var trusted = AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") as string ?? string.Empty;
         foreach (var path in trusted.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
         {
-            if (path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) && seen.Add(path))
+            if (path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
             {
-                references.Add(MetadataReference.CreateFromFile(path));
+                AddReference(references, seen, path);
             }
         }
 
         // Belt-and-braces: guarantee the library under test is referenced even if it is
         // ever loaded from outside the TPA closure.
-        var libraryPath = typeof(AuditingDbContext).Assembly.Location;
-        if (!string.IsNullOrEmpty(libraryPath) && seen.Add(libraryPath))
-        {
-            references.Add(MetadataReference.CreateFromFile(libraryPath));
-        }
+        AddReference(references, seen, typeof(AuditingDbContext).Assembly.Location);
 
         return references;
+    }
+
+
+
+    // Adds a reference for path unless it is empty or was already added.
+    internal static void AddReference(List<MetadataReference> references, ISet<string> seen, string path)
+    {
+        if (!string.IsNullOrEmpty(path) && seen.Add(path))
+        {
+            references.Add(MetadataReference.CreateFromFile(path));
+        }
     }
 }

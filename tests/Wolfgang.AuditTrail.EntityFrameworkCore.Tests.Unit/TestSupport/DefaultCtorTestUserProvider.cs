@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;
 
 
@@ -11,7 +9,6 @@ namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;
 /// instance registration. <see cref="StaticAuditUserProvider"/> can't be used
 /// here because its constructor takes string arguments.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public sealed class DefaultCtorTestUserProvider : IAuditUserProvider
 {
     public AuditUser GetCurrentUser() => new("default-test-user");

@@ -1,11 +1,9 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Testcontainers.MySql;
 using Xunit;
 
 namespace Wolfgang.AuditTrail.Tests.Integration.TestSupport;
 
-[ExcludeFromCodeCoverage]
 public sealed class MySqlFixture : IAsyncLifetime, IProviderFixture
 {
     // Pinned to a specific patch tag so test reruns are reproducible. Bump
@@ -29,15 +27,13 @@ public sealed class MySqlFixture : IAsyncLifetime, IProviderFixture
             .TryStartAsync(() => _container.StartAsync(), ProviderName)
             .ConfigureAwait(false);
 
-        if (!Available)
-        {
-            return;
-        }
-
         // Detect the server version once at fixture init, not on every
         // CreateContextOptions call. AutoDetect opens a new connection each
         // time, which adds latency and a failure surface to every test.
-        _serverVersion = ServerVersion.AutoDetect(_container.GetConnectionString());
+        if (Available)
+        {
+            _serverVersion = ServerVersion.AutoDetect(_container.GetConnectionString());
+        }
     }
 
     public Task DisposeAsync() => _container.DisposeAsync().AsTask();

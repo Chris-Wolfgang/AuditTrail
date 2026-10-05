@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Testcontainers.PostgreSql;
 using Wolfgang.AuditTrail.Serializers;
@@ -8,7 +7,6 @@ namespace Wolfgang.AuditTrail.Npgsql.Tests.Integration.TestSupport;
 
 // Pinned to the same exact image as the core package's Tests.Integration
 // PostgresFixture for the same reproducibility reason documented there.
-[ExcludeFromCodeCoverage]
 public sealed class PostgresFixture : IAsyncLifetime
 {
     private readonly PostgreSqlContainer _container = new PostgreSqlBuilder("postgres:16.4-alpine3.20")

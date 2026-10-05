@@ -35,10 +35,7 @@ public class AuditSaveChangesInterceptorFailedHooksTests
         await Assert.ThrowsAnyAsync<Exception>(() => ctx.SaveChangesAsync());
 
         // Detach any tracked entities so they don't re-throw on the next save.
-        foreach (var entry in ctx.ChangeTracker.Entries().ToList())
-        {
-            entry.State = EntityState.Detached;
-        }
+        ctx.ChangeTracker.Clear();
 
         // Switch back to a working serializer and retry on the SAME context.
         fixture.Options.ValueSerializer = new Wolfgang.AuditTrail.Serializers.StringAuditValueSerializer();

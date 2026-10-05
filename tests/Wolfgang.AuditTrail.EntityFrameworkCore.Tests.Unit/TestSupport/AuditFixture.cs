@@ -1,12 +1,10 @@
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Wolfgang.AuditTrail.Serializers;
 
 namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;
 
-[ExcludeFromCodeCoverage]
 public sealed class AuditFixture : IDisposable
 {
     private readonly DbConnection _connection;
