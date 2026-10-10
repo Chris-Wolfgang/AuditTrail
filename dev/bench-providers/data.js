@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791665316762,
+  "lastUpdate": 1791675019784,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -2172,6 +2172,90 @@ window.BENCHMARK_DATA = {
             "value": 43101255,
             "unit": "ns",
             "range": "± 3215752.5296727982"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "816fdf6c0ec26adfa9b24a7f0fbce95cf6e8bf13",
+          "message": "chore(deps): bump the github-actions group with 3 updates (#373)\n\nBumps the github-actions group with 3 updates: [github/codeql-action/upload-sarif](https://github.com/github/codeql-action), [github/codeql-action/init](https://github.com/github/codeql-action) and [github/codeql-action/analyze](https://github.com/github/codeql-action).\n\n\nUpdates `github/codeql-action/upload-sarif` from 4.38.0 to 4.38.1\n- [Release notes](https://github.com/github/codeql-action/releases)\n- [Changelog](https://github.com/github/codeql-action/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/github/codeql-action/compare/b96794f015dfd88f77b49b1c93e0fa7110f94c63...1c5b675653bb5c22dbe9b12b556ec555138e09fd)\n\nUpdates `github/codeql-action/init` from 4.38.0 to 4.38.1\n- [Release notes](https://github.com/github/codeql-action/releases)\n- [Changelog](https://github.com/github/codeql-action/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/github/codeql-action/compare/b96794f015dfd88f77b49b1c93e0fa7110f94c63...1c5b675653bb5c22dbe9b12b556ec555138e09fd)\n\nUpdates `github/codeql-action/analyze` from 4.38.0 to 4.38.1\n- [Release notes](https://github.com/github/codeql-action/releases)\n- [Changelog](https://github.com/github/codeql-action/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/github/codeql-action/compare/b96794f015dfd88f77b49b1c93e0fa7110f94c63...1c5b675653bb5c22dbe9b12b556ec555138e09fd)\n\n---\nupdated-dependencies:\n- dependency-name: github/codeql-action/upload-sarif\n  dependency-version: 4.38.1\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: github-actions\n- dependency-name: github/codeql-action/init\n  dependency-version: 4.38.1\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: github-actions\n- dependency-name: github/codeql-action/analyze\n  dependency-version: 4.38.1\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: github-actions\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\nCo-authored-by: Chris Wolfgang <210299580+Chris-Wolfgang@users.noreply.github.com>",
+          "timestamp": "2026-10-10T19:18:02-04:00",
+          "tree_id": "0e1218820ce7e61d58ad0610a8ffdc95230dc4cf",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/816fdf6c0ec26adfa9b24a7f0fbce95cf6e8bf13"
+        },
+        "date": 1791675017033,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6796356.666666667,
+            "unit": "ns",
+            "range": "± 32665.32695892287"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 40188299.333333336,
+            "unit": "ns",
+            "range": "± 2116556.050458937"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6658943.666666667,
+            "unit": "ns",
+            "range": "± 28031.945746475274"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 44541339.333333336,
+            "unit": "ns",
+            "range": "± 4582065.604307989"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12236635.666666666,
+            "unit": "ns",
+            "range": "± 7412559.292500826"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 53633430.333333336,
+            "unit": "ns",
+            "range": "± 8867325.276255311"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 46631515.5,
+            "unit": "ns",
+            "range": "± 3326722.540218676"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 496014994.3333333,
+            "unit": "ns",
+            "range": "± 638079371.391808"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6366112.333333333,
+            "unit": "ns",
+            "range": "± 55153.77195925346"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 41745849.333333336,
+            "unit": "ns",
+            "range": "± 3414444.2991001233"
           }
         ]
       }
