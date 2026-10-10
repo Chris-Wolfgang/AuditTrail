@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791665313420,
+  "lastUpdate": 1791665316762,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -3074,6 +3074,42 @@ window.BENCHMARK_DATA = {
             "value": 45762629.5,
             "unit": "ns",
             "range": "± 2930833.747110027"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "467360754c3a24753bfd45bb7b7b976de3661ce7",
+          "message": "chore(deps): bump urllib3 (#379)\n\nBumps the pip group with 1 update in the /.github/requirements directory: [urllib3](https://github.com/urllib3/urllib3).\n\n\nUpdates `urllib3` from 2.7.0 to 2.8.0\n- [Release notes](https://github.com/urllib3/urllib3/releases)\n- [Changelog](https://github.com/urllib3/urllib3/blob/main/CHANGES.rst)\n- [Commits](https://github.com/urllib3/urllib3/compare/2.7.0...2.8.0)\n\n---\nupdated-dependencies:\n- dependency-name: urllib3\n  dependency-version: 2.8.0\n  dependency-type: indirect\n  dependency-group: pip\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\nCo-authored-by: Chris Wolfgang <210299580+Chris-Wolfgang@users.noreply.github.com>",
+          "timestamp": "2026-10-10T16:31:30-04:00",
+          "tree_id": "819a4c863ac479ac8bb1c28fd5f499ebe94110b6",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/467360754c3a24753bfd45bb7b7b976de3661ce7"
+        },
+        "date": 1791665315417,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17679993.833333332,
+            "unit": "ns",
+            "range": "± 717400.6766168633"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 85362042.16666667,
+            "unit": "ns",
+            "range": "± 4030547.771081039"
           }
         ]
       }
