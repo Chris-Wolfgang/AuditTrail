@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791732240843,
+  "lastUpdate": 1791732243994,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -3314,6 +3314,42 @@ window.BENCHMARK_DATA = {
             "value": 86530878.83333333,
             "unit": "ns",
             "range": "± 2166876.14674774"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "5452c6e31904cd5b3a7a19f6cd6816bc11f6aaec",
+          "message": "chore(dependabot): raise open-pull-requests-limit to 10 on every entry (#384)\n\nThese entries were still at 5 while the rest of the fleet uses 10.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-11T11:15:00-04:00",
+          "tree_id": "f98979e4abb55c23b1cbc25f828599c80f4cb582",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/5452c6e31904cd5b3a7a19f6cd6816bc11f6aaec"
+        },
+        "date": 1791732242753,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 18426666,
+            "unit": "ns",
+            "range": "± 493914.6477155744"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 88612459.66666667,
+            "unit": "ns",
+            "range": "± 7356671.624061816"
           }
         ]
       }
