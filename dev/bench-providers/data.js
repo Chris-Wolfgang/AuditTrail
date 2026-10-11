@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791735836079,
+  "lastUpdate": 1791735839398,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -3434,6 +3434,42 @@ window.BENCHMARK_DATA = {
             "value": 88612459.66666667,
             "unit": "ns",
             "range": "± 7356671.624061816"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "63f984360bbe071818018b099f792350dade9d33",
+          "message": "Bump the dotnet-dependencies group with 3 updates (#386)\n\nBumps Meziantou.Analyzer from 3.0.290 to 3.0.294\nBumps Microsoft.Data.SqlClient from 7.1.0 to 7.1.1\nBumps Roslynator.Analyzers from 5.0.0 to 5.0.1\n\n---\nupdated-dependencies:\n- dependency-name: Meziantou.Analyzer\n  dependency-version: 3.0.294\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.Data.SqlClient\n  dependency-version: 7.1.1\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Roslynator.Analyzers\n  dependency-version: 5.0.1\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-10-11T12:14:41-04:00",
+          "tree_id": "54c8f8b9e5b4ba1cd3cddbab026b825a4a022b89",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/63f984360bbe071818018b099f792350dade9d33"
+        },
+        "date": 1791735838240,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17677941.666666668,
+            "unit": "ns",
+            "range": "± 411410.4391752029"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 86984363.33333333,
+            "unit": "ns",
+            "range": "± 4533369.923012497"
           }
         ]
       }
