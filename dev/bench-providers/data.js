@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791740004837,
+  "lastUpdate": 1791763702218,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -2508,6 +2508,90 @@ window.BENCHMARK_DATA = {
             "value": 45045481.166666664,
             "unit": "ns",
             "range": "± 5547858.405496785"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2c497754e04576415a8476ac6726c1ec0a69d4ce",
+          "message": "ci(semgrep): install the hash-pinned tree with --no-deps (1/2 for PyJWT/urllib3 alerts) (#375)\n\n* ci(semgrep): install the hash-pinned tree with --no-deps\n\n* ci(semgrep): describe --no-deps without the follow-up override file\n\nThe comment pointed at semgrep-overrides.txt and an override that only arrive\nwith the 2/2 PR, so on its own this PR documented state main does not have.\nIt now says what --no-deps does and what it enables, with no file reference.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-11T19:59:36-04:00",
+          "tree_id": "053f672a0f01ce7188cddfc2364e95cf8ecedc34",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/2c497754e04576415a8476ac6726c1ec0a69d4ce"
+        },
+        "date": 1791763699393,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3675794.3333333335,
+            "unit": "ns",
+            "range": "± 40181.12559813791"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 22259503.666666668,
+            "unit": "ns",
+            "range": "± 1871361.837595908"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4829380.666666667,
+            "unit": "ns",
+            "range": "± 187691.37448570546"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 35669785.166666664,
+            "unit": "ns",
+            "range": "± 9889512.186917024"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7913062,
+            "unit": "ns",
+            "range": "± 5446934.9614917375"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 30157632.666666668,
+            "unit": "ns",
+            "range": "± 631193.7124816227"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17439280.5,
+            "unit": "ns",
+            "range": "± 508995.7909413397"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 297519487.6666667,
+            "unit": "ns",
+            "range": "± 370511875.0672801"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4808273.333333333,
+            "unit": "ns",
+            "range": "± 65451.39674852885"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 31920797.833333332,
+            "unit": "ns",
+            "range": "± 3462737.8192661847"
           }
         ]
       }
