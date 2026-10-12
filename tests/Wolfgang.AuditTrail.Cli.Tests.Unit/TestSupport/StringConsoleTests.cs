@@ -41,4 +41,50 @@ public class StringConsoleTests
 
         console.RaiseCancelKeyPressForCoverage();
     }
+
+
+
+    [Fact]
+    public void In_returns_the_null_reader()
+    {
+        using var console = new StringConsole();
+
+        Assert.Same(TextReader.Null, console.In);
+    }
+
+
+
+    [Fact]
+    public void Redirect_flags_all_report_redirected()
+    {
+        using var console = new StringConsole();
+
+        Assert.True(console.IsInputRedirected);
+        Assert.True(console.IsOutputRedirected);
+        Assert.True(console.IsErrorRedirected);
+    }
+
+
+
+    [Fact]
+    public void Colors_when_set_return_the_assigned_values()
+    {
+        using var console = new StringConsole();
+
+        console.ForegroundColor = ConsoleColor.Red;
+        console.BackgroundColor = ConsoleColor.Blue;
+
+        Assert.Equal(ConsoleColor.Red, console.ForegroundColor);
+        Assert.Equal(ConsoleColor.Blue, console.BackgroundColor);
+    }
+
+
+
+    [Fact]
+    public void ResetColor_does_not_throw()
+    {
+        using var console = new StringConsole();
+
+        console.ResetColor();
+    }
 }

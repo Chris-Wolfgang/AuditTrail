@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -11,7 +10,6 @@ namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;
 /// <c>true</c> so the interceptor's preflight check fires. Used to exercise the
 /// retry-strategy rejection path without spinning up a real SQL Server connection.
 /// </summary>
-[ExcludeFromCodeCoverage]
 internal sealed class FakeRetryingExecutionStrategy : IExecutionStrategy
 {
     public bool RetriesOnFailure => true;

@@ -1,8 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Wolfgang.AuditTrail.Npgsql.Tests.Integration.TestSupport;
 
-[ExcludeFromCodeCoverage]
 public class Customer
 {
     public int CustomerId { get; set; }
