@@ -1,8 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;
 
-[ExcludeFromCodeCoverage]
 public class Customer
 {
     public int CustomerId { get; set; }
@@ -16,7 +13,6 @@ public class Customer
 }
 
 [NotAudited]
-[ExcludeFromCodeCoverage]
 public class CacheEntry
 {
     public int CacheEntryId { get; set; }
@@ -24,7 +20,6 @@ public class CacheEntry
     public string Payload { get; set; } = string.Empty;
 }
 
-[ExcludeFromCodeCoverage]
 public class OrderLine
 {
     public int OrderId { get; set; }
