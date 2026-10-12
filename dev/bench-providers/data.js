@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791773108677,
+  "lastUpdate": 1791773111844,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -3914,6 +3914,42 @@ window.BENCHMARK_DATA = {
             "value": 71696999,
             "unit": "ns",
             "range": "± 4184581.028766321"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "502274912c9bcb3d153da42e39eaef0a0f5f5fd2",
+          "message": "ci(semgrep): explain --no-deps without the removed PyJWT override (#387)\n\nThe install step's comment still described --no-deps as carrying an override\nof semgrep's PyJWT pin (and, in older copies, pointed at semgrep-overrides.txt).\nThe override is gone: semgrep 1.179.0+ declares pyjwt>=2.15.0, so the lock\nneeds none. The flag stays; the comment now gives the reason that still holds.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-11T22:34:27-04:00",
+          "tree_id": "ab1c7e88d73aa68dd301691a514294a6f3076194",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/502274912c9bcb3d153da42e39eaef0a0f5f5fd2"
+        },
+        "date": 1791773110545,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 16804911,
+            "unit": "ns",
+            "range": "± 307086.10662320757"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 83955542,
+            "unit": "ns",
+            "range": "± 2173773.7750336397"
           }
         ]
       }
