@@ -27,14 +27,16 @@ public sealed class PipeDelimitedEntityKeySerializerFuzzTests
     [FuzzProperty]
     public bool Serialize_is_deterministic(int[]? values)
     {
-        if (values is null)
-        {
-            return true;
-        }
-
-        var first  = Sut.Serialize(values.Cast<object?>().ToArray());
-        var second = Sut.Serialize(values.Cast<object?>().ToArray());
-        return string.Equals(first, second, StringComparison.Ordinal);
+        // One expression, not an early return: the generator rarely (or never)
+        // produces null, so a separate `return true;` line would be left
+        // unexecuted on most runs.
+        return values is null
+            || string.Equals
+            (
+                Sut.Serialize(values.Cast<object?>().ToArray()),
+                Sut.Serialize(values.Cast<object?>().ToArray()),
+                StringComparison.Ordinal
+            );
     }
 
 
@@ -60,12 +62,11 @@ public sealed class PipeDelimitedEntityKeySerializerFuzzTests
     [FuzzProperty]
     public bool Distinct_guids_never_collide(Guid a, Guid b)
     {
-        if (a == b)
-        {
-            return true;
-        }
-
-        return !string.Equals(Sut.Serialize(Key(a)), Sut.Serialize(Key(b)), StringComparison.Ordinal);
+        // Equal GUIDs are vacuously fine. Folded into one expression because the
+        // generator almost never draws a == b, which would leave an early
+        // `return true;` unexecuted.
+        return a == b
+            || !string.Equals(Sut.Serialize(Key(a)), Sut.Serialize(Key(b)), StringComparison.Ordinal);
     }
 
 
@@ -78,12 +79,12 @@ public sealed class PipeDelimitedEntityKeySerializerFuzzTests
     [FuzzProperty]
     public bool Distinct_byte_arrays_never_collide(byte[]? a, byte[]? b)
     {
-        if (a is null || b is null || a.SequenceEqual(b))
-        {
-            return true;
-        }
-
-        return !string.Equals(Sut.Serialize(Key(a)), Sut.Serialize(Key(b)), StringComparison.Ordinal);
+        // Null or equal inputs are vacuously fine. One expression, so line coverage
+        // does not depend on whether the generator happened to draw them.
+        return a is null
+            || b is null
+            || a.SequenceEqual(b)
+            || !string.Equals(Sut.Serialize(Key(a)), Sut.Serialize(Key(b)), StringComparison.Ordinal);
     }
 
 

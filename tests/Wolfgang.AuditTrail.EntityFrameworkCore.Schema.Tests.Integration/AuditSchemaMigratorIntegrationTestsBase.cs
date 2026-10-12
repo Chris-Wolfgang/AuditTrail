@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Wolfgang.AuditTrail;
 using Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration.TestSupport;
@@ -16,7 +15,6 @@ namespace Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration;
 /// provider-specific <see cref="ISchemaProviderFixture"/> via xunit's
 /// <see cref="IClassFixture{TFixture}"/>.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public abstract class AuditSchemaMigratorIntegrationTestsBase
 {
     private readonly ISchemaProviderFixture _fixture;

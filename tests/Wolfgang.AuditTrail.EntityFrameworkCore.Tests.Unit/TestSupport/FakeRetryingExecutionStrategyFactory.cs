@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;
@@ -11,7 +10,6 @@ namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;
 /// <c>DbContextOptionsBuilder.ReplaceService</c> to drive the interceptor's
 /// retry-strategy preflight check.
 /// </summary>
-[ExcludeFromCodeCoverage]
 internal sealed class FakeRetryingExecutionStrategyFactory : IExecutionStrategyFactory
 {
     public IExecutionStrategy Create() => new FakeRetryingExecutionStrategy();

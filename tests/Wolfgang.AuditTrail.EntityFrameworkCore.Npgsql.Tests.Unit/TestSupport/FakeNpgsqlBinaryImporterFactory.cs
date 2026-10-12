@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Npgsql;
 
 namespace Wolfgang.AuditTrail.Npgsql.Tests.Unit.TestSupport;
@@ -10,7 +9,6 @@ namespace Wolfgang.AuditTrail.Npgsql.Tests.Unit.TestSupport;
 /// <see cref="NpgsqlConnection"/> instance is only there to match the interface
 /// shape callers depend on.
 /// </summary>
-[ExcludeFromCodeCoverage]
 internal sealed class FakeNpgsqlBinaryImporterFactory : INpgsqlBinaryImporterFactory
 {
     public List<string> CopyCommands { get; } = new();

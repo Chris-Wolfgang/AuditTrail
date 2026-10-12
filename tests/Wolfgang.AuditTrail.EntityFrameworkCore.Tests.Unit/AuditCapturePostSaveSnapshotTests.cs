@@ -1,5 +1,4 @@
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Wolfgang.AuditTrail.Entities;
@@ -118,11 +117,22 @@ public class AuditCapturePostSaveSnapshotTests
 
 
 
+    [Fact]
+    public void Widget_RowVersion_when_set_returns_the_assigned_value()
+    {
+        // EF writes RowVersion through its backing field, so no test reaches the
+        // accessors otherwise.
+        var widget = new Widget { RowVersion = 42 };
+
+        Assert.Equal(42, widget.RowVersion);
+    }
+
+
+
     // ── Fixture and entity isolated from the shared TestDbContext ───────────
 
     // EF hydrates these via reflection; R# can't see the runtime usage.
     // ReSharper disable UnusedAutoPropertyAccessor.Local
-    [ExcludeFromCodeCoverage]
     private sealed class Widget
     {
         public int WidgetId { get; set; }
@@ -135,7 +145,6 @@ public class AuditCapturePostSaveSnapshotTests
 
 
 
-    [ExcludeFromCodeCoverage]
     private sealed class GeneratedDefaultDbContext : AuditingDbContext
     {
         public GeneratedDefaultDbContext
@@ -168,7 +177,6 @@ public class AuditCapturePostSaveSnapshotTests
 
 
 
-    [ExcludeFromCodeCoverage]
     private sealed class GeneratedDefaultFixture : IDisposable
     {
         private readonly DbConnection _connection;

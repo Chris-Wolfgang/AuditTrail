@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Wolfgang.AuditTrail.Serializers;
 
 namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;
@@ -9,7 +8,6 @@ namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;
 /// Used to verify that an audit-save failure rolls back the user's data save
 /// (atomicity contract).
 /// </summary>
-[ExcludeFromCodeCoverage]
 public sealed class FailingAuditValueSerializer : IAuditValueSerializer
 {
     private readonly StringAuditValueSerializer _inner = new();

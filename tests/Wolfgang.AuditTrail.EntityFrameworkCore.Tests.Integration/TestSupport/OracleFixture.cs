@@ -1,11 +1,9 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Testcontainers.Oracle;
 using Xunit;
 
 namespace Wolfgang.AuditTrail.Tests.Integration.TestSupport;
 
-[ExcludeFromCodeCoverage]
 public sealed class OracleFixture : IAsyncLifetime, IProviderFixture
 {
     // gvenzl/oracle-xe is the Testcontainers.Oracle default image -- a
