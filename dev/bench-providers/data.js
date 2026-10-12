@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791763702218,
+  "lastUpdate": 1791763706192,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -3674,6 +3674,42 @@ window.BENCHMARK_DATA = {
             "value": 91788944.66666667,
             "unit": "ns",
             "range": "± 8187971.103680467"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2c497754e04576415a8476ac6726c1ec0a69d4ce",
+          "message": "ci(semgrep): install the hash-pinned tree with --no-deps (1/2 for PyJWT/urllib3 alerts) (#375)\n\n* ci(semgrep): install the hash-pinned tree with --no-deps\n\n* ci(semgrep): describe --no-deps without the follow-up override file\n\nThe comment pointed at semgrep-overrides.txt and an override that only arrive\nwith the 2/2 PR, so on its own this PR documented state main does not have.\nIt now says what --no-deps does and what it enables, with no file reference.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-11T19:59:36-04:00",
+          "tree_id": "053f672a0f01ce7188cddfc2364e95cf8ecedc34",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/2c497754e04576415a8476ac6726c1ec0a69d4ce"
+        },
+        "date": 1791763704877,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12004689.333333334,
+            "unit": "ns",
+            "range": "± 619968.0640422805"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 57395676.666666664,
+            "unit": "ns",
+            "range": "± 720078.236339867"
           }
         ]
       }
