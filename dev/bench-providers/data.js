@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791768671296,
+  "lastUpdate": 1791768674331,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -3794,6 +3794,42 @@ window.BENCHMARK_DATA = {
             "value": 57395676.666666664,
             "unit": "ns",
             "range": "± 720078.236339867"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "22d9d052a4cfa8e79bea0d8ba37008040729213c",
+          "message": "deps(semgrep): semgrep 1.180.0 → PyJWT 2.15.1 + urllib3 2.8.0, no override (#376)\n\n* deps(semgrep): add semgrep-overrides.txt (PyJWT ~=2.15.0)\n\n* deps(semgrep): recompile semgrep.txt (PyJWT 2.15.1, urllib3 2.8.0)\n\n* deps(semgrep): recompile against semgrep 1.180.0 instead of overriding PyJWT\n\nsemgrep 1.179.0 and later declare pyjwt[crypto]>=2.15.0,<3, so the plain\ncompile of semgrep.in now resolves pyjwt 2.15.1 (and urllib3 2.8.0) without\nany override. semgrep-overrides.txt is removed, as its own comment asked once\na semgrep release allowed pyjwt 2.15. Regenerated with:\n  uv pip compile --universal --generate-hashes semgrep.in -o semgrep.txt\n  (--upgrade-package semgrep --upgrade-package pyjwt)\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-11T21:22:34-04:00",
+          "tree_id": "59abb588cf084a8aad1fd6b624ef3a27fbc7f517",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/22d9d052a4cfa8e79bea0d8ba37008040729213c"
+        },
+        "date": 1791768672817,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 13996344.166666666,
+            "unit": "ns",
+            "range": "± 325377.9938492051"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 71696999,
+            "unit": "ns",
+            "range": "± 4184581.028766321"
           }
         ]
       }
