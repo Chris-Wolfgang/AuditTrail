@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Wolfgang.AuditTrail.Serializers;
 
 namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;

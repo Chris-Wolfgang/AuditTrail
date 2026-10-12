@@ -1,4 +1,6 @@
 #if NET8_0_OR_GREATER
+using System;
+
 namespace Wolfgang.AuditTrail.Schema;
 
 

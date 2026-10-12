@@ -1,3 +1,4 @@
+using System;
 using Wolfgang.AuditTrail.Serializers;
 using Wolfgang.AuditTrail.TestKit.Xunit;
 using Xunit;
