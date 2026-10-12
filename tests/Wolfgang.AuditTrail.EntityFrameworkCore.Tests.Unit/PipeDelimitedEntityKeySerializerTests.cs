@@ -3,6 +3,7 @@
 // exact wire-format the interceptor passes in production.
 #pragma warning disable S3257
 
+using System;
 using Wolfgang.AuditTrail.Serializers;
 using Xunit;
 

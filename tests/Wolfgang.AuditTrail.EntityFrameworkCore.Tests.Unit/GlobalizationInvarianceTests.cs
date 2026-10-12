@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Wolfgang.AuditTrail.Serializers;
 using Wolfgang.AuditTrail.TestKit.Xunit;
 using Xunit;

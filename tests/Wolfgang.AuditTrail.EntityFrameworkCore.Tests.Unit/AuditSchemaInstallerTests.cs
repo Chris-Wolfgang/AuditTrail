@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Wolfgang.AuditTrail.Entities;
 using Wolfgang.AuditTrail.Schema;

@@ -1,3 +1,5 @@
+using System;
+
 namespace Wolfgang.AuditTrail.Internal;
 
 internal sealed class PendingAuditValue

@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Wolfgang.AuditTrail.Entities;
 using Wolfgang.AuditTrail.Tests.Unit.TestSupport;

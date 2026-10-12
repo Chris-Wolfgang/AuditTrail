@@ -1,4 +1,5 @@
 #if NET8_0_OR_GREATER
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 

@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Wolfgang.AuditTrail.Serializers;
 using Wolfgang.AuditTrail.Tests.Unit.TestSupport;
