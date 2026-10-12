@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791763706192,
+  "lastUpdate": 1791768671296,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -2592,6 +2592,90 @@ window.BENCHMARK_DATA = {
             "value": 31920797.833333332,
             "unit": "ns",
             "range": "± 3462737.8192661847"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "22d9d052a4cfa8e79bea0d8ba37008040729213c",
+          "message": "deps(semgrep): semgrep 1.180.0 → PyJWT 2.15.1 + urllib3 2.8.0, no override (#376)\n\n* deps(semgrep): add semgrep-overrides.txt (PyJWT ~=2.15.0)\n\n* deps(semgrep): recompile semgrep.txt (PyJWT 2.15.1, urllib3 2.8.0)\n\n* deps(semgrep): recompile against semgrep 1.180.0 instead of overriding PyJWT\n\nsemgrep 1.179.0 and later declare pyjwt[crypto]>=2.15.0,<3, so the plain\ncompile of semgrep.in now resolves pyjwt 2.15.1 (and urllib3 2.8.0) without\nany override. semgrep-overrides.txt is removed, as its own comment asked once\na semgrep release allowed pyjwt 2.15. Regenerated with:\n  uv pip compile --universal --generate-hashes semgrep.in -o semgrep.txt\n  (--upgrade-package semgrep --upgrade-package pyjwt)\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-11T21:22:34-04:00",
+          "tree_id": "59abb588cf084a8aad1fd6b624ef3a27fbc7f517",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/22d9d052a4cfa8e79bea0d8ba37008040729213c"
+        },
+        "date": 1791768668057,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 5337352.5,
+            "unit": "ns",
+            "range": "± 21328.396939291993"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 31770850.5,
+            "unit": "ns",
+            "range": "± 1481157.1271391162"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7332666,
+            "unit": "ns",
+            "range": "± 282283.2434399888"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 36313351.166666664,
+            "unit": "ns",
+            "range": "± 1173823.8478840569"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 10992423.833333334,
+            "unit": "ns",
+            "range": "± 6659942.640621038"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 43662557.833333336,
+            "unit": "ns",
+            "range": "± 841324.4429911289"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 28124185.5,
+            "unit": "ns",
+            "range": "± 748698.1976317293"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 123331267.16666667,
+            "unit": "ns",
+            "range": "± 25216168.76639313"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6787260.666666667,
+            "unit": "ns",
+            "range": "± 182933.33674410832"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 37972557.333333336,
+            "unit": "ns",
+            "range": "± 3633440.8502176465"
           }
         ]
       }
