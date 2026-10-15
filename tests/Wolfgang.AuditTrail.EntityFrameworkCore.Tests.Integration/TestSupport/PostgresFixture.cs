@@ -6,7 +6,6 @@ using Xunit;
 
 namespace Wolfgang.AuditTrail.Tests.Integration.TestSupport;
 
-[ExcludeFromCodeCoverage]
 public sealed class PostgresFixture : IAsyncLifetime, IProviderFixture
 {
     // Pinned to a specific patch tag so test reruns are reproducible. Bump

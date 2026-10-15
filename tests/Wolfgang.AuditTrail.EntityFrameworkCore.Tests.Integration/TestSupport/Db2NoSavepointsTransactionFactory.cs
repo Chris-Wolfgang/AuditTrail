@@ -1,6 +1,5 @@
 using System;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -18,7 +17,6 @@ namespace Wolfgang.AuditTrail.Tests.Integration.TestSupport;
 /// for providers/configurations that do not support savepoints (e.g. SQL Server
 /// memory-optimized tables).
 /// </summary>
-[ExcludeFromCodeCoverage]
 internal sealed class Db2NoSavepointsTransactionFactory : IRelationalTransactionFactory
 {
     private readonly ISqlGenerationHelper _sqlGenerationHelper;

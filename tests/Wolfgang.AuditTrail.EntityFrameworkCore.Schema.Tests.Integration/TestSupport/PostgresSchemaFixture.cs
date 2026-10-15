@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using NpgsqlTypes;
@@ -11,7 +10,6 @@ namespace Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration.TestS
 
 
 
-[ExcludeFromCodeCoverage]
 public sealed class PostgresSchemaFixture : IAsyncLifetime, ISchemaProviderFixture
 {
     private readonly PostgreSqlContainer _container = new PostgreSqlBuilder("postgres:16.4-alpine3.20")

@@ -13,7 +13,6 @@ namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;
 /// already inherits from <c>IdentityDbContext&lt;TUser&gt;</c> or another
 /// third-party base.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public class InterceptorTestDbContext : DbContext
 {
     private readonly AuditOptions _auditOptions;

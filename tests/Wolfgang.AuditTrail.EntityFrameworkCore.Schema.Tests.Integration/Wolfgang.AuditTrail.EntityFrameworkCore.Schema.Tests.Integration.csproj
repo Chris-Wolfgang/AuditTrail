@@ -61,7 +61,15 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.1" />
+    <!--
+      Microsoft.Data.SqlClient pulls System.Security.Cryptography.Pkcs from the
+      9.0.x line transitively, and versions up to 9.0.20 carry the CVE-2026-70162
+      and CVE-2026-84008 denial-of-service advisories, which trip NU1902/NU1903
+      (warning as error). Override to the patched 9.0.x release. Drop this once a
+      SqlClient release depends on 9.0.21 or later directly.
+    -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.21" />
     <PackageReference Include="Npgsql" Version="10.0.3" />
 
     <PackageReference Include="Testcontainers.MsSql" Version="4.15.0" />

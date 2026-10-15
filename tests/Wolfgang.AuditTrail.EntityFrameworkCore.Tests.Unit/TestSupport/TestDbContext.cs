@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;
 
-[ExcludeFromCodeCoverage]
 public class TestDbContext : AuditingDbContext
 {
     public TestDbContext

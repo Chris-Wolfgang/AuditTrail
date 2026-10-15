@@ -10,7 +10,6 @@ namespace Wolfgang.AuditTrail.Tests.Unit.TestSupport;
 /// used to prove that consumer-supplied <see cref="IAuditEntityKeySerializer"/>
 /// implementations are honored by the interceptor.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public sealed class JsonEntityKeySerializer : IAuditEntityKeySerializer
 {
     public string Serialize(IReadOnlyList<object?> keyValues)
