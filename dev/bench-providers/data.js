@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792076343504,
+  "lastUpdate": 1792076347017,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -4154,6 +4154,42 @@ window.BENCHMARK_DATA = {
             "value": 91710518.66666667,
             "unit": "ns",
             "range": "± 9771043.313454522"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b3fd9b4ea119bc0e21c195835f1292c48fe8c273",
+          "message": "fix(deps): pin the crypto packages to releases without the new DoS advisories (#392)\n\nFive .NET advisories published 2026-10-13 cover\nSystem.Security.Cryptography.Pkcs (<= 8.0.1, <= 9.0.20, <= 10.0.12) and\nSystem.Security.Cryptography.Xml (<= 10.0.12): CVE-2026-70162,\nCVE-2026-84008, CVE-2026-96958, CVE-2026-96959 and CVE-2026-96960. Both\npackages arrive transitively here, so every project whose closure reaches\nthem started failing restore on NU1902/NU1903 with warnings as errors --\nStage 1, Verify SourceLink and the Native AOT consumer job all broke\nwithout a single line of our own code changing.\n\nSeven projects needed an override. The pinned version follows the line the\nproject already resolved, so each one is the smallest patched bump rather\nthan a jump across majors:\n\n  Cli, Cli.Tests.Unit, Benchmarks (net10.0)  Pkcs 9.0.11 -> 9.0.21\n  Schema.Tests.Integration                   Pkcs 9.0.18 -> 9.0.21\n  Tests.Integration (net8.0 slot)            Pkcs  8.0.1 -> 8.0.2\n  Tests.Integration (net10.0 slot)           Pkcs  8.0.1 -> 10.0.13\n  AotSmoke, AotSmoke.Setup                   Pkcs/Xml 10.0.12 -> 10.0.13\n\nTests.Integration needs both slots: the net8.0 providers reach Pkcs through\nMicrosoft.Data.SqlClient, and the net10.0 slot reaches it independently\nthrough Oracle.EntityFrameworkCore and IBM.EntityFrameworkCore. The AotSmoke\npair already carried an Xml pin from an earlier advisory; this moves it onto\nthe patched release and adds the matching Pkcs override beside it.\n\nVerified with a forced solution-wide restore: zero NU1902/NU1903, zero\nNU1605 downgrades, and `dotnet build -c Release` reports 0 errors (the 6\nwarnings are the pre-existing out-of-support net6.0 notices).\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-15T10:49:27-04:00",
+          "tree_id": "46651cfa9c4d38b59ac08651dedaab97799870a7",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b3fd9b4ea119bc0e21c195835f1292c48fe8c273"
+        },
+        "date": 1792076345932,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 13429900.333333334,
+            "unit": "ns",
+            "range": "± 475860.9580805441"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 63383348,
+            "unit": "ns",
+            "range": "± 7434209.743199609"
           }
         ]
       }
