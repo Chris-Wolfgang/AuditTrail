@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792086276268,
+  "lastUpdate": 1792086280994,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -4394,6 +4394,42 @@ window.BENCHMARK_DATA = {
             "value": 68735259.33333333,
             "unit": "ns",
             "range": "± 1706249.887795552"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "e69c91a4afd1c63138342ad39dbd4e5ca24627c5",
+          "message": "Bump coverlet.collector from 10.0.1 to 10.1.0 (#390)\n\n---\nupdated-dependencies:\n- dependency-name: coverlet.collector\n  dependency-version: 10.1.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: dotnet-dependencies\n- dependency-name: coverlet.collector\n  dependency-version: 10.1.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: dotnet-dependencies\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\nCo-authored-by: Chris Wolfgang <210299580+Chris-Wolfgang@users.noreply.github.com>",
+          "timestamp": "2026-10-15T13:35:22-04:00",
+          "tree_id": "f59e9aa7005dbbc2367e4c7a1ff041adf792f3c7",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/e69c91a4afd1c63138342ad39dbd4e5ca24627c5"
+        },
+        "date": 1792086279503,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17840956,
+            "unit": "ns",
+            "range": "± 563179.3949071645"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 84309598.16666667,
+            "unit": "ns",
+            "range": "± 1652658.0090164854"
           }
         ]
       }
