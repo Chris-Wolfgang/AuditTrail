@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791807405105,
+  "lastUpdate": 1792076350350,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -10296,6 +10296,138 @@ window.BENCHMARK_DATA = {
             "value": 19320680.01219512,
             "unit": "ns",
             "range": "± 3874939.4500405625"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b3fd9b4ea119bc0e21c195835f1292c48fe8c273",
+          "message": "fix(deps): pin the crypto packages to releases without the new DoS advisories (#392)\n\nFive .NET advisories published 2026-10-13 cover\nSystem.Security.Cryptography.Pkcs (<= 8.0.1, <= 9.0.20, <= 10.0.12) and\nSystem.Security.Cryptography.Xml (<= 10.0.12): CVE-2026-70162,\nCVE-2026-84008, CVE-2026-96958, CVE-2026-96959 and CVE-2026-96960. Both\npackages arrive transitively here, so every project whose closure reaches\nthem started failing restore on NU1902/NU1903 with warnings as errors --\nStage 1, Verify SourceLink and the Native AOT consumer job all broke\nwithout a single line of our own code changing.\n\nSeven projects needed an override. The pinned version follows the line the\nproject already resolved, so each one is the smallest patched bump rather\nthan a jump across majors:\n\n  Cli, Cli.Tests.Unit, Benchmarks (net10.0)  Pkcs 9.0.11 -> 9.0.21\n  Schema.Tests.Integration                   Pkcs 9.0.18 -> 9.0.21\n  Tests.Integration (net8.0 slot)            Pkcs  8.0.1 -> 8.0.2\n  Tests.Integration (net10.0 slot)           Pkcs  8.0.1 -> 10.0.13\n  AotSmoke, AotSmoke.Setup                   Pkcs/Xml 10.0.12 -> 10.0.13\n\nTests.Integration needs both slots: the net8.0 providers reach Pkcs through\nMicrosoft.Data.SqlClient, and the net10.0 slot reaches it independently\nthrough Oracle.EntityFrameworkCore and IBM.EntityFrameworkCore. The AotSmoke\npair already carried an Xml pin from an earlier advisory; this moves it onto\nthe patched release and adds the matching Pkcs override beside it.\n\nVerified with a forced solution-wide restore: zero NU1902/NU1903, zero\nNU1605 downgrades, and `dotnet build -c Release` reports 0 errors (the 6\nwarnings are the pre-existing out-of-support net6.0 notices).\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-15T10:49:27-04:00",
+          "tree_id": "46651cfa9c4d38b59ac08651dedaab97799870a7",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b3fd9b4ea119bc0e21c195835f1292c48fe8c273"
+        },
+        "date": 1792076349311,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 531894.5204081633,
+            "unit": "ns",
+            "range": "± 134810.47149577047"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1006962.8461538461,
+            "unit": "ns",
+            "range": "± 9452.874534995108"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 615990.16,
+            "unit": "ns",
+            "range": "± 16340.149106010833"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 1979229.4333333333,
+            "unit": "ns",
+            "range": "± 27967.975100273594"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 581287.6111111111,
+            "unit": "ns",
+            "range": "± 55036.5409678061"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1182309.5,
+            "unit": "ns",
+            "range": "± 13174.68507870594"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 971529.9666666667,
+            "unit": "ns",
+            "range": "± 13361.058121414244"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 6959054.104651162,
+            "unit": "ns",
+            "range": "± 748451.976355103"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1818304.923076923,
+            "unit": "ns",
+            "range": "± 12582.210851446434"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 12976391.642857144,
+            "unit": "ns",
+            "range": "± 1989848.5481519287"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1453011.2333333334,
+            "unit": "ns",
+            "range": "± 10671.931987807126"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 11521002.277777778,
+            "unit": "ns",
+            "range": "± 1500351.2118418536"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 3788626.6428571427,
+            "unit": "ns",
+            "range": "± 29459.64652735133"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 20492873.77,
+            "unit": "ns",
+            "range": "± 9232680.42458361"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 7721439.423076923,
+            "unit": "ns",
+            "range": "± 48546.69031709155"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 16474720.229411764,
+            "unit": "ns",
+            "range": "± 7183612.792077891"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 5407563.833333333,
+            "unit": "ns",
+            "range": "± 44253.42477313496"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 19065395.494623657,
+            "unit": "ns",
+            "range": "± 12955590.045140723"
           }
         ]
       }
