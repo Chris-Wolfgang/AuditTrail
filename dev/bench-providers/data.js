@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791807401555,
+  "lastUpdate": 1792076343504,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -2844,6 +2844,90 @@ window.BENCHMARK_DATA = {
             "value": 43174681.333333336,
             "unit": "ns",
             "range": "± 2867713.520057806"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b3fd9b4ea119bc0e21c195835f1292c48fe8c273",
+          "message": "fix(deps): pin the crypto packages to releases without the new DoS advisories (#392)\n\nFive .NET advisories published 2026-10-13 cover\nSystem.Security.Cryptography.Pkcs (<= 8.0.1, <= 9.0.20, <= 10.0.12) and\nSystem.Security.Cryptography.Xml (<= 10.0.12): CVE-2026-70162,\nCVE-2026-84008, CVE-2026-96958, CVE-2026-96959 and CVE-2026-96960. Both\npackages arrive transitively here, so every project whose closure reaches\nthem started failing restore on NU1902/NU1903 with warnings as errors --\nStage 1, Verify SourceLink and the Native AOT consumer job all broke\nwithout a single line of our own code changing.\n\nSeven projects needed an override. The pinned version follows the line the\nproject already resolved, so each one is the smallest patched bump rather\nthan a jump across majors:\n\n  Cli, Cli.Tests.Unit, Benchmarks (net10.0)  Pkcs 9.0.11 -> 9.0.21\n  Schema.Tests.Integration                   Pkcs 9.0.18 -> 9.0.21\n  Tests.Integration (net8.0 slot)            Pkcs  8.0.1 -> 8.0.2\n  Tests.Integration (net10.0 slot)           Pkcs  8.0.1 -> 10.0.13\n  AotSmoke, AotSmoke.Setup                   Pkcs/Xml 10.0.12 -> 10.0.13\n\nTests.Integration needs both slots: the net8.0 providers reach Pkcs through\nMicrosoft.Data.SqlClient, and the net10.0 slot reaches it independently\nthrough Oracle.EntityFrameworkCore and IBM.EntityFrameworkCore. The AotSmoke\npair already carried an Xml pin from an earlier advisory; this moves it onto\nthe patched release and adds the matching Pkcs override beside it.\n\nVerified with a forced solution-wide restore: zero NU1902/NU1903, zero\nNU1605 downgrades, and `dotnet build -c Release` reports 0 errors (the 6\nwarnings are the pre-existing out-of-support net6.0 notices).\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-15T10:49:27-04:00",
+          "tree_id": "46651cfa9c4d38b59ac08651dedaab97799870a7",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b3fd9b4ea119bc0e21c195835f1292c48fe8c273"
+        },
+        "date": 1792076341445,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3593170.6666666665,
+            "unit": "ns",
+            "range": "± 89784.31293568679"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 22524049.5,
+            "unit": "ns",
+            "range": "± 1866009.5264590692"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4611493.166666667,
+            "unit": "ns",
+            "range": "± 122527.02139664268"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 29289441.5,
+            "unit": "ns",
+            "range": "± 3128646.754283871"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 8007147.666666667,
+            "unit": "ns",
+            "range": "± 5491443.371937139"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 28790652,
+            "unit": "ns",
+            "range": "± 523234.8743375197"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17175742.333333332,
+            "unit": "ns",
+            "range": "± 870450.2036626411"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 87192625,
+            "unit": "ns",
+            "range": "± 7750754.5822339775"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4897932.833333333,
+            "unit": "ns",
+            "range": "± 69891.92543730164"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 103449238,
+            "unit": "ns",
+            "range": "± 126875714.6434624"
           }
         ]
       }
