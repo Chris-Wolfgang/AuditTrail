@@ -38,6 +38,14 @@
     <!-- NU1903 transitive override — see issue #121. -->
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
+    <!--
+      Microsoft.Data.SqlClient pulls System.Security.Cryptography.Pkcs from the
+      9.0.x line transitively, and versions up to 9.0.20 carry the CVE-2026-70162
+      and CVE-2026-84008 denial-of-service advisories, which trip NU1902/NU1903
+      (warning as error). Override to the patched 9.0.x release. Drop this once a
+      SqlClient release depends on 9.0.21 or later directly.
+    -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.21" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageReference Include="Testcontainers.MsSql" Version="4.15.0" />
     <PackageReference Include="Testcontainers.PostgreSql" Version="4.15.0" />

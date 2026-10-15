@@ -189,13 +189,21 @@ function Get-TrackedIssues
     {
         if ($i.PSObject.Properties['pull_request']) { continue }           # the issues endpoint also returns PRs
         $issue = [pscustomobject]@{ number = $i.number; title = $i.title; body = [string]$i.body; state = $i.state.ToUpper() }
-        if ($issue.body -match '<!-- security-alert: ([a-z-]+#\d+(?:-bypass)?) -->') { $map[$Matches[1]] = $issue }
-        elseif ($issue.body -match [regex]::Escape($summaryMarker))
+        $key = $null
+        if ($issue.body -match '<!-- security-alert: ([a-z-]+#\d+(?:-bypass)?) -->') { $key = $Matches[1] }
+        elseif ($issue.body -match [regex]::Escape($summaryMarker)) { $key = 'summary' }
+        if (-not $key) { continue }
+        # Several issues can carry one marker: a closed summary and the open one that replaced it,
+        # or an alert issue closed by hand and re-filed. Keep the OPEN one, and between two of the
+        # same state the newest. The listing is newest first, so a plain last-wins kept the OLDEST
+        # (a closed summary), and every weekly run filed a new summary instead of updating the
+        # open one.
+        $current = $map[$key]
+        if (-not $current -or
+            ($issue.state -eq 'OPEN' -and $current.state -ne 'OPEN') -or
+            ($issue.state -eq $current.state -and $issue.number -gt $current.number))
         {
-            # The listing is newest-first and state=all includes closed summaries; keep the OPEN
-            # one (else the newest) so an older closed summary can't displace it and cause a
-            # duplicate to be created instead of a comment.
-            if (-not $map.ContainsKey('summary') -or $map['summary'].state -ne 'OPEN') { $map['summary'] = $issue }
+            $map[$key] = $issue
         }
     }
     return $map
