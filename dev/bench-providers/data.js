@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792078681360,
+  "lastUpdate": 1792078684918,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -4274,6 +4274,42 @@ window.BENCHMARK_DATA = {
             "value": 63383348,
             "unit": "ns",
             "range": "± 7434209.743199609"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "ae35bb4c8ad1092c081b463616173b4ebddcd416",
+          "message": "chore(deps): bump the github-actions group with 2 updates (#391)\n\nBumps the github-actions group with 2 updates: [actions/upload-artifact](https://github.com/actions/upload-artifact) and [actions/download-artifact](https://github.com/actions/download-artifact).\n\n\nUpdates `actions/upload-artifact` from 7.0.1 to 7.0.2\n- [Release notes](https://github.com/actions/upload-artifact/releases)\n- [Commits](https://github.com/actions/upload-artifact/compare/043fb46d1a93c77aae656e7c1c64a875d1fc6a0a...cf430e030ddbb5b0abf93d22962f4752f3646cd9)\n\nUpdates `actions/download-artifact` from 8.0.1 to 8.0.2\n- [Release notes](https://github.com/actions/download-artifact/releases)\n- [Commits](https://github.com/actions/download-artifact/compare/3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c...9000827ccba6bdab643e8b6fd33ac0654aef8333)\n\n---\nupdated-dependencies:\n- dependency-name: actions/upload-artifact\n  dependency-version: 7.0.2\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: github-actions\n- dependency-name: actions/download-artifact\n  dependency-version: 8.0.2\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: github-actions\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\nCo-authored-by: Chris Wolfgang <210299580+Chris-Wolfgang@users.noreply.github.com>",
+          "timestamp": "2026-10-15T11:29:24-04:00",
+          "tree_id": "1b756f509c7299a2879e632ef8510bbaa643a36d",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/ae35bb4c8ad1092c081b463616173b4ebddcd416"
+        },
+        "date": 1792078683379,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 14661873.833333334,
+            "unit": "ns",
+            "range": "± 665979.13139402"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 68735259.33333333,
+            "unit": "ns",
+            "range": "± 1706249.887795552"
           }
         ]
       }
