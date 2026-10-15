@@ -47,11 +47,31 @@ internal sealed class AuditSchemaUpgrades : IAuditSchemaUpgrades
 
         // Version 1 is the only audit schema this library has ever installed,
         // so there are no steps yet and every call lands on the throw below.
-        // The first step arrives with #344, as a branch on fromVersion == 1
-        // returning an AddColumnOperation whose Table and Schema come from the
-        // context. A non-nullable column must carry a DefaultValue: the target
-        // is an existing, populated table, and ADD COLUMN NOT NULL without one
+        // A first step is a branch on fromVersion returning the operations that
+        // take that version to the next one -- for a new column, an
+        // AddColumnOperation whose Table and Schema come from the context
+        // rather than from AuditOptions, because the caller may have renamed
+        // either.
+        //
+        // Two constraints on such a column, both measured against SQL Server,
+        // PostgreSQL, MySQL and SQLite rather than assumed:
+        //
+        // A non-nullable column must carry a DefaultValue. The target is an
+        // existing, populated table, and ADD COLUMN NOT NULL without a default
         // fails on every row already there.
+        //
+        // It must not rely on the database to generate per-row values. Marking
+        // the property ValueGeneratedOnAdd and letting the provider emit its
+        // own identity syntax looks portable and is not: MySQL rejects a
+        // non-key AUTO_INCREMENT column outright, even on a fresh CREATE TABLE,
+        // so it would need an extra index led by that column; SQLite has no
+        // identity concept for a non-primary-key column, so EF omits the column
+        // from INSERTs expecting generation that never happens and the write
+        // fails at runtime; and PostgreSQL does backfill existing rows but not
+        // in insert order, so historical rows get values that misstate their
+        // order rather than merely being absent. Assign such values in
+        // AuditCapture, where HeaderId is already assigned, and let the column
+        // be a plain NOT NULL with a default that marks pre-upgrade rows.
         throw new NotSupportedException
         (
             $"No upgrade step is defined from audit schema version {fromVersion}. " +
