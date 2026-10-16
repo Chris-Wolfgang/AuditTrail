@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792086286590,
+  "lastUpdate": 1792151929222,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -10692,6 +10692,138 @@ window.BENCHMARK_DATA = {
             "value": 20793008.780487806,
             "unit": "ns",
             "range": "± 5674838.602734113"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "7814c850459f96e5574efec4187bbe02af3f1c1b",
+          "message": "test(integration): run each provider on the newest TFM its provider supports (#393)\n\nSQL Server and PostgreSQL were being exercised only on net8.0 against EF Core\n9, even though both ship EF Core 10 builds. They were grouped with MySQL\nbecause the file's header comment asserted that \"SQL Server / PostgreSQL /\nMySQL (Pomelo) all cap at EF Core 9\" -- true of Pomelo, not of the other two.\nSo the suite was testing a configuration no current consumer would use, and\nthe EF Core 10 code path for the two most-used providers went uncovered here.\n\nRegroup by what each provider actually supports:\n\n  net8.0   MySQL (Pomelo 9.0.0, no EF Core 10 build exists)\n  net10.0  SQL Server, PostgreSQL, Oracle, Db2 (all EF Core 10)\n\nSQL Server moves to 10.0.11 and PostgreSQL to 10.0.1, matching the versions\nSchema.Tests.Integration already uses so the two integration suites stay on\nthe same provider builds. The header comment is rewritten to say which\nprovider holds the matrix back and why, and to tell the next person to put a\nnew provider on the newest slot its package supports -- the old wording is\nwhat let these two drift onto the wrong slot.\n\nMoving the SQL Server provider also moves the Microsoft.Data.SqlClient\ndependency chain, so the Pkcs audit override follows it to the net10.0 slot.\nThe net8.0 slot now needs none at all: Pomelo reaches MySQL through\nMySqlConnector, which has no Pkcs dependency.\n\nVerified locally against real containers, not just a build:\n\n  net8.0   MySqlAuditTests                      3 passed\n  net10.0  SqlServerAuditTests + PostgresAuditTests  6 passed\n\nand `--list-tests` confirms the split is what it claims: net8.0 discovers\nMySqlAuditTests, net10.0 discovers SqlServer/Postgres/Oracle/Db2, with\nDockerContainerStartupTests shared. Restore is clean on both slots.\n\nOnly the csproj changed; no test code was touched.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T07:48:30-04:00",
+          "tree_id": "39beac4e089fcea8f29a54f7e64404e345597c79",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/7814c850459f96e5574efec4187bbe02af3f1c1b"
+        },
+        "date": 1792151928220,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 469332.21276595746,
+            "unit": "ns",
+            "range": "± 43138.777274627784"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1030905.2142857143,
+            "unit": "ns",
+            "range": "± 14041.500101641406"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 705405.6521739131,
+            "unit": "ns",
+            "range": "± 68816.6870929509"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2037321.5666666667,
+            "unit": "ns",
+            "range": "± 28241.138452028925"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 517186.875,
+            "unit": "ns",
+            "range": "± 16045.561162394073"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1183309.2666666666,
+            "unit": "ns",
+            "range": "± 12220.813530709851"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 986902.1428571428,
+            "unit": "ns",
+            "range": "± 13179.818335722135"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 7211392.066666666,
+            "unit": "ns",
+            "range": "± 1030907.041134286"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1909621.4117647058,
+            "unit": "ns",
+            "range": "± 30675.703078859544"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 14321988.929292928,
+            "unit": "ns",
+            "range": "± 2725641.9299769835"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1471275.5,
+            "unit": "ns",
+            "range": "± 14408.68858412471"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 12286864,
+            "unit": "ns",
+            "range": "± 970936.7524459173"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 3628299.214285714,
+            "unit": "ns",
+            "range": "± 35122.51627173432"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 23639607.46,
+            "unit": "ns",
+            "range": "± 11506751.087141007"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 10034725.56122449,
+            "unit": "ns",
+            "range": "± 917387.8295211925"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 15343580.5,
+            "unit": "ns",
+            "range": "± 4503602.9576529395"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 7978682.66,
+            "unit": "ns",
+            "range": "± 1362804.8855449173"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 18852655.15591398,
+            "unit": "ns",
+            "range": "± 12336491.820989361"
           }
         ]
       }
