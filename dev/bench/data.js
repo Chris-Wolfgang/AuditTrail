@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792169799937,
+  "lastUpdate": 1792176017972,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -11220,6 +11220,138 @@ window.BENCHMARK_DATA = {
             "value": 22089055.29292929,
             "unit": "ns",
             "range": "± 15028286.352278195"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "6e2638267cf4b3dfb1439cb4fd61ef3636304fb9",
+          "message": "docs(benchmarks): fully qualify CancellationToken in a doc cref (#396)\n\nTwo code-scanning alerts (570, 571) on\nbenchmarks/.../Db2NoSavepointsTransactionFactory.cs:14:\n\n  Cannot resolve symbol 'CancellationToken'\n  Ambiguous reference 'SaveChangesAsync' in documentation. Candidates are:\n      SaveChangesAsync(bool, CancellationToken) (in class AuditingDbContext)\n      SaveChangesAsync(CancellationToken) (in class DbContext)\n\nOne cause, two symptoms. The file has no `using System.Threading;` -- the type\nappears nowhere in its code, only in this cref -- so `CancellationToken` in the\nsignature does not bind, the signature then fails to match either overload, and\nthe cref degrades to an ambiguous name.\n\nFully qualifying the parameter type fixes both and keeps the reference precise.\nAdding a using would also work, but nothing else in the file needs\nSystem.Threading, so it would sit there as an unnecessary import.\n\nThis stopped being cosmetic when #395 landed: that PR turns ImplicitUsings off\nfor this project, and System.Threading was one of the namespaces it had been\nsupplying. #395 added usings where compilation required them, which this file\ndid not -- a cref is not a compile dependency -- so the reference was left\nunresolvable. A fully-qualified cref does not care either way.\n\nVerified with Roslyn rather than only the scanner, building with\nGenerateDocumentationFile=true and CS1591 suppressed so cref diagnostics\nsurface:\n\n  before  CS1574 (cref could not be resolved) + CS1580 (invalid parameter type)\n  after   neither\n\nThe mirrored copy in Tests.Integration/TestSupport carries a shorter comment\nwithout this cref, so it needs no change.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T14:30:58-04:00",
+          "tree_id": "e5c0f5c2a20a3bb1e88226d57e9f5f453477ada4",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/6e2638267cf4b3dfb1439cb4fd61ef3636304fb9"
+        },
+        "date": 1792176016566,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 398812.85714285716,
+            "unit": "ns",
+            "range": "± 5808.001229830646"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1293865.7604166667,
+            "unit": "ns",
+            "range": "± 218842.30959616593"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 720677.6538461539,
+            "unit": "ns",
+            "range": "± 100507.1271835345"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 1981280.642857143,
+            "unit": "ns",
+            "range": "± 22060.927962235517"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 581227.459770115,
+            "unit": "ns",
+            "range": "± 42615.567356445405"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1206365,
+            "unit": "ns",
+            "range": "± 14416.918682842472"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 974385.4333333333,
+            "unit": "ns",
+            "range": "± 15436.78277207984"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 7445854.326530612,
+            "unit": "ns",
+            "range": "± 1232617.616475044"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 2408605.43814433,
+            "unit": "ns",
+            "range": "± 330699.1985286571"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 14697368.479166666,
+            "unit": "ns",
+            "range": "± 1560927.2384617175"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1465336.4705882352,
+            "unit": "ns",
+            "range": "± 29647.42535220733"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 10707648.747311829,
+            "unit": "ns",
+            "range": "± 987214.401220365"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 3614563.230769231,
+            "unit": "ns",
+            "range": "± 42599.808657930706"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 31745747.075757574,
+            "unit": "ns",
+            "range": "± 1002173.5298440096"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 7638014.807692308,
+            "unit": "ns",
+            "range": "± 46443.93776081836"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 17092417.11445783,
+            "unit": "ns",
+            "range": "± 6420160.870135788"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 7199269.282828283,
+            "unit": "ns",
+            "range": "± 844605.6112459131"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 22100283.848484848,
+            "unit": "ns",
+            "range": "± 15923783.69760644"
           }
         ]
       }
