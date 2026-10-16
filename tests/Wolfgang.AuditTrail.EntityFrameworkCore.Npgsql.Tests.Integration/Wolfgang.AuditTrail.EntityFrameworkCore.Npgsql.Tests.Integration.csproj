@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
+    <!-- Needs Linux containers (Testcontainers). Marker for workflows that run container-backed suites only on Linux runners; nothing reads it until that workflow change is synced. -->
+    <RequiresLinuxContainers>true</RequiresLinuxContainers>
     <!--
       Mirrors Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration's pattern:
       pr.yaml enumerates every *.csproj under ./tests via `dotnet test`, so this

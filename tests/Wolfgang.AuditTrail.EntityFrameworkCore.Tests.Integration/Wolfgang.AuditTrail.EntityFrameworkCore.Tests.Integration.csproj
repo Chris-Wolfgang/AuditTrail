@@ -2,20 +2,27 @@
 
   <PropertyGroup>
     <!--
-      Multi-targeted because the providers this project covers split across
-      two EF Core majors and neither side multi-targets to bridge the gap:
-      SQL Server / PostgreSQL / MySQL (Pomelo) all cap at EF Core 9 (Pomelo
-      specifically: confirmed via a real runtime probe that forcing it onto
-      EF Core 10 throws MissingMethodException, not just a version-range
-      warning), while Oracle (Oracle.EntityFrameworkCore) and Db2
-      (IBM.EntityFrameworkCore) ship net10.0-only EF Core 10 packages with no
-      net8.0 build at all. Each provider's fixture/test files are TFM-scoped
-      below via Compile Remove so the net8.0 build only sees the EF9-provider
-      set and the net10.0 build only sees the EF10-provider set.
+      Multi-targeted so each provider can be exercised on the newest target
+      framework its EF Core provider actually supports, rather than on the
+      lowest common one. Only MySQL holds anything back: Pomelo caps at EF
+      Core 9, and forcing it onto EF Core 10 throws MissingMethodException at
+      runtime rather than merely warning about the version range (confirmed by
+      a real probe, so the cap is not just a NuGet constraint to relax). MySQL
+      therefore runs on net8.0 and every other provider runs on net10.0, where
+      SQL Server, PostgreSQL, Oracle and Db2 all have EF Core 10 builds;
+      Oracle and Db2 in fact ship net10.0-only packages with no net8.0 build
+      at all.
+
+      Each provider's fixture/test files are TFM-scoped below via Compile
+      Remove, so a slot only compiles the providers it has packages for. When
+      adding a provider, put it on the newest slot its package supports and
+      Compile Remove its files from every other slot.
     -->
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <!-- Needs Linux containers (Testcontainers). Marker for workflows that run container-backed suites only on Linux runners; nothing reads it until that workflow change is synced. -->
+    <RequiresLinuxContainers>true</RequiresLinuxContainers>
     <!--
       pr.yaml enumerates every *.csproj under ./tests and invokes `dotnet test`
       on each one (see the "Run tests with coverage" step in .github/workflows/pr.yaml).
@@ -49,40 +56,58 @@
     <PackageReference Include="Xunit.SkippableFact" Version="1.5.85" />
   </ItemGroup>
 
-  <!-- EF Core 9-capped providers: SQL Server, PostgreSQL, MySQL (Pomelo). -->
+  <!--
+    Each provider is exercised on the newest target framework its EF Core
+    provider supports, so the integration suite tests what a consumer on a
+    current runtime would actually get. That splits the matrix in two, because
+    Pomelo has no EF Core 10 build: MySQL stays on net8.0 with EF Core 9, and
+    everything else runs on net10.0 with EF Core 10. `dotnet test` without a
+    -f flag runs both slots, so every provider is covered on every run.
+  -->
+
+  <!--
+    EF Core 9 provider: MySQL via Pomelo. Alone on this slot because
+    Pomelo.EntityFrameworkCore.MySql caps at 9.0.0; move MySQL up to the
+    net10.0 group and delete this one as soon as Pomelo ships an EF Core 10
+    release. (Oracle's MySql.EntityFrameworkCore does ship EF Core 10, but
+    swapping providers changes what the library is tested against, so that is
+    a separate decision from where each provider is tested.)
+  -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.20" />
-    <!--
-      Microsoft.Data.SqlClient pulls System.Security.Cryptography.Pkcs from the
-      8.0.x line transitively on this slot, and 8.0.1 carries the CVE-2026-70162
-      and CVE-2026-84008 denial-of-service advisories, which trip NU1902/NU1903
-      (warning as error). Override to the patched 8.0.x release; staying on the
-      8.0.x line keeps the pin in step with this slot's target framework.
-    -->
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.2" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
 
-    <PackageReference Include="Testcontainers.MsSql" Version="4.15.0" />
-    <PackageReference Include="Testcontainers.PostgreSql" Version="4.15.0" />
     <PackageReference Include="Testcontainers.MySql" Version="4.15.0" />
 
+    <Compile Remove="SqlServerAuditTests.cs" />
+    <Compile Remove="PostgresAuditTests.cs" />
     <Compile Remove="OracleAuditTests.cs" />
     <Compile Remove="Db2AuditTests.cs" />
+    <Compile Remove="TestSupport\SqlServerFixture.cs" />
+    <Compile Remove="TestSupport\PostgresFixture.cs" />
     <Compile Remove="TestSupport\OracleFixture.cs" />
     <Compile Remove="TestSupport\Db2Fixture.cs" />
     <Compile Remove="TestSupport\Db2TableOnlyDatabaseCreator.cs" />
   </ItemGroup>
 
-  <!-- EF Core 10-only providers: Oracle, Db2. Neither ships a net8.0 build. -->
+  <!--
+    EF Core 10 providers: SQL Server, PostgreSQL, Oracle, Db2. Versions track
+    Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration so the two
+    integration suites stay on the same provider builds.
+  -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="10.23.26300" />
     <!--
-      Oracle.EntityFrameworkCore and IBM.EntityFrameworkCore pull
-      System.Security.Cryptography.Pkcs 8.0.1 transitively, which carries the
-      CVE-2026-70162 and CVE-2026-84008 denial-of-service advisories and trips
-      NU1902/NU1903 (warning as error). Override to the patched 10.0.x release
-      to match this slot's target framework.
+      This slot reaches System.Security.Cryptography.Pkcs through two
+      independent chains: Microsoft.Data.SqlClient (via the SQL Server
+      provider) brings the 9.0.x line, and Oracle.EntityFrameworkCore and
+      IBM.EntityFrameworkCore bring 8.0.1. Pkcs carries the CVE-2026-70162 and
+      CVE-2026-84008 denial-of-service advisories up to 8.0.1, 9.0.20 and
+      10.0.12, which trip NU1902/NU1903 (warning as error). One override to the
+      patched 10.0.x release covers both chains and matches this slot's target
+      framework. The net8.0 slot needs no equivalent: Pomelo reaches MySQL
+      through MySqlConnector, which does not depend on Pkcs at all.
     -->
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
 
@@ -97,14 +122,12 @@
     <PackageReference Include="IBM.EntityFrameworkCore" Version="10.0.0.100" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <PackageReference Include="IBM.EntityFrameworkCore-lnx" Version="10.0.0.100" Condition="!$([MSBuild]::IsOSPlatform('Windows'))" />
 
+    <PackageReference Include="Testcontainers.MsSql" Version="4.15.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.15.0" />
     <PackageReference Include="Testcontainers.Oracle" Version="4.15.0" />
     <PackageReference Include="Testcontainers.Db2" Version="4.15.0" />
 
-    <Compile Remove="SqlServerAuditTests.cs" />
-    <Compile Remove="PostgresAuditTests.cs" />
     <Compile Remove="MySqlAuditTests.cs" />
-    <Compile Remove="TestSupport\SqlServerFixture.cs" />
-    <Compile Remove="TestSupport\PostgresFixture.cs" />
     <Compile Remove="TestSupport\MySqlFixture.cs" />
   </ItemGroup>
 
