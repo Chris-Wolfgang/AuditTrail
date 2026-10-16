@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792159453332,
+  "lastUpdate": 1792169792104,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -3348,6 +3348,78 @@ window.BENCHMARK_DATA = {
             "value": 42778381.333333336,
             "unit": "ns",
             "range": "± 2986647.1354028974"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b73adc086af105b91815705e897e4e11e5063db1",
+          "message": "chore: explicit usings on every TFM (re-targeted at main) (#395)\n\n* chore: explicit usings on every TFM (no implicit/global usings in multi-TFM projects) (#367)\n\nRemoves <ImplicitUsings>enable</ImplicitUsings> from the six multi-target\nprojects and adds the explicit using directives each file needs, so every\ntarget framework slice needs the same usings and InspectCode (which analyses\na single modern slice) stops flagging them as RedundantUsingDirective.\n\nNo behaviour or public API change.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>\n(cherry picked from commit 97c1ce0899b255c1b4ce49c00023b370cc50b973)\n\n* chore: explicit usings for the files added since #367\n\nThree files landed on main after the explicit-usings pass was written, so they\ncarry no using directives of their own and stop compiling the moment\nImplicitUsings is switched off for their project:\n\n  Db2AuditTests.cs               System, System.Collections.Generic,\n                                 System.Threading, System.Threading.Tasks\n  DockerContainerStartupTests.cs System, System.Threading.Tasks\n  TestSupportTests.cs            System, System.Threading, System.Threading.Tasks\n\nSystem-first ordering, matching the rest of the pass.\n\nThis is the cost of the rule the pass introduces: a project without implicit\nusings needs every new file to declare its own, and nothing enforces that\nexcept the build. Worth knowing when reviewing.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T12:49:00-04:00",
+          "tree_id": "575acd7bb1936104bd792f8c8ea19c5f434469b0",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b73adc086af105b91815705e897e4e11e5063db1"
+        },
+        "date": 1792169788970,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3859984,
+            "unit": "ns",
+            "range": "± 34154.79689589736"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 22733107,
+            "unit": "ns",
+            "range": "± 1803609.961285699"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4876216.666666667,
+            "unit": "ns",
+            "range": "± 111154.06384983563"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 30898967.666666668,
+            "unit": "ns",
+            "range": "± 396056.24646801536"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 10110632.666666666,
+            "unit": "ns",
+            "range": "± 5430390.884413049"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 30319806.833333332,
+            "unit": "ns",
+            "range": "± 491957.1032359766"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 20465449.833333332,
+            "unit": "ns",
+            "range": "± 2139136.472786702"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 311155141.3333333,
+            "unit": "ns",
+            "range": "± 383158433.4954508"
           }
         ]
       }
