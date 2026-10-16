@@ -12,8 +12,8 @@ namespace Wolfgang.AuditTrail.Benchmarks;
 /// IBM.EntityFrameworkCore's SQL generator does not emit (SQL0104N "unexpected
 /// token END-OF-STATEMENT... following SAVEPOINT EFSAVEPOINT"), so EF's automatic
 /// savepoint-on-nested-SaveChanges behavior fails against this provider.
-/// <see cref="AuditingDbContext.SaveChangesAsync(bool, CancellationToken)"/> always
-/// wraps a save in <c>ExecuteInTransactionAsync</c> with a second, nested
+/// <see cref="AuditingDbContext.SaveChangesAsync(bool, System.Threading.CancellationToken)"/>
+/// always wraps a save in <c>ExecuteInTransactionAsync</c> with a second, nested
 /// SaveChangesAsync for the audit rows -- exactly the trigger for EF's automatic
 /// savepoint creation -- so this fix is unconditional here, not scenario-specific.
 /// Replacing <see cref="IRelationalTransactionFactory"/> with one that reports
