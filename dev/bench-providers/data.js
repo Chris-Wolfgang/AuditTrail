@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792176013254,
+  "lastUpdate": 1792190152035,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -3504,6 +3504,90 @@ window.BENCHMARK_DATA = {
             "value": 36827661.833333336,
             "unit": "ns",
             "range": "± 5488389.261011498"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c5ae6e5c57a720117f62546db007beae4839d6a3",
+          "message": "ci(scorecard): move SARIF filtering out of the published job (#397)\n\n* ci(scorecard): move SARIF filtering out of the published job\n\nCloses #388.\n\nscorecard.dev verifies the job containing ossf/scorecard-action before it\naccepts publish_results: true, and rejects any such job that has a `run:` step:\n\n  error sending scorecard results to webapp: http response 400 ...\n  workflow verification failed: scorecard job must only have steps with `uses`\n\nThe analysis job ran the jq \"Filter suppressed findings from SARIF\" step, so\nevery publish since has been refused. scorecard-action downgrades the rejection\nto a warning, so the run stays green while nothing publishes -- api.scorecard.dev\nhas served a result dated 2026-08-22 ever since, and the README badge shows that\nstale score.\n\nSplit into two jobs:\n\n  analysis  only `uses:` steps -- checkout, Scorecard, upload-artifact. Keeps\n            id-token: write for the publish, drops security-events: write, and\n            restates contents: read because job-level permissions replace the\n            workflow-level read-all rather than adding to it.\n  upload    needs: analysis, with security-events: write. Checks out, downloads\n            the artifact, runs the filter step unchanged, uploads to\n            code-scanning.\n\nThe checkout in `upload` is first, before the download, for two reasons:\ncheckout cleans the workspace, so downloading ahead of it would delete the\nSARIF; and upload-sarif needs the working tree to compute the same source\nfingerprints it did when this ran in one job, or existing alerts reappear under\nnew IDs.\n\nThe filter step is moved verbatim, not rewritten -- its suppression list is\nspecific to this repo (nugetCommand not pinned), so a template-shaped overwrite\nwould silently change what is suppressed. Only the artifact name changes, from\n\"SARIF file\" to scorecard-sarif, matching the reference implementation.\n\nNot verifiable before merge: this workflow runs on push to main and on a\nschedule, so the fix proves itself on the first run after merge. Check that the\nrun logs no \"error sending scorecard results\" line and that\napi.scorecard.dev/projects/github.com/Chris-Wolfgang/AuditTrail returns a date\nnewer than 2026-08-22.\n\nStructure matches Log-Compressor#297, where the split was confirmed working: the\nfirst post-merge run published and the API returned 200.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* ci(scorecard): pin the analysis key across the job split\n\nCopilot caught a real consequence of moving upload-sarif into the new job.\n\nThe action derives its analysis key from the workflow path and the job it runs\nin -- api-client.ts getAnalysisKey() reads CODEQL_ACTION_ANALYSIS_KEY and, when\nunset, computes `${workflowPath}:${GITHUB_JOB}`. GITHUB_JOB is the job ID, so\nthis split would have changed the key from\n\n  .github/workflows/scorecard.yaml:analysis   to   ...:upload\n\nThe old key would then stop receiving uploads. Findings recorded under it are\nnever reported fixed, so they stay open indefinitely, while a duplicate set\nappears under the new key. Checking out the repo keeps upload-sarif's source\nfingerprints stable, but it does not preserve this identity -- a different\nthing, and the reason the earlier reasoning in this PR was incomplete.\n\nNot hypothetical here: the two open Scorecard alerts, BranchProtectionID (393)\nand CodeReviewID (406), are both recorded under the analysis key. Orphaning them\nwould also have defeated the planned fix for #337, which clears 406 by\nsuppressing CodeReviewID in this very filter -- the suppression would have\napplied to the new key while the old alert sat open forever.\n\nVerified rather than assumed:\n\n  - the env var exists in the pinned action (v4.38.2,\n    2892aa5e...): src/environment.ts declares\n    ANALYSIS_KEY = \"CODEQL_ACTION_ANALYSIS_KEY\", and src/api-client.ts returns\n    it directly when set, before computing the path:job form\n  - the live key is read from the API, not guessed:\n    `code-scanning/analyses?tool_name=Scorecard` reports\n    analysis_key=.github/workflows/scorecard.yaml:analysis on every current\n    analysis, across all three categories (supply-chain/local,\n    supply-chain/online-scm, supply-chain/branch-protection)\n\nCategories come from Scorecard's own SARIF and are unaffected, so pinning the\nanalysis key is both necessary and sufficient.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T18:25:40-04:00",
+          "tree_id": "15fc7e5c7ac53359f7de5aaa078628c47699df0a",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/c5ae6e5c57a720117f62546db007beae4839d6a3"
+        },
+        "date": 1792190148992,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3445588.6666666665,
+            "unit": "ns",
+            "range": "± 51009.11362034566"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 20998125.333333332,
+            "unit": "ns",
+            "range": "± 814476.1763626565"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6584481.666666667,
+            "unit": "ns",
+            "range": "± 85668.48608638612"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 36197289.5,
+            "unit": "ns",
+            "range": "± 1113031.5335375722"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 9774170.833333334,
+            "unit": "ns",
+            "range": "± 7030067.906527314"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 34037150.5,
+            "unit": "ns",
+            "range": "± 594150.0650753141"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 22926885,
+            "unit": "ns",
+            "range": "± 615095.7885719915"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 126780028.83333333,
+            "unit": "ns",
+            "range": "± 23726972.864236057"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7117557.333333333,
+            "unit": "ns",
+            "range": "± 14849.874387796463"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 39778285.833333336,
+            "unit": "ns",
+            "range": "± 4062871.06002742"
           }
         ]
       }
