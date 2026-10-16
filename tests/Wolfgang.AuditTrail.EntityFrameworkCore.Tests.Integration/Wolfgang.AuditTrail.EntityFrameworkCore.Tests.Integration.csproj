@@ -22,6 +22,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
+    <!-- Needs Linux containers (Testcontainers). Marker for workflows that run container-backed suites only on Linux runners; nothing reads it until that workflow change is synced. -->
+    <RequiresLinuxContainers>true</RequiresLinuxContainers>
     <!--
       pr.yaml enumerates every *.csproj under ./tests and invokes `dotnet test`
       on each one (see the "Run tests with coverage" step in .github/workflows/pr.yaml).
