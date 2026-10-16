@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792151929222,
+  "lastUpdate": 1792154197472,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -10824,6 +10824,138 @@ window.BENCHMARK_DATA = {
             "value": 18852655.15591398,
             "unit": "ns",
             "range": "± 12336491.820989361"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "5c31e9171c52cba956669660ee8b5db09155009c",
+          "message": "test: mark container-backed integration tests RequiresLinuxContainers (#380)\n\n* test: mark container-backed integration tests RequiresLinuxContainers\n\nThese integration tests start Linux containers through Testcontainers, which\nthe Windows and macOS runners cannot do. The repo-template change\n(Chris-Wolfgang/repo-template#708) makes pr.yaml Stages 2/3 and release.yaml\nskip a test project only when it declares this property, instead of by its\n*.Tests.Integration.* name. Stage 1 (Linux) still runs it.\n\nInert until that pr.yaml/release.yaml change is synced here; merge this first.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* test: describe RequiresLinuxContainers as a requirement, not current workflow behaviour\n\nNo workflow reads the property yet (pr.yaml and release.yaml here, and\nrepo-template), so the comment claiming Stages 2/3 and release.yaml skip the\nproject was not true. It now states the requirement and that the marker is\ninert until the workflow change is synced.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* test: describe RequiresLinuxContainers as a requirement, not current workflow behaviour\n\nNo workflow reads the property yet (pr.yaml and release.yaml here, and\nrepo-template), so the comment claiming Stages 2/3 and release.yaml skip the\nproject was not true. It now states the requirement and that the marker is\ninert until the workflow change is synced.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* test: describe RequiresLinuxContainers as a requirement, not current workflow behaviour\n\nNo workflow reads the property yet (pr.yaml and release.yaml here, and\nrepo-template), so the comment claiming Stages 2/3 and release.yaml skip the\nproject was not true. It now states the requirement and that the marker is\ninert until the workflow change is synced.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T08:27:06-04:00",
+          "tree_id": "ae9f1b54ef1e6f09d1d9f9551de0190152ce0967",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/5c31e9171c52cba956669660ee8b5db09155009c"
+        },
+        "date": 1792154195965,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 625301.976744186,
+            "unit": "ns",
+            "range": "± 51612.564286564426"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1503650.7142857143,
+            "unit": "ns",
+            "range": "± 25171.356873143824"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 852905.8666666667,
+            "unit": "ns",
+            "range": "± 12780.14149187641"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2917854.285714286,
+            "unit": "ns",
+            "range": "± 19126.852502250786"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 723097.9137931034,
+            "unit": "ns",
+            "range": "± 21194.58439001617"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1805553.4666666666,
+            "unit": "ns",
+            "range": "± 16765.710341845544"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1656506.142857143,
+            "unit": "ns",
+            "range": "± 25651.351767820805"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 11419515.717171717,
+            "unit": "ns",
+            "range": "± 1434904.461129417"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 3467784.5714285714,
+            "unit": "ns",
+            "range": "± 40211.887767203836"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 21828007.3,
+            "unit": "ns",
+            "range": "± 5481039.141503736"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 2681645.3846153845,
+            "unit": "ns",
+            "range": "± 25662.644779713246"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 17716163.09090909,
+            "unit": "ns",
+            "range": "± 659582.9779806017"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 8690116.347368421,
+            "unit": "ns",
+            "range": "± 750209.6326161216"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 24988467.53,
+            "unit": "ns",
+            "range": "± 14447976.71860644"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 19068258.615384616,
+            "unit": "ns",
+            "range": "± 275901.414432927"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 20633779.325,
+            "unit": "ns",
+            "range": "± 1432040.875964513"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 11109968.99,
+            "unit": "ns",
+            "range": "± 2544190.227357924"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 22443753.841463413,
+            "unit": "ns",
+            "range": "± 7569431.964706182"
           }
         ]
       }
