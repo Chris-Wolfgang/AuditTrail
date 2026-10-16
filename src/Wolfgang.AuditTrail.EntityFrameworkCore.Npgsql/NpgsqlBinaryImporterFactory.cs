@@ -1,4 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
+using System.Threading.Tasks;
 using Npgsql;
 
 namespace Wolfgang.AuditTrail.Npgsql;

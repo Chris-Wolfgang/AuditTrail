@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Wolfgang.AuditTrail.Internal;
