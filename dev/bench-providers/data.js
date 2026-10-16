@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792176008944,
+  "lastUpdate": 1792176013254,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -4982,6 +4982,42 @@ window.BENCHMARK_DATA = {
             "value": 60476191.666666664,
             "unit": "ns",
             "range": "± 6242604.019695013"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "6e2638267cf4b3dfb1439cb4fd61ef3636304fb9",
+          "message": "docs(benchmarks): fully qualify CancellationToken in a doc cref (#396)\n\nTwo code-scanning alerts (570, 571) on\nbenchmarks/.../Db2NoSavepointsTransactionFactory.cs:14:\n\n  Cannot resolve symbol 'CancellationToken'\n  Ambiguous reference 'SaveChangesAsync' in documentation. Candidates are:\n      SaveChangesAsync(bool, CancellationToken) (in class AuditingDbContext)\n      SaveChangesAsync(CancellationToken) (in class DbContext)\n\nOne cause, two symptoms. The file has no `using System.Threading;` -- the type\nappears nowhere in its code, only in this cref -- so `CancellationToken` in the\nsignature does not bind, the signature then fails to match either overload, and\nthe cref degrades to an ambiguous name.\n\nFully qualifying the parameter type fixes both and keeps the reference precise.\nAdding a using would also work, but nothing else in the file needs\nSystem.Threading, so it would sit there as an unnecessary import.\n\nThis stopped being cosmetic when #395 landed: that PR turns ImplicitUsings off\nfor this project, and System.Threading was one of the namespaces it had been\nsupplying. #395 added usings where compilation required them, which this file\ndid not -- a cref is not a compile dependency -- so the reference was left\nunresolvable. A fully-qualified cref does not care either way.\n\nVerified with Roslyn rather than only the scanner, building with\nGenerateDocumentationFile=true and CS1591 suppressed so cref diagnostics\nsurface:\n\n  before  CS1574 (cref could not be resolved) + CS1580 (invalid parameter type)\n  after   neither\n\nThe mirrored copy in Tests.Integration/TestSupport carries a shorter comment\nwithout this cref, so it needs no change.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T14:30:58-04:00",
+          "tree_id": "e5c0f5c2a20a3bb1e88226d57e9f5f453477ada4",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/6e2638267cf4b3dfb1439cb4fd61ef3636304fb9"
+        },
+        "date": 1792176011832,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 15777027.333333334,
+            "unit": "ns",
+            "range": "± 6145864.662231534"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 55459796.333333336,
+            "unit": "ns",
+            "range": "± 274839.1733038312"
           }
         ]
       }
