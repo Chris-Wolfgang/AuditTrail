@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792169795962,
+  "lastUpdate": 1792176008944,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -3420,6 +3420,90 @@ window.BENCHMARK_DATA = {
             "value": 311155141.3333333,
             "unit": "ns",
             "range": "± 383158433.4954508"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "6e2638267cf4b3dfb1439cb4fd61ef3636304fb9",
+          "message": "docs(benchmarks): fully qualify CancellationToken in a doc cref (#396)\n\nTwo code-scanning alerts (570, 571) on\nbenchmarks/.../Db2NoSavepointsTransactionFactory.cs:14:\n\n  Cannot resolve symbol 'CancellationToken'\n  Ambiguous reference 'SaveChangesAsync' in documentation. Candidates are:\n      SaveChangesAsync(bool, CancellationToken) (in class AuditingDbContext)\n      SaveChangesAsync(CancellationToken) (in class DbContext)\n\nOne cause, two symptoms. The file has no `using System.Threading;` -- the type\nappears nowhere in its code, only in this cref -- so `CancellationToken` in the\nsignature does not bind, the signature then fails to match either overload, and\nthe cref degrades to an ambiguous name.\n\nFully qualifying the parameter type fixes both and keeps the reference precise.\nAdding a using would also work, but nothing else in the file needs\nSystem.Threading, so it would sit there as an unnecessary import.\n\nThis stopped being cosmetic when #395 landed: that PR turns ImplicitUsings off\nfor this project, and System.Threading was one of the namespaces it had been\nsupplying. #395 added usings where compilation required them, which this file\ndid not -- a cref is not a compile dependency -- so the reference was left\nunresolvable. A fully-qualified cref does not care either way.\n\nVerified with Roslyn rather than only the scanner, building with\nGenerateDocumentationFile=true and CS1591 suppressed so cref diagnostics\nsurface:\n\n  before  CS1574 (cref could not be resolved) + CS1580 (invalid parameter type)\n  after   neither\n\nThe mirrored copy in Tests.Integration/TestSupport carries a shorter comment\nwithout this cref, so it needs no change.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T14:30:58-04:00",
+          "tree_id": "e5c0f5c2a20a3bb1e88226d57e9f5f453477ada4",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/6e2638267cf4b3dfb1439cb4fd61ef3636304fb9"
+        },
+        "date": 1792176005580,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3631849.1666666665,
+            "unit": "ns",
+            "range": "± 35552.28730100686"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 21938138.833333332,
+            "unit": "ns",
+            "range": "± 1961835.1727564507"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4827181.5,
+            "unit": "ns",
+            "range": "± 290992.93667716405"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 30275019.333333332,
+            "unit": "ns",
+            "range": "± 781140.6743950371"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 8309882,
+            "unit": "ns",
+            "range": "± 6036728.280681598"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 29857660.833333332,
+            "unit": "ns",
+            "range": "± 401681.2678559125"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 20568890,
+            "unit": "ns",
+            "range": "± 982900.9396063267"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 371063677.3333333,
+            "unit": "ns",
+            "range": "± 438051058.5142646"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6040078.666666667,
+            "unit": "ns",
+            "range": "± 2354383.079955412"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 36827661.833333336,
+            "unit": "ns",
+            "range": "± 5488389.261011498"
           }
         ]
       }
