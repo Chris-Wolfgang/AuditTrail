@@ -654,12 +654,13 @@ jobs:
             Write-Host ""
             
             # Test each framework; collect coverage only for .NET 5.0+ TFMs.
-            # $collectedCoverage drives the ledger below: only a project that ran at
-            # least one coverage-collecting TFM is required to have a coverage row.
+            # $coverageFrameworks drives the ledger below: a project is required to have
+            # a coverage row only if it ran a coverage-collecting TFM *and* MSBuild
+            # evaluates it as a test project on one of those TFMs.
             # netcoreapp3.1 and net4x are tested but excluded from coverage:
             # netcoreapp3.1 has no matching test TFM on Linux (Stage 1) so its numbers
             # would not be comparable; net4x cannot use the XPlat collector on Windows.
-            $collectedCoverage = $false
+            $coverageFrameworks = @()
             foreach ($fw in $frameworks) {
               Write-Host "Testing framework: $fw" -ForegroundColor Yellow
 
@@ -671,7 +672,7 @@ jobs:
                   --settings coverlet.runsettings `
                   --results-directory "./TestResults" `
                   --logger "console;verbosity=normal"
-                $collectedCoverage = $true
+                $coverageFrameworks += $fw
               } else {
                 dotnet test $testProj.FullName `
                   --configuration Release `
@@ -685,11 +686,30 @@ jobs:
               }
             }
 
-            # Ledger the assembly name, not the project name: the coverage report keys
-            # rows by assembly, and the two differ whenever <AssemblyName> is set.
-            if ($collectedCoverage) {
+            # Record the assembly only when MSBuild evaluates the project as a test
+            # project, matching Stage 1. `dotnet test` runs nothing for this repo's
+            # *.Tests.Integration projects (IsTestProject is false unless
+            # integration.yaml sets RunIntegrationTests=true) or for the AotSmoke
+            # console apps, so they must not be expected to have a coverage row.
+            #
+            # The property alone decides it -- deliberately no Microsoft.NET.Test.Sdk
+            # fallback. Those integration projects DO reference Test.Sdk while setting
+            # IsTestProject=false, so a fallback would put them back in the ledger and
+            # make this stage disagree with Stage 1.
+            $isTestProject = $false
+            foreach ($fw in $coverageFrameworks) {
+              $isTest = (dotnet msbuild $testProj.FullName -noLogo -p:Configuration=Release "-p:TargetFramework=$fw" -getProperty:IsTestProject 2>$null |
+                Where-Object { $_ -and "$_".Trim() } | Select-Object -Last 1)
+              if (("$isTest" -replace '^IsTestProject[=:]\s*', '').Trim() -ieq 'true') { $isTestProject = $true; break }
+            }
+            if ($isTestProject) {
+              # Same assembly-name rule as the row check below: the coverage report keys
+              # rows by assembly, and that differs from the project name whenever
+              # <AssemblyName> is set.
               $asmMatch = [regex]::Match((Get-Content $testProj.FullName -Raw), '<AssemblyName>([^<]+)</AssemblyName>')
               $ranAssemblies += if ($asmMatch.Success) { $asmMatch.Groups[1].Value.Trim() } else { $testProj.BaseName }
+            } elseif ($coverageFrameworks.Count -gt 0) {
+              Write-Host "⊘ Not ledgered: MSBuild reports IsTestProject=false, so no coverage row is required." -ForegroundColor Yellow
             }
             Write-Host ""
           }
