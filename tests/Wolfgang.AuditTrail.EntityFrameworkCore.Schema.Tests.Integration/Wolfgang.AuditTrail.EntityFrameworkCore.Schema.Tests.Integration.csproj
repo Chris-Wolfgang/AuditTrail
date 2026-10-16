@@ -12,6 +12,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
+    <!-- Needs Linux containers (Testcontainers). Marker for workflows that run container-backed suites only on Linux runners; nothing reads it until that workflow change is synced. -->
+    <RequiresLinuxContainers>true</RequiresLinuxContainers>
     <!--
       Mirrors Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration: default to a no-op so
       pr.yaml's blanket `dotnet test` doesn't try to spin Docker on a runner
