@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792159456607,
+  "lastUpdate": 1792169799937,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -11088,6 +11088,138 @@ window.BENCHMARK_DATA = {
             "value": 20901516.214285713,
             "unit": "ns",
             "range": "± 5555674.126831006"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b73adc086af105b91815705e897e4e11e5063db1",
+          "message": "chore: explicit usings on every TFM (re-targeted at main) (#395)\n\n* chore: explicit usings on every TFM (no implicit/global usings in multi-TFM projects) (#367)\n\nRemoves <ImplicitUsings>enable</ImplicitUsings> from the six multi-target\nprojects and adds the explicit using directives each file needs, so every\ntarget framework slice needs the same usings and InspectCode (which analyses\na single modern slice) stops flagging them as RedundantUsingDirective.\n\nNo behaviour or public API change.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>\n(cherry picked from commit 97c1ce0899b255c1b4ce49c00023b370cc50b973)\n\n* chore: explicit usings for the files added since #367\n\nThree files landed on main after the explicit-usings pass was written, so they\ncarry no using directives of their own and stop compiling the moment\nImplicitUsings is switched off for their project:\n\n  Db2AuditTests.cs               System, System.Collections.Generic,\n                                 System.Threading, System.Threading.Tasks\n  DockerContainerStartupTests.cs System, System.Threading.Tasks\n  TestSupportTests.cs            System, System.Threading, System.Threading.Tasks\n\nSystem-first ordering, matching the rest of the pass.\n\nThis is the cost of the rule the pass introduces: a project without implicit\nusings needs every new file to declare its own, and nothing enforces that\nexcept the build. Worth knowing when reviewing.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T12:49:00-04:00",
+          "tree_id": "575acd7bb1936104bd792f8c8ea19c5f434469b0",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b73adc086af105b91815705e897e4e11e5063db1"
+        },
+        "date": 1792169798509,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 402261.9375,
+            "unit": "ns",
+            "range": "± 7793.795690323169"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1009707.7692307692,
+            "unit": "ns",
+            "range": "± 16013.974122381605"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 686268.9444444445,
+            "unit": "ns",
+            "range": "± 61577.71756270961"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 1961705.8666666667,
+            "unit": "ns",
+            "range": "± 15668.165773160497"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 520041.7051282051,
+            "unit": "ns",
+            "range": "± 18003.13016961727"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1430873.8139534884,
+            "unit": "ns",
+            "range": "± 133629.50227810623"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 991129.6470588235,
+            "unit": "ns",
+            "range": "± 19998.32331078401"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 7505193.338383839,
+            "unit": "ns",
+            "range": "± 1271037.6967106059"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1841291.8333333333,
+            "unit": "ns",
+            "range": "± 24054.359499940565"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 14799571.58,
+            "unit": "ns",
+            "range": "± 1286968.078098434"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1430738.357142857,
+            "unit": "ns",
+            "range": "± 20693.42620572698"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 10785554.097826088,
+            "unit": "ns",
+            "range": "± 1113552.949103894"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 3643472.466666667,
+            "unit": "ns",
+            "range": "± 29512.397738351705"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 22452653.49,
+            "unit": "ns",
+            "range": "± 11122751.123998072"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 9792569.530612245,
+            "unit": "ns",
+            "range": "± 937803.7113980454"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 23649945.38,
+            "unit": "ns",
+            "range": "± 15367243.803420896"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 7304928.568421053,
+            "unit": "ns",
+            "range": "± 815278.5156227243"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 22089055.29292929,
+            "unit": "ns",
+            "range": "± 15028286.352278195"
           }
         ]
       }
