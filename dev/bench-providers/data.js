@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792154188669,
+  "lastUpdate": 1792154193331,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -4634,6 +4634,42 @@ window.BENCHMARK_DATA = {
             "value": 107870910.5,
             "unit": "ns",
             "range": "± 41759203.881659225"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "5c31e9171c52cba956669660ee8b5db09155009c",
+          "message": "test: mark container-backed integration tests RequiresLinuxContainers (#380)\n\n* test: mark container-backed integration tests RequiresLinuxContainers\n\nThese integration tests start Linux containers through Testcontainers, which\nthe Windows and macOS runners cannot do. The repo-template change\n(Chris-Wolfgang/repo-template#708) makes pr.yaml Stages 2/3 and release.yaml\nskip a test project only when it declares this property, instead of by its\n*.Tests.Integration.* name. Stage 1 (Linux) still runs it.\n\nInert until that pr.yaml/release.yaml change is synced here; merge this first.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* test: describe RequiresLinuxContainers as a requirement, not current workflow behaviour\n\nNo workflow reads the property yet (pr.yaml and release.yaml here, and\nrepo-template), so the comment claiming Stages 2/3 and release.yaml skip the\nproject was not true. It now states the requirement and that the marker is\ninert until the workflow change is synced.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* test: describe RequiresLinuxContainers as a requirement, not current workflow behaviour\n\nNo workflow reads the property yet (pr.yaml and release.yaml here, and\nrepo-template), so the comment claiming Stages 2/3 and release.yaml skip the\nproject was not true. It now states the requirement and that the marker is\ninert until the workflow change is synced.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* test: describe RequiresLinuxContainers as a requirement, not current workflow behaviour\n\nNo workflow reads the property yet (pr.yaml and release.yaml here, and\nrepo-template), so the comment claiming Stages 2/3 and release.yaml skip the\nproject was not true. It now states the requirement and that the marker is\ninert until the workflow change is synced.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T08:27:06-04:00",
+          "tree_id": "ae9f1b54ef1e6f09d1d9f9551de0190152ce0967",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/5c31e9171c52cba956669660ee8b5db09155009c"
+        },
+        "date": 1792154190713,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 18588747.666666668,
+            "unit": "ns",
+            "range": "± 931931.327449793"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 92162246,
+            "unit": "ns",
+            "range": "± 6686236.94973847"
           }
         ]
       }
