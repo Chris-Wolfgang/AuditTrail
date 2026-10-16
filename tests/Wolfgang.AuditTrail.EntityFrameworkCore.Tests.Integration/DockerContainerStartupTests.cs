@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+using System;
 using Wolfgang.AuditTrail.Tests.Integration.TestSupport;
 using Xunit;
 

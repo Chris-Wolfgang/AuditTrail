@@ -1,3 +1,6 @@
+using System.Threading.Tasks;
+using System.Threading;
+using System;
 using Wolfgang.AuditTrail.Serializers;
 using Wolfgang.AuditTrail.TestKit.Xunit;
 using Wolfgang.AuditTrail.Tests.Unit.TestSupport;
