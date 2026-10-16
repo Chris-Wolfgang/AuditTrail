@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792151925940,
+  "lastUpdate": 1792154188669,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -3180,6 +3180,90 @@ window.BENCHMARK_DATA = {
             "value": 36880475,
             "unit": "ns",
             "range": "± 6432266.224831883"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "5c31e9171c52cba956669660ee8b5db09155009c",
+          "message": "test: mark container-backed integration tests RequiresLinuxContainers (#380)\n\n* test: mark container-backed integration tests RequiresLinuxContainers\n\nThese integration tests start Linux containers through Testcontainers, which\nthe Windows and macOS runners cannot do. The repo-template change\n(Chris-Wolfgang/repo-template#708) makes pr.yaml Stages 2/3 and release.yaml\nskip a test project only when it declares this property, instead of by its\n*.Tests.Integration.* name. Stage 1 (Linux) still runs it.\n\nInert until that pr.yaml/release.yaml change is synced here; merge this first.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* test: describe RequiresLinuxContainers as a requirement, not current workflow behaviour\n\nNo workflow reads the property yet (pr.yaml and release.yaml here, and\nrepo-template), so the comment claiming Stages 2/3 and release.yaml skip the\nproject was not true. It now states the requirement and that the marker is\ninert until the workflow change is synced.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* test: describe RequiresLinuxContainers as a requirement, not current workflow behaviour\n\nNo workflow reads the property yet (pr.yaml and release.yaml here, and\nrepo-template), so the comment claiming Stages 2/3 and release.yaml skip the\nproject was not true. It now states the requirement and that the marker is\ninert until the workflow change is synced.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* test: describe RequiresLinuxContainers as a requirement, not current workflow behaviour\n\nNo workflow reads the property yet (pr.yaml and release.yaml here, and\nrepo-template), so the comment claiming Stages 2/3 and release.yaml skip the\nproject was not true. It now states the requirement and that the marker is\ninert until the workflow change is synced.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T08:27:06-04:00",
+          "tree_id": "ae9f1b54ef1e6f09d1d9f9551de0190152ce0967",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/5c31e9171c52cba956669660ee8b5db09155009c"
+        },
+        "date": 1792154185776,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6946361.666666667,
+            "unit": "ns",
+            "range": "± 52687.752488916565"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 50439459.5,
+            "unit": "ns",
+            "range": "± 2189656.462947784"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7237753.5,
+            "unit": "ns",
+            "range": "± 157564.91839556163"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 44152838.166666664,
+            "unit": "ns",
+            "range": "± 795560.9595878454"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12857931.666666666,
+            "unit": "ns",
+            "range": "± 7369188.412714818"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 57505150.666666664,
+            "unit": "ns",
+            "range": "± 8863389.872180978"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 108800781.16666667,
+            "unit": "ns",
+            "range": "± 69625794.96543412"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 308913943.1666667,
+            "unit": "ns",
+            "range": "± 108054032.41262314"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6679568.333333333,
+            "unit": "ns",
+            "range": "± 195701.03781618873"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 48024836.333333336,
+            "unit": "ns",
+            "range": "± 4610477.196127569"
           }
         ]
       }
