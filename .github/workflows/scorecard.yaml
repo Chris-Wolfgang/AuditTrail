@@ -135,5 +135,16 @@ jobs:
 
       - name: Upload to code-scanning
         uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        env:
+          # Pin the analysis key to what it was before this split. The action derives
+          # it from "<workflow path>:<GITHUB_JOB>" (api-client.ts getAnalysisKey), so
+          # moving this step into the upload job would silently change it from
+          # scorecard.yaml:analysis to scorecard.yaml:upload. The old key would then
+          # stop receiving uploads, and alerts recorded under it -- currently the
+          # BranchProtectionID and CodeReviewID findings -- would stay open forever
+          # because nothing ever reports them fixed, while a duplicate set appeared
+          # under the new key. Checkout keeps source fingerprints stable; it does not
+          # preserve this identity.
+          CODEQL_ACTION_ANALYSIS_KEY: .github/workflows/scorecard.yaml:analysis
         with:
           sarif_file: results.sarif
