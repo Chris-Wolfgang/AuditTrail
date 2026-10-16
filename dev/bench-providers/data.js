@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792190155750,
+  "lastUpdate": 1792192013776,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -3588,6 +3588,90 @@ window.BENCHMARK_DATA = {
             "value": 39778285.833333336,
             "unit": "ns",
             "range": "± 4062871.06002742"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "420dd6423902fccf1042e0df7b9f8ff1c9f41570",
+          "message": "feat(schema): apply per-version upgrade steps, not just create-from-empty (#365)\n\n* feat(schema): apply per-version upgrade steps, not just create-from-empty\n\nAuditSchemaMigrator could only create the audit schema from nothing: it\nalways diffed the current model against null, and the early exit on\n`installedVersion >= CurrentSchemaVersion` was safe only because the\nconstant had never left 1. Bumping it would have emitted CREATE TABLE\nagainst an existing database.\n\nRunAsync now branches on the installed version. Fresh installs keep the\ncreate-from-empty diff; a database behind the current version has the\nexplicit per-version steps in AuditSchemaUpgrades chained onto it; a\ndatabase ahead of this build throws instead of silently doing nothing.\n\nSteps are explicit MigrationOperations handed to the provider's own\nIMigrationsSqlGenerator, not a diff against a checked-in snapshot that\nnothing would keep honest. AuditSchemaUpgradeContext resolves the table\nand schema names from the live model, so a consumer's AuditOptions naming\nis honoured on upgrade. The whole upgrade stays inside the existing\ntransaction, so a failure part-way leaves the version row unchanged.\n\nNo steps ship yet: version 1 is still the only schema this library has\ninstalled, and the first arm arrives with the SequenceNumber column.\n\nTests drive a synthetic version sequence through the internal\nIAuditSchemaUpgrades seam; everything below it is production code.\nSixteen SQLite unit tests cover applying, chaining, row preservation,\ndry-run, custom table names, the ahead-of-build throw and rollback on a\nmid-way failure. The SQL Server and PostgreSQL integration suites gain\nthe case a fresh-database test cannot reach: upgrading a populated v1\ndatabase and asserting both the new column and the surviving rows.\nEvery_version_below_current_has_an_upgrade_step fails if the constant is\nraised without a matching step.\n\nAlso removes an unreachable #else branch in GenerateCommands that\nclaimed EF Core 6 support inside a file gated on NET8_0_OR_GREATER.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* docs(schema): correct the MySQL recovery contract and the #344 step sketch\n\nReview found the documented recovery path for implicit-DDL providers is\nwrong. On MySQL and MariaDB a partially applied upgrade leaves operations\npersisted with the version row unchanged, so re-running replays the whole\nstep from the old version against a shape that has already moved, and a\nreplayed ADD COLUMN fails on the column that now exists. Say so: recovery\nthere is manual, and note the path has no integration coverage because\nPomelo caps at EF Core 9.x while the test project is on EF Core 10.\n\nThe commented-out sketch of the #344 step showed IsNullable = false with\nno DefaultValue, which fails on every row of the populated table the\nupgrade targets. Replaced with prose that states the DefaultValue\nrequirement, which also clears the commented-out-code analyser finding.\n\nRead the loop bound in Every_version_below_current_has_an_upgrade_step\noff AuditSchemaUpgrades.Instance instead of the const, which folds to\n`version < 1` and reads as an always-false expression.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* test(schema): cover the MySQL upgrade path on its own TFM slot\n\nThe claim that MySQL could not be covered was wrong. Pomelo does cap at\nEF Core 9, but that only rules it out of the net10.0 slot, and\nWolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration already solves\nexactly this by multi-targeting and scoping each provider's files with\nCompile Remove. Apply the same shape here: net8.0 carries MySQL on\nPomelo 9, net10.0 keeps SQL Server and PostgreSQL on EF Core 10.\n\nMySQL has no schema namespace separate from the database, so\nISchemaProviderFixture.CustomSchema is now nullable and the shared\ncustom-naming fact asserts on table names alone where it is null. The\nMySQL fixture scopes every information_schema lookup with DATABASE(),\nsince that view spans the whole server rather than one database.\n\nAlso pins the documented MySQL caveat to observed behaviour. A new\nMySQL-only test drives a step whose second operation fails and asserts\nthat the first operation's column survives and the version row has not\nmoved. That is the non-atomicity the remarks describe, so the doc comment\nno longer has to be taken on trust, and the test fails if MySQL ever\nmakes multi-statement DDL transactional.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* test(schema): declare CustomSchema non-nullable where the provider has one\n\nInspectCode flagged both fixtures for returning string? from a member\nthat never returns null. The interface stays nullable because MySQL has\nno schema namespace separate from the database, but SQL Server and\nPostgreSQL always have one, so the implementations say so and carry a\nnote explaining why they differ from the interface.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* chore: explicit usings on every TFM (no implicit/global usings in multi-TFM projects) (#367)\n\nRemoves <ImplicitUsings>enable</ImplicitUsings> from the six multi-target\nprojects and adds the explicit using directives each file needs, so every\ntarget framework slice needs the same usings and InspectCode (which analyses\na single modern slice) stops flagging them as RedundantUsingDirective.\n\nNo behaviour or public API change.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>\n\n* docs(schema): record what a first upgrade step may not rely on\n\nThe guidance comment on StepFrom described the column shape a first step\nshould use, but not the constraint that makes it the only workable shape. A\nreader could reasonably reach for the obvious alternative -- mark the property\nValueGeneratedOnAdd and let each provider emit its own identity syntax -- and\nthat does not work, which is only discoverable by trying it on four\nproviders.\n\nRecord the measured result instead, so it is not rediscovered:\n\n  MySQL      rejects a non-key AUTO_INCREMENT column outright, on a fresh\n             CREATE TABLE as much as on an ALTER, so it would need an extra\n             index led by that column\n  SQLite     has no identity concept for a non-primary-key column, so EF omits\n             the column from INSERTs expecting generation that never happens\n             and the write fails at runtime\n  PostgreSQL does backfill existing rows, but not in insert order, so historical\n             rows get values that misstate their order rather than merely being\n             absent\n\nThe conclusion is the actionable part: assign such values in AuditCapture,\nbeside where HeaderId is already assigned, and let the column be a plain NOT\nNULL with a default that marks pre-upgrade rows.\n\nAlso drops the issue number the comment leaned on for the rest of its meaning,\nso it stands on its own.\n\nComment only -- no behaviour change. StepFrom still throws for every version,\nas it has to until a second schema version exists.\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T18:57:35-04:00",
+          "tree_id": "07df047e2060b7e0fdf88b1580ae564867513439",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/420dd6423902fccf1042e0df7b9f8ff1c9f41570"
+        },
+        "date": 1792192010786,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6678773.166666667,
+            "unit": "ns",
+            "range": "± 67628.4617401086"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 54970745.666666664,
+            "unit": "ns",
+            "range": "± 2265578.288672968"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6776874.5,
+            "unit": "ns",
+            "range": "± 253005.03627200783"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 42756150.833333336,
+            "unit": "ns",
+            "range": "± 1089011.4041525614"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 15830047.333333334,
+            "unit": "ns",
+            "range": "± 9473225.106895346"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 57415035.666666664,
+            "unit": "ns",
+            "range": "± 11230927.415258694"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 25530966.666666668,
+            "unit": "ns",
+            "range": "± 356562.6184589929"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 537267629,
+            "unit": "ns",
+            "range": "± 373183882.4554747"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6318716,
+            "unit": "ns",
+            "range": "± 98344.65465392616"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 41172649.333333336,
+            "unit": "ns",
+            "range": "± 3816705.070365319"
           }
         ]
       }
