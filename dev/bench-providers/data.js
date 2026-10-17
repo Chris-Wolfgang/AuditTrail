@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792197922870,
+  "lastUpdate": 1792197926658,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -5462,6 +5462,42 @@ window.BENCHMARK_DATA = {
             "value": 113229816.66666667,
             "unit": "ns",
             "range": "± 58827654.40693181"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "dc15c36083c7c8ab78fbe5a4c92bcb2ef46f9784",
+          "message": "ci(scorecard): suppress the CodeReviewID rule as won't-fix (#399)\n\nCloses #337.\n\nAlert 406 reports \"score is 0: Found 0/23 approved changesets\". The check counts\nchangesets approved by someone other than the author, and this is a\nsolo-maintainer repository, so it can only ever score 0. The two ways to satisfy\nit are recruiting a second maintainer, or requiring approvals and then\nadmin-bypassing every PR -- and admin bypass waives every other rule in the\nruleset, not just this one. There is no sub-case of the rule worth keeping live,\nso the whole rule is dropped before the SARIF reaches code-scanning.\n\nFiltering rather than dismissing the alert is deliberate and matches the step's\nexisting rationale: Scorecard emits a fresh SARIF each run and fingerprint drift\nmeans per-alert dismissals do not reliably survive.\n\nBranchProtectionID (#338) is deliberately NOT suppressed, even though its\ncurrent warnings are the same solo-maintainer story -- no required approvers, no\ncodeowners review, last-push approval disabled. It scores 4, not 0, because the\nrest of the protection is in place, so the rule still reports real regressions\nsuch as the ruleset being deleted or force-pushes being allowed. Suppressing it\nwould trade those away for three warnings that are a deliberate choice.\n\nMechanism added alongside the existing partial PinnedDependenciesID filter:\nSUPPRESSED_RULES drops whole rules by ruleId. $r is bound before use because\ninside `$suppressed | index(.ruleId)` the path would apply to the array rather\nthan the result -- jq 1.8 errors and older jq silently keeps everything, which\nfails open. `set -euo pipefail` is added because the new rules_json pipeline\nneeds it: the implicit shell is `bash -e` without pipefail, so a jq failure\nmid-pipe would pass an empty list through and suppress nothing.\n\nOnly CodeReviewID. Not CIIBestPracticesID, which the template suppresses but\nwhich is a live finding here, and not BranchProtectionID per above.\n\nVerified against a real Scorecard SARIF -- the scorecard-sarif artifact from run\n38984600267, 12 results:\n\n  rule                   before  after\n  BranchProtectionID          1      1\n  CIIBestPracticesID          1      1\n  CodeReviewID                1      0\n  PinnedDependenciesID        9      0\n  TOTAL                      12      2\n\nThe 9 PinnedDependenciesID rows all carry \"nugetCommand not pinned by hash\" with\n`dotnet restore` snippets, so the pre-existing partial filter is matching only\nwhat it claims to; there are no `gitHubAction not pinned` rows to keep live at\npresent because every action is SHA-pinned.\n\nNot run locally: the jq program itself, because jq is not installed on this\nmachine. The selection logic above was evaluated against the real SARIF, and the\nScorecard run after merge is the check on the jq. That run should also close\nalert 406, which works only because #397 pinned the analysis key -- without it\nthe suppression would have applied to a new key while 406 stayed open forever.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T20:35:53-04:00",
+          "tree_id": "e5852156b8cf45ab7309e6ee1c5dc21d5791379c",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/dc15c36083c7c8ab78fbe5a4c92bcb2ef46f9784"
+        },
+        "date": 1792197925158,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17766587,
+            "unit": "ns",
+            "range": "± 876380.6501247047"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 88674238.66666667,
+            "unit": "ns",
+            "range": "± 7962496.306461707"
           }
         ]
       }
