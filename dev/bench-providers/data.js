@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792201152687,
+  "lastUpdate": 1792205298438,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -3912,6 +3912,90 @@ window.BENCHMARK_DATA = {
             "value": 76200090,
             "unit": "ns",
             "range": "± 6254645.4300087225"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "184e26b4c4b9542fa4f9a94cea3916d252d8ad52",
+          "message": "fix(scripts): refresh the summary issue's body, not just its comments (#401)\n\n#389 made the weekly summary update the open issue instead of filing a new one,\nbut it updates by commenting only. The body therefore stays frozen at whatever\nthe first run wrote, which is the first thing anyone opening the issue reads.\n\nAuditTrail#369 shows the cost: its body still claims\n\n  **2 alert(s) open longer than 7 days** as of 2026-09-28\n  > **Incomplete:** the secret-scanning, dependabot listing was unavailable...\n\nwhen the current state is one alert, the second (CodeReviewID/406) is fixed, and\nthe \"Incomplete\" warning stopped applying the moment SECURITY_ALERTS_TOKEN was\nadded. All three wrong facts sit at the top; the truth is several comments down.\n\nNow the body is refreshed first, then the comment is posted. Both carry the same\ntext on purpose: the body is the current state, each comment is a dated snapshot\nand the thing that notifies subscribers when the list changes. A failed body\nedit counts a failure and still lets the comment through, so a partial update\nreports rather than passing silently.\n\nVerified by running the script locally against this repo:\n\n  pwsh ./scripts/security-alerts.ps1 -Repository Chris-Wolfgang/AuditTrail -DryRun -WeeklySummary\n    code-scanning: 1 open alert(s)\n    secret-scanning: 0 open alert(s)\n    dependabot: 0 open alert(s)\n    DRY-RUN refresh summary #369 (body + comment)\n    done: 1 open alert(s), 0 new code-scanning issue(s), 0 kind(s) unavailable, 0 failure(s)\n\nThe new branch is taken and the script parses clean\n([Parser]::ParseFile, 0 errors). #369's body self-corrects on the next real run.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T22:38:52-04:00",
+          "tree_id": "4de6d3ba382e037e4dea980e560d3df0bf7a7295",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/184e26b4c4b9542fa4f9a94cea3916d252d8ad52"
+        },
+        "date": 1792205295586,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7280813,
+            "unit": "ns",
+            "range": "± 402274.2024278962"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 56585530.833333336,
+            "unit": "ns",
+            "range": "± 2497360.286896813"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6764712,
+            "unit": "ns",
+            "range": "± 27332.685177274478"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 43401784,
+            "unit": "ns",
+            "range": "± 762439.8359431386"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 11703104.5,
+            "unit": "ns",
+            "range": "± 7024374.244230087"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 55490294.333333336,
+            "unit": "ns",
+            "range": "± 10219716.76239769"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 27076375,
+            "unit": "ns",
+            "range": "± 1047199.8305848794"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 489336147.3333333,
+            "unit": "ns",
+            "range": "± 569507843.9218497"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6511284.666666667,
+            "unit": "ns",
+            "range": "± 163392.43153014564"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 44352973.166666664,
+            "unit": "ns",
+            "range": "± 6198638.029140945"
           }
         ]
       }
