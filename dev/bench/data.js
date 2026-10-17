@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792255262559,
+  "lastUpdate": 1792260604157,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -12276,6 +12276,138 @@ window.BENCHMARK_DATA = {
             "value": 16234966.376543209,
             "unit": "ns",
             "range": "± 4551339.945555881"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c063587d55094aa046fc473a1ff6596720b36d93",
+          "message": "ci(pr): raise the test coverage gate from 90% to 100% (#405)\n\nCompletes the gate half of #370. Fleet policy is production code at 95% or more\nand every test assembly at 100%; #400 took src to 95 and #402 closed the last\ntest gap, so this is now assertable.\n\nAll seven test assemblies are at 100% on main, measured in Stage 1 of #402's\nrun (38995756005):\n\n  Cli.Tests.Unit                        100%\n  EntityFrameworkCore.Npgsql.Tests.Unit 100%\n  EntityFrameworkCore.Tests.Concurrency 100%\n  EntityFrameworkCore.Tests.DocExamples 100%\n  EntityFrameworkCore.Tests.Fuzz        100%\n  EntityFrameworkCore.Tests.Smoke       100%\n  EntityFrameworkCore.Tests.Unit        100%\n\nRaised in both places the value is read: the workflow-level\nCODECOV_TEST_MINIMUM and Stage 1's `${CODECOV_TEST_MINIMUM:-100}` fallback.\nLeaving the fallback at 90 would silently apply wherever the env var did not\nreach, which is how a gate ends up lying about what it enforces.\n\nNote this lands with zero headroom, unlike #400's src raise. 100% means any\nuncovered line in any test assembly fails the build, which is the intent of the\npolicy rather than an accident of it: a member no test executes is dead test\ncode to delete or exercise. The documented escape remains\n[ExcludeFromCodeCoverage] on a dedicated infrastructure check whose unavailable\nbranch never runs in CI -- never lowering this number.\n\nStage 2 is untouched and still holds every assembly to CODECOV_MINIMUM, because\nit does not separate src from test modules. Stage 1 gates Stage 2, so the\nstricter check runs first either way and the policy is enforced; the\ninconsistency is worth knowing about and is noted on #370 rather than papered\nover here.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-17T14:00:50-04:00",
+          "tree_id": "052ccd38f3a2067234d165e1e2c6afa4477cca28",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/c063587d55094aa046fc473a1ff6596720b36d93"
+        },
+        "date": 1792260602619,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 547775.5952380953,
+            "unit": "ns",
+            "range": "± 12687.429747213428"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1504650.2857142857,
+            "unit": "ns",
+            "range": "± 24142.806350733357"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 845871.2142857143,
+            "unit": "ns",
+            "range": "± 11907.495617199545"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2946061.6666666665,
+            "unit": "ns",
+            "range": "± 20230.79564261706"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 711227.4375,
+            "unit": "ns",
+            "range": "± 13231.59406858574"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1832891.3333333333,
+            "unit": "ns",
+            "range": "± 19266.459978294875"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1670737.2666666666,
+            "unit": "ns",
+            "range": "± 13575.668125976954"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 11490383.447916666,
+            "unit": "ns",
+            "range": "± 1017605.6467683696"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 3391043.9285714286,
+            "unit": "ns",
+            "range": "± 33259.35512052161"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 21582907.083333332,
+            "unit": "ns",
+            "range": "± 924372.5229520228"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 2641319,
+            "unit": "ns",
+            "range": "± 22116.73454127509"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 15860536.81,
+            "unit": "ns",
+            "range": "± 3026127.5290073203"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 6725568.961538462,
+            "unit": "ns",
+            "range": "± 41312.08203341847"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 27923460.04,
+            "unit": "ns",
+            "range": "± 16828217.830732618"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 17231577.42857143,
+            "unit": "ns",
+            "range": "± 176395.51674431667"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 20992855.1125,
+            "unit": "ns",
+            "range": "± 3228366.111696834"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 11607363.3,
+            "unit": "ns",
+            "range": "± 2863847.2801845795"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 22619086.11627907,
+            "unit": "ns",
+            "range": "± 7621691.693462791"
           }
         ]
       }
