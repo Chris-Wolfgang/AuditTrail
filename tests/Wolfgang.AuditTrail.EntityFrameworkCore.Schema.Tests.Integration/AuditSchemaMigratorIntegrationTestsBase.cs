@@ -141,30 +141,48 @@ public abstract class AuditSchemaMigratorIntegrationTestsBase
 
 
     /// <summary>
-    /// Proves the frozen version-1 install script under <c>Fixtures/V1/</c> is
-    /// what this provider's migrator actually installs: the two must be
-    /// byte-identical, modulo line endings.
+    /// The convergence guarantee: a database that was installed at version 1
+    /// and upgraded step by step must end up with exactly the schema a fresh
+    /// install of the current version produces.
     /// </summary>
     /// <remarks>
-    /// This holds exactly as long as the library installs schema version 1. The
-    /// PR that ships version 2 replaces this fact with a convergence test: replay
-    /// the frozen v1 script, stamp version 1, run the migrator, and assert the
-    /// upgraded database's schema equals a fresh install's. At version 1 that
-    /// test degenerates to this one, so nothing is lost by the swap; see
-    /// <see cref="FrozenInstallScripts"/> for why the script itself must not
-    /// change when that happens.
+    /// <para>
+    /// This is what keeps the explicit upgrade steps in
+    /// <see cref="AuditSchemaUpgrades"/> honest. Install is a model diff, so the
+    /// model defines the current shape; an upgrade step is hand-written, so
+    /// nothing else checks that its column type, default, or index name agrees
+    /// with what the model would have produced. Here both paths are run against
+    /// a real database on this provider and their schemas are compared after
+    /// scaffolding, so a step that drifts from the model -- on any provider, in
+    /// any facet the DDL carries -- fails this fact.
+    /// </para>
+    /// <para>
+    /// The version-1 database comes from <see cref="FrozenInstallScripts"/>,
+    /// the DDL the version-1 build actually emitted, not from a reconstruction.
+    /// While the library still installs version 1 the upgrade is a no-op and
+    /// the fact reduces to "the frozen script and the migrator agree", which is
+    /// what validates the frozen script in the first place.
+    /// </para>
     /// </remarks>
     [Fact]
-    public async Task RunAsync_dryRun_on_a_fresh_database_matches_the_frozen_v1_install_script()
+    public async Task RunAsync_on_a_replayed_v1_database_converges_on_a_fresh_install()
     {
         var options = BuildOptions();
-        await using var context = await _fixture.CreateContextAsync(options);
 
-        var expected = await FrozenInstallScripts.ReadAsync(version: 1, _fixture.ProviderName);
-        var actual   = FrozenInstallScripts.NormaliseLineEndings(await AuditSchemaMigrator.RunAsync(context, dryRun: true));
+        await using var fresh = await _fixture.CreateContextAsync(options);
+        await AuditSchemaMigrator.RunAsync(fresh);
+        var freshSchema = DatabaseSchemaText.Describe(fresh, _fixture.DesignTimeServices);
 
-        Assert.Equal(1, AuditSchemaConstants.CurrentSchemaVersion);
-        Assert.Equal(expected, actual);
+        await using var upgraded = await _fixture.CreateContextAsync(options);
+        await FrozenInstallScripts.ReplayAsync(upgraded, version: 1, _fixture.ProviderName);
+        await AuditSchemaMigrator.RunAsync(upgraded);
+        var upgradedSchema = DatabaseSchemaText.Describe(upgraded, _fixture.DesignTimeServices);
+
+        Assert.Contains("table AuditHeader", freshSchema, StringComparison.Ordinal);
+        Assert.Equal(freshSchema, upgradedSchema);
+
+        var version = await upgraded.Set<AuditSchemaVersion>().AsNoTracking().SingleAsync();
+        Assert.Equal(AuditSchemaConstants.CurrentSchemaVersion, version.Version);
     }
 
 
