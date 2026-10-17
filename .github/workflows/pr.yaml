@@ -34,7 +34,7 @@ env:
   # Minimum line coverage for TEST assemblies (anything under tests/). Stage 1's gate
   # tells the two apart by project location (repo-template's src/test split). Kept at
   # this repo's existing 90; repo-template holds test assemblies to 100.
-  CODECOV_TEST_MINIMUM: 90
+  CODECOV_TEST_MINIMUM: 100
 
 on:
   pull_request:
@@ -389,7 +389,7 @@ jobs:
           
           failed_projects=""
           threshold=${CODECOV_MINIMUM:-95}
-          test_threshold=${CODECOV_TEST_MINIMUM:-90}
+          test_threshold=${CODECOV_TEST_MINIMUM:-100}
           matched_count=0
 
           # Build the set of assembly names produced by projects under tests/.
