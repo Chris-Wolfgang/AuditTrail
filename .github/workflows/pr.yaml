@@ -30,7 +30,7 @@ permissions:
 
 env:
   # Minimum line coverage for PRODUCTION assemblies (anything under src/).
-  CODECOV_MINIMUM: 90
+  CODECOV_MINIMUM: 95
   # Minimum line coverage for TEST assemblies (anything under tests/). Stage 1's gate
   # tells the two apart by project location (repo-template's src/test split). Kept at
   # this repo's existing 90; repo-template holds test assemblies to 100.
@@ -388,7 +388,7 @@ jobs:
           echo ""
           
           failed_projects=""
-          threshold=${CODECOV_MINIMUM:-90}
+          threshold=${CODECOV_MINIMUM:-95}
           test_threshold=${CODECOV_TEST_MINIMUM:-90}
           matched_count=0
 
@@ -806,7 +806,7 @@ jobs:
           Get-Content "CoverageReport/Summary.txt"
           Write-Host ""
 
-          $threshold = if ($env:CODECOV_MINIMUM) { [int]$env:CODECOV_MINIMUM } else { 90 }
+          $threshold = if ($env:CODECOV_MINIMUM) { [int]$env:CODECOV_MINIMUM } else { 95 }
           $failedProjects = @()
 
           foreach ($line in (Get-Content "CoverageReport/Summary.txt")) {
@@ -1068,7 +1068,7 @@ jobs:
           cat CoverageReport/Summary.txt
           echo ""
 
-          THRESHOLD=${CODECOV_MINIMUM:-90}
+          THRESHOLD=${CODECOV_MINIMUM:-95}
           FAILED=0
 
           while IFS= read -r line; do
