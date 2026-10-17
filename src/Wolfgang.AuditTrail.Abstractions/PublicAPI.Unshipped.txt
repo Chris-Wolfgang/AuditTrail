@@ -1,1 +1,3 @@
 #nullable enable
+Wolfgang.AuditTrail.Entities.AuditHeader.Ordinal.get -> int
+Wolfgang.AuditTrail.Entities.AuditHeader.Ordinal.set -> void

@@ -19,5 +19,5 @@ public static class AuditSchemaConstants
     /// when a new <c>AuditSchemaSnapshotV{N}</c> is shipped alongside a model
     /// change.
     /// </summary>
-    public const int CurrentSchemaVersion = 1;
+    public const int CurrentSchemaVersion = 2;
 }

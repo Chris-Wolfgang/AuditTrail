@@ -38,6 +38,10 @@ public static class ModelBuilderExtensions
         builder.HasKey(h => h.HeaderId);
         builder.Property(h => h.HeaderId).ValueGeneratedNever();
         builder.Property(h => h.TransactionId).IsRequired();
+        // The default matters for the v1 -> v2 upgrade, where ADD COLUMN NOT NULL has to
+        // give existing rows a value. Declaring it here too keeps a fresh v2 install and
+        // an upgraded v1 database on the same schema rather than differing by a default.
+        builder.Property(h => h.Ordinal).IsRequired().HasDefaultValue(0);
         builder.Property(h => h.AuditedAtUtc).HasPrecision(6).IsRequired();
         builder.Property(h => h.UserId).HasMaxLength(256).IsRequired();
         builder.Property(h => h.OnBehalfOfUserId).HasMaxLength(256);
@@ -67,6 +71,12 @@ public static class ModelBuilderExtensions
             .IsRequired();
 
         builder.HasIndex(h => h.TransactionId);
+        // Serves "replay one save in order" without a sort. The TransactionId-only index
+        // above is kept rather than widened: dropping it during the v1 -> v2 upgrade would
+        // mean reconstructing the name EF gave it at v1-install time, which derives from
+        // whichever header table name was configured then and is not recoverable from the
+        // model now. Keeping both also means a fresh install and an upgrade agree.
+        builder.HasIndex(h => new { h.TransactionId, h.Ordinal });
         builder.HasIndex(h => h.AuditedAtUtc);
         builder.HasIndex(h => new { h.EntityType, h.EntityKey });
     }
