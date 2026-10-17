@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792192020889,
+  "lastUpdate": 1792195999820,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -11616,6 +11616,138 @@ window.BENCHMARK_DATA = {
             "value": 21087966.740963854,
             "unit": "ns",
             "range": "± 6105110.6767941285"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "4328332f0704b99da0d435d084a821d449535e4b",
+          "message": "ci(pr): Stage 2's coverage gate must fail when it cannot measure (#398)\n\n* ci(pr): Stage 2's coverage gate must fail when it cannot measure\n\nAddresses #371 items 1 and 3 for Stage 2. Stage 1 already has both guards --\n#377 synced them today -- so this is the same pair on the stage that runs a\ndifferent subset of the suite.\n\nTwo ways Stage 2 could report success without measuring anything:\n\n1. Every coverage step is gated on has-coverage == 'true', and the check set it\n   to false and carried on whenever no coverage file appeared. A dropped\n   coverlet.collector reference therefore skipped the whole coverage gate and\n   the job went green. By the time that check runs the tests have already\n   exited 0, so an absent coverage file means collection broke, not that there\n   was nothing to collect. It now fails -- but only when tests actually ran, so\n   a genuinely test-less repo shape still skips benignly.\n\n2. The gate can only judge modules that APPEAR in the report, so an assembly\n   that ran and recorded nothing simply drops out and the gate passes while\n   measuring less than it did yesterday. Each project that runs a\n   coverage-collecting TFM is now ledgered, and a report row is required for\n   each ledgered assembly.\n\nThe ledger records <AssemblyName> when set and the project's base name\notherwise, because the report keys rows by assembly and the two differ. Only\nprojects that ran a net5.0+ TFM are ledgered: netcoreapp3.1 and net4x are\ntested on this stage without the XPlat collector by design, so requiring a row\nfor them would fail every run.\n\nRows are matched by equality, not prefix. A prefix match would accept\nX.Application.Advisor as the row for X.Application.\n\nNot ported from the template's Stage 2: its zero-tests-ran Tee guard and its\n--no-build/--no-restore switches. Those are separate concerns and #371 does not\nlist them for this repo.\n\nVerified without a CI run, following the method #371 prescribes:\n\n  - pr.yaml still parses; 36 run: steps extracted and syntax-checked -- 28 with\n    `bash -n`, 8 with [Parser]::ParseFile. All clean.\n  - the new row-check step run verbatim against a REAL CoverageReport/Summary.txt\n    (ReportGenerator over an actual cobertura file from this repo, 4 module rows):\n\n      correct ledger                  PASS\n      claimed but absent row          FAIL\n      empty ledger                    FAIL\n      ledger file missing             FAIL\n      Summary.txt missing             FAIL\n      prefix of a real row            FAIL\n\n  - the bash matcher Stage 1 uses agrees with the new pwsh one on all six probe\n    names, including the prefix case\n  - the check-coverage branches: coverage present -> has-coverage=true;\n    no coverage with a non-empty ledger -> exit 1; no coverage with an empty\n    ledger -> has-coverage=false\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n* ci(pr): ledger only projects MSBuild calls test projects\n\nThe first cut of the Stage 2 ledger over-claimed, and Stage 2 failed on its own\nPR with:\n\n  These test assemblies ran but produced no coverage row:\n    ...AotSmoke, ...AotSmoke.Setup, ...Npgsql.Tests.Integration,\n    ...Schema.Tests.Integration, ...Tests.Integration\n\nThe guard was right to complain and the ledger was wrong. It recorded any\nproject that ran a coverage-collecting TFM, but `dotnet test` runs nothing for\nthose five: the three *.Tests.Integration projects set IsTestProject=false\nunless integration.yaml sets RunIntegrationTests=true, and the AotSmoke pair are\nconsole apps, not suites. They produce no coverage by design, so requiring a row\nfor them would fail every run.\n\nStage 1 already solved this -- it gates its ledger on MSBuild's IsTestProject,\nwith a comment naming these exact projects. Stage 2 now does the same, so the\ntwo stages agree about which assemblies owe a coverage row.\n\nThe property alone decides it. No Microsoft.NET.Test.Sdk fallback, which the\ntemplate's Stage 2 has: those integration projects DO reference Test.Sdk while\nsetting IsTestProject=false, so the fallback would put them straight back into\nthe ledger and make this stage contradict Stage 1. Worth stating because the\nfallback looks like a safety net and here it is the opposite.\n\nVerified by running the same MSBuild evaluation locally, on Windows, against\nevery project under ./tests and ./benchmarks:\n\n  False  AotSmoke, AotSmoke.Setup, Npgsql.Tests.Integration,\n         Schema.Tests.Integration, Tests.Integration, Benchmarks\n  True   Cli.Tests.Unit, Npgsql.Tests.Unit, Tests.Concurrency,\n         Tests.DocExamples, Tests.Fuzz, Tests.Smoke, Tests.Unit\n\nThe False set is exactly the five the run reported, so the fix lines up 1:1 with\nthe failure rather than merely silencing it. A skipped project now says so\n(\"Not ledgered: MSBuild reports IsTestProject=false\") instead of passing\nsilently.\n\npr.yaml still parses; all 36 run: steps re-checked with `bash -n` (28) and\n[Parser]::ParseFile (8).\n\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T20:03:53-04:00",
+          "tree_id": "a1ecb65c5eb067bca805d9a22eb1206b230ca18e",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/4328332f0704b99da0d435d084a821d449535e4b"
+        },
+        "date": 1792195998789,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 497846.4569892473,
+            "unit": "ns",
+            "range": "± 59287.04398167517"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1027043.6428571428,
+            "unit": "ns",
+            "range": "± 17064.509240873824"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 609418.5238095238,
+            "unit": "ns",
+            "range": "± 14041.104470870685"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 1977665.6333333333,
+            "unit": "ns",
+            "range": "± 28838.55253170328"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 536821.4722222222,
+            "unit": "ns",
+            "range": "± 17733.172159198642"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1225153.2,
+            "unit": "ns",
+            "range": "± 21037.525551126153"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 980537.7,
+            "unit": "ns",
+            "range": "± 8468.527694604636"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 6870507.734693877,
+            "unit": "ns",
+            "range": "± 921981.8784988032"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1803125.5714285714,
+            "unit": "ns",
+            "range": "± 8849.409241163075"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 14212057.68,
+            "unit": "ns",
+            "range": "± 2115062.0296988133"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1456550.0333333334,
+            "unit": "ns",
+            "range": "± 25640.413393331874"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 11448522.916666666,
+            "unit": "ns",
+            "range": "± 1480508.830340972"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 3746315.4285714286,
+            "unit": "ns",
+            "range": "± 25620.962768538055"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 19802666.17,
+            "unit": "ns",
+            "range": "± 9665753.044158472"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 10018460.273195876,
+            "unit": "ns",
+            "range": "± 870825.8958255104"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 17665879.411764707,
+            "unit": "ns",
+            "range": "± 8178201.635482708"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 5474905,
+            "unit": "ns",
+            "range": "± 36443.77108892298"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 21691007.72,
+            "unit": "ns",
+            "range": "± 14543683.064893285"
           }
         ]
       }
