@@ -141,6 +141,35 @@ public abstract class AuditSchemaMigratorIntegrationTestsBase
 
 
     /// <summary>
+    /// Proves the frozen version-1 install script under <c>Fixtures/V1/</c> is
+    /// what this provider's migrator actually installs: the two must be
+    /// byte-identical, modulo line endings.
+    /// </summary>
+    /// <remarks>
+    /// This holds exactly as long as the library installs schema version 1. The
+    /// PR that ships version 2 replaces this fact with a convergence test: replay
+    /// the frozen v1 script, stamp version 1, run the migrator, and assert the
+    /// upgraded database's schema equals a fresh install's. At version 1 that
+    /// test degenerates to this one, so nothing is lost by the swap; see
+    /// <see cref="FrozenInstallScripts"/> for why the script itself must not
+    /// change when that happens.
+    /// </remarks>
+    [Fact]
+    public async Task RunAsync_dryRun_on_a_fresh_database_matches_the_frozen_v1_install_script()
+    {
+        var options = BuildOptions();
+        await using var context = await _fixture.CreateContextAsync(options);
+
+        var expected = await FrozenInstallScripts.ReadAsync(version: 1, _fixture.ProviderName);
+        var actual   = FrozenInstallScripts.NormaliseLineEndings(await AuditSchemaMigrator.RunAsync(context, dryRun: true));
+
+        Assert.Equal(1, AuditSchemaConstants.CurrentSchemaVersion);
+        Assert.Equal(expected, actual);
+    }
+
+
+
+    /// <summary>
     /// The case a fresh-database test can never cover: an existing install,
     /// with rows in it, taken forward a version. Asserts the table really was
     /// altered and that the data survived, rather than trusting the version row.

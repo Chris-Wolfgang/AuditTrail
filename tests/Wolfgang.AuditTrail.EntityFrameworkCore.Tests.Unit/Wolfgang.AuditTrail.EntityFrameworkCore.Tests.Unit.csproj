@@ -13,6 +13,18 @@
     <ProjectReference Include="..\..\src\Wolfgang.AuditTrail.TestKit.Xunit\Wolfgang.AuditTrail.TestKit.Xunit.csproj" />
   </ItemGroup>
 
+  <!--
+    Frozen schema-version-1 SQLite install script, captured from
+    AuditSchemaMigrator.RunAsync(dryRun: true) while the library still installed
+    version 1. Unlike the Verify snapshots under Snapshots/, which track the
+    current model, this file must never be regenerated: it is the baseline the
+    "upgrade from v1" tests start from. The provider-backed equivalents live in
+    Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration.
+  -->
+  <ItemGroup>
+    <EmbeddedResource Include="Fixtures\V1\*.sql" LogicalName="V1.%(Filename).sql" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
