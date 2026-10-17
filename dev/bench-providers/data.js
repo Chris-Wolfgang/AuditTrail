@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792205298438,
+  "lastUpdate": 1792205302142,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -5690,6 +5690,42 @@ window.BENCHMARK_DATA = {
             "value": 56614489.333333336,
             "unit": "ns",
             "range": "± 720502.9427735416"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "184e26b4c4b9542fa4f9a94cea3916d252d8ad52",
+          "message": "fix(scripts): refresh the summary issue's body, not just its comments (#401)\n\n#389 made the weekly summary update the open issue instead of filing a new one,\nbut it updates by commenting only. The body therefore stays frozen at whatever\nthe first run wrote, which is the first thing anyone opening the issue reads.\n\nAuditTrail#369 shows the cost: its body still claims\n\n  **2 alert(s) open longer than 7 days** as of 2026-09-28\n  > **Incomplete:** the secret-scanning, dependabot listing was unavailable...\n\nwhen the current state is one alert, the second (CodeReviewID/406) is fixed, and\nthe \"Incomplete\" warning stopped applying the moment SECURITY_ALERTS_TOKEN was\nadded. All three wrong facts sit at the top; the truth is several comments down.\n\nNow the body is refreshed first, then the comment is posted. Both carry the same\ntext on purpose: the body is the current state, each comment is a dated snapshot\nand the thing that notifies subscribers when the list changes. A failed body\nedit counts a failure and still lets the comment through, so a partial update\nreports rather than passing silently.\n\nVerified by running the script locally against this repo:\n\n  pwsh ./scripts/security-alerts.ps1 -Repository Chris-Wolfgang/AuditTrail -DryRun -WeeklySummary\n    code-scanning: 1 open alert(s)\n    secret-scanning: 0 open alert(s)\n    dependabot: 0 open alert(s)\n    DRY-RUN refresh summary #369 (body + comment)\n    done: 1 open alert(s), 0 new code-scanning issue(s), 0 kind(s) unavailable, 0 failure(s)\n\nThe new branch is taken and the script parses clean\n([Parser]::ParseFile, 0 errors). #369's body self-corrects on the next real run.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T22:38:52-04:00",
+          "tree_id": "4de6d3ba382e037e4dea980e560d3df0bf7a7295",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/184e26b4c4b9542fa4f9a94cea3916d252d8ad52"
+        },
+        "date": 1792205300777,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17923960,
+            "unit": "ns",
+            "range": "± 640014.5578117735"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 85232330.33333333,
+            "unit": "ns",
+            "range": "± 3923819.9995341697"
           }
         ]
       }
