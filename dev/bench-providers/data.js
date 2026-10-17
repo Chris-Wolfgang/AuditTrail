@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792205302142,
+  "lastUpdate": 1792255253569,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -3996,6 +3996,90 @@ window.BENCHMARK_DATA = {
             "value": 44352973.166666664,
             "unit": "ns",
             "range": "± 6198638.029140945"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "89fec031344208bdbef536b9cfebb9d608b706df",
+          "message": "test(schema): exercise the version-coverage guard, reaching 100% (#402)\n\nPart of #370. Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit was the only\ntest assembly below the fleet's 100% policy, at 99% -- and the entire gap was\ntwo lines: the body of the self-arming loop in\nEvery_version_below_current_has_an_upgrade_step.\n\nCurrentVersion is 1, so `for (version = 1; version < currentVersion; ...)` never\nruns. That is deliberate -- the test starts asserting by itself when a second\nschema version lands -- but it leaves the loop both uncovered and, more\nimportantly, UNVERIFIED: a vacuous loop and a broken loop look identical, and\nnothing showed the guard would actually catch a missing arm.\n\nRather than excluding the lines, the loop moved into a helper taking\nIAuditSchemaUpgrades, and the StubUpgrades already in this file now drives it:\n\n  The_version_coverage_guard_accepts_a_complete_set_of_steps\n    currentVersion 3 with a step for each -- runs the loop, and asserts\n    RequestedVersions == [1, 2] so a skipped loop cannot masquerade as a pass.\n\n  The_version_coverage_guard_rejects_a_version_with_no_step\n    currentVersion 3 with version 2 returning no operations -- asserts the\n    guard throws. This is the half that was missing.\n\nThe original test keeps its real-instance call, so it still arms itself on the\nnext schema version; it now delegates to the helper rather than inlining it.\n\nVerified locally on net10.0 with coverlet.runsettings:\n\n  336 tests pass (334 before -- the two new ones)\n  Tests.Unit line-rate 1, zero classes below 100%\n\nAlso dropped a redundant explicit array type the first draft introduced --\nAddNullableLongColumn returns MigrationOperation, so `new[] { ... }` already\ninfers MigrationOperation[] and S3257 fired as an error under Release.\n\nRaising CODECOV_TEST_MINIMUM from 90 to 100 is deliberately NOT in this commit:\nthat is pr.yaml, a protected file, and mixing it here would fail the Protected\nFiles Guard. It follows once this merges.\n\nTEST CODE CHANGE: two tests added, one existing test refactored to call the\nextracted helper. No production code touched.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-17T12:31:39-04:00",
+          "tree_id": "32b4b903ad3a3ee1af8090e056941ed7c868ab61",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/89fec031344208bdbef536b9cfebb9d608b706df"
+        },
+        "date": 1792255250193,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4768643.833333333,
+            "unit": "ns",
+            "range": "± 11544.076850633546"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 29890235.333333332,
+            "unit": "ns",
+            "range": "± 2621655.344385744"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6054969.5,
+            "unit": "ns",
+            "range": "± 103273.63524636866"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 44693492.666666664,
+            "unit": "ns",
+            "range": "± 9488577.629067717"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 10440295.666666666,
+            "unit": "ns",
+            "range": "± 7187147.289896203"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 39199420.833333336,
+            "unit": "ns",
+            "range": "± 446523.0672488638"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 23172970.166666668,
+            "unit": "ns",
+            "range": "± 1542473.9400383183"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 248693092.33333334,
+            "unit": "ns",
+            "range": "± 57579153.22813669"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6081404.166666667,
+            "unit": "ns",
+            "range": "± 126012.83841868388"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 36969178,
+            "unit": "ns",
+            "range": "± 4075703.16369372"
           }
         ]
       }
