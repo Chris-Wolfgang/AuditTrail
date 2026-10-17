@@ -611,6 +611,13 @@ jobs:
             Write-Host "ℹ️  No test projects found under ./tests — skipping test stage."
             exit 0
           }
+
+          # Assemblies that actually collected coverage in this job. The coverage steps
+          # below require a report row for each one, so a test project whose coverage is
+          # never collected fails the gate instead of silently dropping out of it. Stage 1
+          # keeps the same ledger; this stage runs a different subset of TFMs, so it needs
+          # its own.
+          $ranAssemblies = @()
           
           Write-Host "==========================================" -ForegroundColor Cyan
           Write-Host "Found test projects:" -ForegroundColor Cyan
@@ -647,9 +654,13 @@ jobs:
             Write-Host ""
             
             # Test each framework; collect coverage only for .NET 5.0+ TFMs.
+            # $coverageFrameworks drives the ledger below: a project is required to have
+            # a coverage row only if it ran a coverage-collecting TFM *and* MSBuild
+            # evaluates it as a test project on one of those TFMs.
             # netcoreapp3.1 and net4x are tested but excluded from coverage:
             # netcoreapp3.1 has no matching test TFM on Linux (Stage 1) so its numbers
             # would not be comparable; net4x cannot use the XPlat collector on Windows.
+            $coverageFrameworks = @()
             foreach ($fw in $frameworks) {
               Write-Host "Testing framework: $fw" -ForegroundColor Yellow
 
@@ -661,6 +672,7 @@ jobs:
                   --settings coverlet.runsettings `
                   --results-directory "./TestResults" `
                   --logger "console;verbosity=normal"
+                $coverageFrameworks += $fw
               } else {
                 dotnet test $testProj.FullName `
                   --configuration Release `
@@ -673,8 +685,38 @@ jobs:
                 exit 1
               }
             }
+
+            # Record the assembly only when MSBuild evaluates the project as a test
+            # project, matching Stage 1. `dotnet test` runs nothing for this repo's
+            # *.Tests.Integration projects (IsTestProject is false unless
+            # integration.yaml sets RunIntegrationTests=true) or for the AotSmoke
+            # console apps, so they must not be expected to have a coverage row.
+            #
+            # The property alone decides it -- deliberately no Microsoft.NET.Test.Sdk
+            # fallback. Those integration projects DO reference Test.Sdk while setting
+            # IsTestProject=false, so a fallback would put them back in the ledger and
+            # make this stage disagree with Stage 1.
+            $isTestProject = $false
+            foreach ($fw in $coverageFrameworks) {
+              $isTest = (dotnet msbuild $testProj.FullName -noLogo -p:Configuration=Release "-p:TargetFramework=$fw" -getProperty:IsTestProject 2>$null |
+                Where-Object { $_ -and "$_".Trim() } | Select-Object -Last 1)
+              if (("$isTest" -replace '^IsTestProject[=:]\s*', '').Trim() -ieq 'true') { $isTestProject = $true; break }
+            }
+            if ($isTestProject) {
+              # Same assembly-name rule as the row check below: the coverage report keys
+              # rows by assembly, and that differs from the project name whenever
+              # <AssemblyName> is set.
+              $asmMatch = [regex]::Match((Get-Content $testProj.FullName -Raw), '<AssemblyName>([^<]+)</AssemblyName>')
+              $ranAssemblies += if ($asmMatch.Success) { $asmMatch.Groups[1].Value.Trim() } else { $testProj.BaseName }
+            } elseif ($coverageFrameworks.Count -gt 0) {
+              Write-Host "⊘ Not ledgered: MSBuild reports IsTestProject=false, so no coverage row is required." -ForegroundColor Yellow
+            }
             Write-Host ""
           }
+
+          $ranFile = Join-Path $env:RUNNER_TEMP 'stage2-ran-test-assemblies.txt'
+          Set-Content -Path $ranFile -Value $ranAssemblies
+          Write-Host "Recorded $($ranAssemblies.Count) test assembly/assemblies with coverage: $($ranAssemblies -join ', ')"
 
       - name: Check for coverage files
         id: check-coverage
@@ -682,6 +724,15 @@ jobs:
           if (Get-ChildItem -Path TestResults -Recurse -Filter coverage.cobertura.xml -ErrorAction SilentlyContinue) {
             echo "has-coverage=true" >> $env:GITHUB_OUTPUT
             Write-Host "✅ Coverage files found"
+          } elseif ((Test-Path (Join-Path $env:RUNNER_TEMP 'stage2-ran-test-assemblies.txt')) -and
+                    @(Get-Content (Join-Path $env:RUNNER_TEMP 'stage2-ran-test-assemblies.txt') | Where-Object { $_.Trim() }).Count -gt 0) {
+            # Do NOT skip here. Every later coverage step is gated on
+            # has-coverage == 'true', so a dropped coverlet.collector reference would
+            # skip the whole coverage gate and still report green. Tests ran, so an
+            # absent coverage file means collection broke. Mirrors Stage 1.
+            Write-Host "::error::Tests ran but produced no coverage files - the coverage gate cannot be evaluated. Test assemblies that ran:"
+            Get-Content (Join-Path $env:RUNNER_TEMP 'stage2-ran-test-assemblies.txt')
+            exit 1
           } else {
             echo "has-coverage=false" >> $env:GITHUB_OUTPUT
             Write-Host "ℹ️  No coverage files found - skipping coverage report generation"
@@ -700,6 +751,47 @@ jobs:
             -reports:"TestResults/**/coverage.cobertura.xml" `
             -targetdir:"CoverageReport" `
             -reporttypes:"Html;TextSummary;MarkdownSummaryGithub;CsvSummary"
+
+      - name: Every test assembly that ran must be in the coverage report
+        # The coverage gate can only judge modules that APPEAR in the report, so an
+        # assembly that ran and recorded nothing drops out of it and the gate passes while
+        # measuring less than it did yesterday. Stage 1 has the same check; this is it for
+        # the stage that runs a different subset of the suite.
+        if: steps.check-coverage.outputs.has-coverage == 'true'
+        shell: pwsh
+        run: |
+          $ranFile = Join-Path $env:RUNNER_TEMP 'stage2-ran-test-assemblies.txt'
+          if (-not (Test-Path $ranFile)) {
+            Write-Host "::error::The ran-assemblies ledger is missing, so the row check cannot run."
+            exit 1
+          }
+          $ran = @(Get-Content $ranFile | Where-Object { $_.Trim() } | Sort-Object -Unique)
+          if ($ran.Count -eq 0) {
+            Write-Host "::error::Coverage files exist but no test assembly was recorded as having collected coverage - refusing to pass a check that measured nothing."
+            exit 1
+          }
+          if (-not (Test-Path 'CoverageReport/Summary.txt')) {
+            Write-Host "::error::CoverageReport/Summary.txt is missing, so the row check cannot run."
+            exit 1
+          }
+
+          # Module rows start in column 1; every other line in Summary.txt is indented.
+          # Compared by equality, not prefix: a prefix match would accept
+          # X.Application.Advisor as the row for X.Application.
+          $rows = @(Get-Content 'CoverageReport/Summary.txt' |
+            Where-Object { $_ -match '^\S' } |
+            ForEach-Object { ($_ -split '\s+')[0] })
+
+          $missing = @($ran | Where-Object { $rows -notcontains $_ })
+          foreach ($asm in $ran) {
+            if ($missing -contains $asm) { Write-Host "  FAIL $asm ran but recorded no coverage" }
+            else { Write-Host "  OK   $asm has a coverage row" }
+          }
+          if ($missing.Count -gt 0) {
+            Write-Host "::error::These test assemblies ran but produced no coverage row: $($missing -join ', '). Is coverlet.collector still referenced?"
+            exit 1
+          }
+          Write-Host "Every test assembly that collected coverage is present in the report."
 
       - name: Enforce 90% coverage threshold
         if: steps.check-coverage.outputs.has-coverage == 'true'
