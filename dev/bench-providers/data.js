@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792255257989,
+  "lastUpdate": 1792260596961,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -4080,6 +4080,90 @@ window.BENCHMARK_DATA = {
             "value": 36969178,
             "unit": "ns",
             "range": "± 4075703.16369372"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c063587d55094aa046fc473a1ff6596720b36d93",
+          "message": "ci(pr): raise the test coverage gate from 90% to 100% (#405)\n\nCompletes the gate half of #370. Fleet policy is production code at 95% or more\nand every test assembly at 100%; #400 took src to 95 and #402 closed the last\ntest gap, so this is now assertable.\n\nAll seven test assemblies are at 100% on main, measured in Stage 1 of #402's\nrun (38995756005):\n\n  Cli.Tests.Unit                        100%\n  EntityFrameworkCore.Npgsql.Tests.Unit 100%\n  EntityFrameworkCore.Tests.Concurrency 100%\n  EntityFrameworkCore.Tests.DocExamples 100%\n  EntityFrameworkCore.Tests.Fuzz        100%\n  EntityFrameworkCore.Tests.Smoke       100%\n  EntityFrameworkCore.Tests.Unit        100%\n\nRaised in both places the value is read: the workflow-level\nCODECOV_TEST_MINIMUM and Stage 1's `${CODECOV_TEST_MINIMUM:-100}` fallback.\nLeaving the fallback at 90 would silently apply wherever the env var did not\nreach, which is how a gate ends up lying about what it enforces.\n\nNote this lands with zero headroom, unlike #400's src raise. 100% means any\nuncovered line in any test assembly fails the build, which is the intent of the\npolicy rather than an accident of it: a member no test executes is dead test\ncode to delete or exercise. The documented escape remains\n[ExcludeFromCodeCoverage] on a dedicated infrastructure check whose unavailable\nbranch never runs in CI -- never lowering this number.\n\nStage 2 is untouched and still holds every assembly to CODECOV_MINIMUM, because\nit does not separate src from test modules. Stage 1 gates Stage 2, so the\nstricter check runs first either way and the policy is enforced; the\ninconsistency is worth knowing about and is noted on #370 rather than papered\nover here.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-17T14:00:50-04:00",
+          "tree_id": "052ccd38f3a2067234d165e1e2c6afa4477cca28",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/c063587d55094aa046fc473a1ff6596720b36d93"
+        },
+        "date": 1792260594044,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6796538.666666667,
+            "unit": "ns",
+            "range": "± 86360.92154055175"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 48561859.666666664,
+            "unit": "ns",
+            "range": "± 11122678.703884795"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6499384.333333333,
+            "unit": "ns",
+            "range": "± 65924.99594488674"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 42655994.166666664,
+            "unit": "ns",
+            "range": "± 700212.6717236224"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 11910646.333333334,
+            "unit": "ns",
+            "range": "± 6795545.779167508"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 52440368,
+            "unit": "ns",
+            "range": "± 7296052.157735921"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 25453627,
+            "unit": "ns",
+            "range": "± 564730.2226399787"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 516813239.6666667,
+            "unit": "ns",
+            "range": "± 675662820.9185407"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6462284.833333333,
+            "unit": "ns",
+            "range": "± 62279.58285291684"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Db2, BatchSize: 50, UseBulkInsert: False)",
+            "value": 42079703.666666664,
+            "unit": "ns",
+            "range": "± 3489049.5095238094"
           }
         ]
       }
