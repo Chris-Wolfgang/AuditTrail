@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792205305941,
+  "lastUpdate": 1792255262559,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -12144,6 +12144,138 @@ window.BENCHMARK_DATA = {
             "value": 21978715.333333332,
             "unit": "ns",
             "range": "± 6443655.248006701"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "89fec031344208bdbef536b9cfebb9d608b706df",
+          "message": "test(schema): exercise the version-coverage guard, reaching 100% (#402)\n\nPart of #370. Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit was the only\ntest assembly below the fleet's 100% policy, at 99% -- and the entire gap was\ntwo lines: the body of the self-arming loop in\nEvery_version_below_current_has_an_upgrade_step.\n\nCurrentVersion is 1, so `for (version = 1; version < currentVersion; ...)` never\nruns. That is deliberate -- the test starts asserting by itself when a second\nschema version lands -- but it leaves the loop both uncovered and, more\nimportantly, UNVERIFIED: a vacuous loop and a broken loop look identical, and\nnothing showed the guard would actually catch a missing arm.\n\nRather than excluding the lines, the loop moved into a helper taking\nIAuditSchemaUpgrades, and the StubUpgrades already in this file now drives it:\n\n  The_version_coverage_guard_accepts_a_complete_set_of_steps\n    currentVersion 3 with a step for each -- runs the loop, and asserts\n    RequestedVersions == [1, 2] so a skipped loop cannot masquerade as a pass.\n\n  The_version_coverage_guard_rejects_a_version_with_no_step\n    currentVersion 3 with version 2 returning no operations -- asserts the\n    guard throws. This is the half that was missing.\n\nThe original test keeps its real-instance call, so it still arms itself on the\nnext schema version; it now delegates to the helper rather than inlining it.\n\nVerified locally on net10.0 with coverlet.runsettings:\n\n  336 tests pass (334 before -- the two new ones)\n  Tests.Unit line-rate 1, zero classes below 100%\n\nAlso dropped a redundant explicit array type the first draft introduced --\nAddNullableLongColumn returns MigrationOperation, so `new[] { ... }` already\ninfers MigrationOperation[] and S3257 fired as an error under Release.\n\nRaising CODECOV_TEST_MINIMUM from 90 to 100 is deliberately NOT in this commit:\nthat is pr.yaml, a protected file, and mixing it here would fail the Protected\nFiles Guard. It follows once this merges.\n\nTEST CODE CHANGE: two tests added, one existing test refactored to call the\nextracted helper. No production code touched.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-17T12:31:39-04:00",
+          "tree_id": "32b4b903ad3a3ee1af8090e056941ed7c868ab61",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/89fec031344208bdbef536b9cfebb9d608b706df"
+        },
+        "date": 1792255260966,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 535672.3913043478,
+            "unit": "ns",
+            "range": "± 13434.49399100935"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1607091.8068181819,
+            "unit": "ns",
+            "range": "± 162783.8501158775"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 903519.959770115,
+            "unit": "ns",
+            "range": "± 66843.8830216652"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2611286.846153846,
+            "unit": "ns",
+            "range": "± 24863.96332327221"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 665313.8571428572,
+            "unit": "ns",
+            "range": "± 15657.745097189809"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1983391.8131868131,
+            "unit": "ns",
+            "range": "± 170841.28277067986"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1248224.3,
+            "unit": "ns",
+            "range": "± 16003.469040001475"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 9828380.142857144,
+            "unit": "ns",
+            "range": "± 1283141.3234708945"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 2432106.3666666667,
+            "unit": "ns",
+            "range": "± 36498.86053968313"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 17723076.939393938,
+            "unit": "ns",
+            "range": "± 4087345.075855739"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1905031.3846153845,
+            "unit": "ns",
+            "range": "± 24148.913421168185"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 14617152.891752576,
+            "unit": "ns",
+            "range": "± 2093302.2829641413"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 4787087.923076923,
+            "unit": "ns",
+            "range": "± 34048.2062901546"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 22434607.6,
+            "unit": "ns",
+            "range": "± 14521056.648068469"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 13770120.54,
+            "unit": "ns",
+            "range": "± 1689516.876788916"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 18109796.25,
+            "unit": "ns",
+            "range": "± 3744826.374923443"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 10117847.96,
+            "unit": "ns",
+            "range": "± 1966066.3235778948"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 16234966.376543209,
+            "unit": "ns",
+            "range": "± 4551339.945555881"
           }
         ]
       }
