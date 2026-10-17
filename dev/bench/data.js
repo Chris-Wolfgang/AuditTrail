@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792197930305,
+  "lastUpdate": 1792201156028,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -11880,6 +11880,138 @@ window.BENCHMARK_DATA = {
             "value": 20605855.024390243,
             "unit": "ns",
             "range": "± 4791140.276688939"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d18139ac64a42b181444514d7b47fb24e1007081",
+          "message": "ci(pr): raise the src coverage gate from 90% to 95% (#400)\n\nPart of #370, whose fleet policy is production code at 95% or more and every\ntest assembly at 100%.\n\nThe src side already clears 95% with headroom, measured on main (dc15c36, run\n38987108561 Stage 1):\n\n  Wolfgang.AuditTrail.Abstractions                100%\n  Wolfgang.AuditTrail.EntityFrameworkCore          99%\n  Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql  100%\n  Wolfgang.AuditTrail.TestKit.Xunit                98%\n  audittrail (CLI)                                100%\n\nLowest is TestKit.Xunit at 98%, so 95% has 3 percentage points of margin. The\ngate was only at 90 because that is what the template default was when #377\nsynced it, not because anything here needed the slack.\n\nRaised in all four places so the env value and every script fallback agree:\nthe workflow-level CODECOV_MINIMUM, Stage 1's bash `${CODECOV_MINIMUM:-95}`,\nStage 2's pwsh `else { 95 }`, and the third job's `THRESHOLD=`. A fallback left\nat 90 would silently apply wherever the env var did not reach.\n\nCODECOV_TEST_MINIMUM is deliberately NOT touched. It stays at 90 until\nWolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit reaches 100% -- it is at 99%,\nthe only test assembly below the policy, and raising the test gate first would\nfail every PR. That is tracked in #370.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T21:31:58-04:00",
+          "tree_id": "b0ba107bb89f4d8071f362a80efa93679e4f1309",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/d18139ac64a42b181444514d7b47fb24e1007081"
+        },
+        "date": 1792201154612,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 425293.5,
+            "unit": "ns",
+            "range": "± 9430.917882436637"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1013981.7777777778,
+            "unit": "ns",
+            "range": "± 20245.78291762787"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 618182.5,
+            "unit": "ns",
+            "range": "± 11008.816830159361"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 1985887.357142857,
+            "unit": "ns",
+            "range": "± 26562.8116375772"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 621326.3478260869,
+            "unit": "ns",
+            "range": "± 108969.39206512313"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1193549.3333333333,
+            "unit": "ns",
+            "range": "± 25545.750043678847"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 977789.8333333334,
+            "unit": "ns",
+            "range": "± 7421.152432354589"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 7141023.090909091,
+            "unit": "ns",
+            "range": "± 1244473.8666610762"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1832856,
+            "unit": "ns",
+            "range": "± 11761.26762529644"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 14508687.724489795,
+            "unit": "ns",
+            "range": "± 1500292.512287148"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1461044.2857142857,
+            "unit": "ns",
+            "range": "± 21530.10578211382"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 10719811.81521739,
+            "unit": "ns",
+            "range": "± 1034554.0029535682"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 3735738.3571428573,
+            "unit": "ns",
+            "range": "± 25185.62833353468"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 19899250.55,
+            "unit": "ns",
+            "range": "± 9926010.82300753"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 10351519.570707072,
+            "unit": "ns",
+            "range": "± 1126003.208014744"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 16385185.170731707,
+            "unit": "ns",
+            "range": "± 6337477.989844678"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 7216868.12244898,
+            "unit": "ns",
+            "range": "± 1099180.8756988207"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 21873631.515151516,
+            "unit": "ns",
+            "range": "± 14503465.695406856"
           }
         ]
       }
