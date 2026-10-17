@@ -99,32 +99,64 @@ jobs:
       #                  fleet ships packages.lock.json; adopting
       #                  `--locked-mode` is a separate fleet-wide decision.
       #
+      # Suppressed whole rule:
+      #   CodeReviewID — a solo-maintainer repository. The check counts changesets
+      #                  approved by someone else ("Found 0/23 approved changesets"),
+      #                  so it can only ever score 0 here. Satisfying it would mean
+      #                  recruiting a second maintainer, or requiring approvals and
+      #                  then admin-bypassing every PR — which waives every other
+      #                  rule in the ruleset, not just this one. The rule has no
+      #                  sub-case worth keeping live, so the whole rule goes.
+      #
       # Nothing else is suppressed. `gitHubAction not pinned` rows stay live so
       # any regression to an @vN action ref without a SHA pin still fires, and
       # the other Scorecard rules (DangerousWorkflowID, BranchProtectionID,
-      # CodeReviewID, CIIBestPracticesID) continue to report.
+      # CIIBestPracticesID) continue to report.
+      #
+      # BranchProtectionID is deliberately NOT suppressed, even though its current
+      # warnings are the same solo-maintainer story (no required approvers, no
+      # codeowners review, last-push approval off). It scores 4, not 0, because the
+      # rest of the protection IS in place — so the rule still reports real
+      # regressions, such as the ruleset being deleted or force-pushes being
+      # allowed. Suppressing it would trade those away. Tracked in #338.
       #
       # The scorecard.dev score published to the transparency log (README
       # badge) still counts every check; this only trims code-scanning noise.
       - name: Filter suppressed findings from SARIF
         shell: bash
         env:
+          # Whole rules dropped regardless of message. Space-separated.
+          SUPPRESSED_RULES: 'CodeReviewID'
           # Substrings matched against each PinnedDependenciesID result's
           # message text. Order-independent; a single match suppresses.
           SUPPRESSED_PIN_KINDS: 'nugetCommand not pinned'
         run: |
+          # pipefail matters for the rules_json pipeline below: the implicit shell is
+          # `bash -e` without it, so a jq failure mid-pipe would pass an empty list
+          # through and silently suppress nothing.
+          set -euo pipefail
           if ! command -v jq >/dev/null 2>&1; then
             echo "::error::jq not available on the runner; cannot filter SARIF."
             exit 1
           fi
+          # Word-splitting is intentional: one rule per line for the jq -R/-s pipeline.
+          # shellcheck disable=SC2086
+          rules_json=$(printf '%s\n' $SUPPRESSED_RULES | jq -R . | jq -s .)
+          echo "Suppressed rules: $SUPPRESSED_RULES"
           jq \
+            --argjson suppressed "$rules_json" \
             --arg pinKinds "$SUPPRESSED_PIN_KINDS" \
             '
               .runs |= map(
                 .results |= map(select(
                   (.ruleId // "") as $r
                   | (.message.text // "") as $t
-                  | (($r == "PinnedDependenciesID") and ($t | test($pinKinds))) | not
+                  # $r is bound before use on purpose: inside
+                  # `$suppressed | index(.ruleId)` the path would apply to the array
+                  # rather than the result -- jq 1.8 errors, older jq silently keeps
+                  # everything, which fails open.
+                  | (($suppressed | index($r)) == null)
+                    and ((($r == "PinnedDependenciesID") and ($t | test($pinKinds))) | not)
                 ))
               )
             ' results.sarif > results.filtered.sarif
