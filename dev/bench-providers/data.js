@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792197926658,
+  "lastUpdate": 1792201149000,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -3840,6 +3840,78 @@ window.BENCHMARK_DATA = {
             "value": 48372885.333333336,
             "unit": "ns",
             "range": "± 4150954.4111529742"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d18139ac64a42b181444514d7b47fb24e1007081",
+          "message": "ci(pr): raise the src coverage gate from 90% to 95% (#400)\n\nPart of #370, whose fleet policy is production code at 95% or more and every\ntest assembly at 100%.\n\nThe src side already clears 95% with headroom, measured on main (dc15c36, run\n38987108561 Stage 1):\n\n  Wolfgang.AuditTrail.Abstractions                100%\n  Wolfgang.AuditTrail.EntityFrameworkCore          99%\n  Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql  100%\n  Wolfgang.AuditTrail.TestKit.Xunit                98%\n  audittrail (CLI)                                100%\n\nLowest is TestKit.Xunit at 98%, so 95% has 3 percentage points of margin. The\ngate was only at 90 because that is what the template default was when #377\nsynced it, not because anything here needed the slack.\n\nRaised in all four places so the env value and every script fallback agree:\nthe workflow-level CODECOV_MINIMUM, Stage 1's bash `${CODECOV_MINIMUM:-95}`,\nStage 2's pwsh `else { 95 }`, and the third job's `THRESHOLD=`. A fallback left\nat 90 would silently apply wherever the env var did not reach.\n\nCODECOV_TEST_MINIMUM is deliberately NOT touched. It stays at 90 until\nWolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit reaches 100% -- it is at 99%,\nthe only test assembly below the policy, and raising the test gate first would\nfail every PR. That is tracked in #370.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T21:31:58-04:00",
+          "tree_id": "b0ba107bb89f4d8071f362a80efa93679e4f1309",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/d18139ac64a42b181444514d7b47fb24e1007081"
+        },
+        "date": 1792201144985,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3784325.6666666665,
+            "unit": "ns",
+            "range": "± 150801.48632335602"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 22309191.666666668,
+            "unit": "ns",
+            "range": "± 2065003.3195964438"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4668292.333333333,
+            "unit": "ns",
+            "range": "± 275477.91944969626"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 26183339.333333332,
+            "unit": "ns",
+            "range": "± 563331.942916726"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7871920,
+            "unit": "ns",
+            "range": "± 5403866.929154436"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 30127806.333333332,
+            "unit": "ns",
+            "range": "± 146024.89029043415"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 19795410,
+            "unit": "ns",
+            "range": "± 3176208.975675719"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 76200090,
+            "unit": "ns",
+            "range": "± 6254645.4300087225"
           }
         ]
       }
