@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792195999820,
+  "lastUpdate": 1792197930305,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -11748,6 +11748,138 @@ window.BENCHMARK_DATA = {
             "value": 21691007.72,
             "unit": "ns",
             "range": "± 14543683.064893285"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "dc15c36083c7c8ab78fbe5a4c92bcb2ef46f9784",
+          "message": "ci(scorecard): suppress the CodeReviewID rule as won't-fix (#399)\n\nCloses #337.\n\nAlert 406 reports \"score is 0: Found 0/23 approved changesets\". The check counts\nchangesets approved by someone other than the author, and this is a\nsolo-maintainer repository, so it can only ever score 0. The two ways to satisfy\nit are recruiting a second maintainer, or requiring approvals and then\nadmin-bypassing every PR -- and admin bypass waives every other rule in the\nruleset, not just this one. There is no sub-case of the rule worth keeping live,\nso the whole rule is dropped before the SARIF reaches code-scanning.\n\nFiltering rather than dismissing the alert is deliberate and matches the step's\nexisting rationale: Scorecard emits a fresh SARIF each run and fingerprint drift\nmeans per-alert dismissals do not reliably survive.\n\nBranchProtectionID (#338) is deliberately NOT suppressed, even though its\ncurrent warnings are the same solo-maintainer story -- no required approvers, no\ncodeowners review, last-push approval disabled. It scores 4, not 0, because the\nrest of the protection is in place, so the rule still reports real regressions\nsuch as the ruleset being deleted or force-pushes being allowed. Suppressing it\nwould trade those away for three warnings that are a deliberate choice.\n\nMechanism added alongside the existing partial PinnedDependenciesID filter:\nSUPPRESSED_RULES drops whole rules by ruleId. $r is bound before use because\ninside `$suppressed | index(.ruleId)` the path would apply to the array rather\nthan the result -- jq 1.8 errors and older jq silently keeps everything, which\nfails open. `set -euo pipefail` is added because the new rules_json pipeline\nneeds it: the implicit shell is `bash -e` without pipefail, so a jq failure\nmid-pipe would pass an empty list through and suppress nothing.\n\nOnly CodeReviewID. Not CIIBestPracticesID, which the template suppresses but\nwhich is a live finding here, and not BranchProtectionID per above.\n\nVerified against a real Scorecard SARIF -- the scorecard-sarif artifact from run\n38984600267, 12 results:\n\n  rule                   before  after\n  BranchProtectionID          1      1\n  CIIBestPracticesID          1      1\n  CodeReviewID                1      0\n  PinnedDependenciesID        9      0\n  TOTAL                      12      2\n\nThe 9 PinnedDependenciesID rows all carry \"nugetCommand not pinned by hash\" with\n`dotnet restore` snippets, so the pre-existing partial filter is matching only\nwhat it claims to; there are no `gitHubAction not pinned` rows to keep live at\npresent because every action is SHA-pinned.\n\nNot run locally: the jq program itself, because jq is not installed on this\nmachine. The selection logic above was evaluated against the real SARIF, and the\nScorecard run after merge is the check on the jq. That run should also close\nalert 406, which works only because #397 pinned the analysis key -- without it\nthe suppression would have applied to a new key while 406 stayed open forever.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T20:35:53-04:00",
+          "tree_id": "e5852156b8cf45ab7309e6ee1c5dc21d5791379c",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/dc15c36083c7c8ab78fbe5a4c92bcb2ef46f9784"
+        },
+        "date": 1792197928787,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 743363.5106382979,
+            "unit": "ns",
+            "range": "± 122277.29362727866"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1868967.847826087,
+            "unit": "ns",
+            "range": "± 230412.56028163267"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 954297.2727272727,
+            "unit": "ns",
+            "range": "± 79310.81643901805"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 3781805.5425531915,
+            "unit": "ns",
+            "range": "± 463997.4045534951"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 746750.4285714285,
+            "unit": "ns",
+            "range": "± 10858.58982708929"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 2286897.2588235294,
+            "unit": "ns",
+            "range": "± 316623.64508326474"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1659758.357142857,
+            "unit": "ns",
+            "range": "± 14014.834122386965"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 9070872.583333334,
+            "unit": "ns",
+            "range": "± 122450.6055298576"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 4084480.652173913,
+            "unit": "ns",
+            "range": "± 102297.3276708673"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 19233877.93,
+            "unit": "ns",
+            "range": "± 4246914.084429912"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 2715690.5,
+            "unit": "ns",
+            "range": "± 39065.49902358267"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 15559181.07,
+            "unit": "ns",
+            "range": "± 2129123.1741219615"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 7932088.221052632,
+            "unit": "ns",
+            "range": "± 454127.40804585966"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 29210543.15,
+            "unit": "ns",
+            "range": "± 18329386.359608434"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 15196627.93939394,
+            "unit": "ns",
+            "range": "± 3137231.398091785"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 23072853.19047619,
+            "unit": "ns",
+            "range": "± 5033490.0436606"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 11788029.72,
+            "unit": "ns",
+            "range": "± 3278240.294126925"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 20605855.024390243,
+            "unit": "ns",
+            "range": "± 4791140.276688939"
           }
         ]
       }
