@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792201156028,
+  "lastUpdate": 1792205305941,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -12012,6 +12012,138 @@ window.BENCHMARK_DATA = {
             "value": 21873631.515151516,
             "unit": "ns",
             "range": "± 14503465.695406856"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "184e26b4c4b9542fa4f9a94cea3916d252d8ad52",
+          "message": "fix(scripts): refresh the summary issue's body, not just its comments (#401)\n\n#389 made the weekly summary update the open issue instead of filing a new one,\nbut it updates by commenting only. The body therefore stays frozen at whatever\nthe first run wrote, which is the first thing anyone opening the issue reads.\n\nAuditTrail#369 shows the cost: its body still claims\n\n  **2 alert(s) open longer than 7 days** as of 2026-09-28\n  > **Incomplete:** the secret-scanning, dependabot listing was unavailable...\n\nwhen the current state is one alert, the second (CodeReviewID/406) is fixed, and\nthe \"Incomplete\" warning stopped applying the moment SECURITY_ALERTS_TOKEN was\nadded. All three wrong facts sit at the top; the truth is several comments down.\n\nNow the body is refreshed first, then the comment is posted. Both carry the same\ntext on purpose: the body is the current state, each comment is a dated snapshot\nand the thing that notifies subscribers when the list changes. A failed body\nedit counts a failure and still lets the comment through, so a partial update\nreports rather than passing silently.\n\nVerified by running the script locally against this repo:\n\n  pwsh ./scripts/security-alerts.ps1 -Repository Chris-Wolfgang/AuditTrail -DryRun -WeeklySummary\n    code-scanning: 1 open alert(s)\n    secret-scanning: 0 open alert(s)\n    dependabot: 0 open alert(s)\n    DRY-RUN refresh summary #369 (body + comment)\n    done: 1 open alert(s), 0 new code-scanning issue(s), 0 kind(s) unavailable, 0 failure(s)\n\nThe new branch is taken and the script parses clean\n([Parser]::ParseFile, 0 errors). #369's body self-corrects on the next real run.\n\nCo-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-16T22:38:52-04:00",
+          "tree_id": "4de6d3ba382e037e4dea980e560d3df0bf7a7295",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/184e26b4c4b9542fa4f9a94cea3916d252d8ad52"
+        },
+        "date": 1792205304485,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 766847,
+            "unit": "ns",
+            "range": "± 174733.71645867996"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1574053.388888889,
+            "unit": "ns",
+            "range": "± 33004.08870194346"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 873489.9333333333,
+            "unit": "ns",
+            "range": "± 15128.80714052625"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 3692474.2303370787,
+            "unit": "ns",
+            "range": "± 249139.35340336064"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 910398.1836734693,
+            "unit": "ns",
+            "range": "± 177289.88132810037"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 2215337.987804878,
+            "unit": "ns",
+            "range": "± 179183.47284054238"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1677922.9117647058,
+            "unit": "ns",
+            "range": "± 22486.17458033609"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 10724292.104166666,
+            "unit": "ns",
+            "range": "± 682376.1950152759"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 3442183.8571428573,
+            "unit": "ns",
+            "range": "± 37254.473407915706"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 20354971.69,
+            "unit": "ns",
+            "range": "± 5942084.01370995"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 2655287.1428571427,
+            "unit": "ns",
+            "range": "± 19622.748995282698"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 17506844.51,
+            "unit": "ns",
+            "range": "± 3489724.027456735"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 8606485.788659794,
+            "unit": "ns",
+            "range": "± 846611.5693205198"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 27950915.45,
+            "unit": "ns",
+            "range": "± 17958968.68586336"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 16454410.479591837,
+            "unit": "ns",
+            "range": "± 2177307.834527675"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 21654759.87804878,
+            "unit": "ns",
+            "range": "± 2687435.8950845827"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 11875303.56,
+            "unit": "ns",
+            "range": "± 2545984.6089418326"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 21978715.333333332,
+            "unit": "ns",
+            "range": "± 6443655.248006701"
           }
         ]
       }
