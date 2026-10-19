@@ -141,6 +141,53 @@ public abstract class AuditSchemaMigratorIntegrationTestsBase
 
 
     /// <summary>
+    /// The convergence guarantee: a database that was installed at version 1
+    /// and upgraded step by step must end up with exactly the schema a fresh
+    /// install of the current version produces.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This is what keeps the explicit upgrade steps in
+    /// <see cref="AuditSchemaUpgrades"/> honest. Install is a model diff, so the
+    /// model defines the current shape; an upgrade step is hand-written, so
+    /// nothing else checks that its column type, default, or index name agrees
+    /// with what the model would have produced. Here both paths are run against
+    /// a real database on this provider and their schemas are compared after
+    /// scaffolding, so a step that drifts from the model -- on any provider, in
+    /// any facet the DDL carries -- fails this fact.
+    /// </para>
+    /// <para>
+    /// The version-1 database comes from <see cref="FrozenInstallScripts"/>,
+    /// the DDL the version-1 build actually emitted, not from a reconstruction.
+    /// While the library still installs version 1 the upgrade is a no-op and
+    /// the fact reduces to "the frozen script and the migrator agree", which is
+    /// what validates the frozen script in the first place.
+    /// </para>
+    /// </remarks>
+    [Fact]
+    public async Task RunAsync_on_a_replayed_v1_database_converges_on_a_fresh_install()
+    {
+        var options = BuildOptions();
+
+        await using var fresh = await _fixture.CreateContextAsync(options);
+        await AuditSchemaMigrator.RunAsync(fresh);
+        var freshSchema = DatabaseSchemaText.Describe(fresh, _fixture.DesignTimeServices);
+
+        await using var upgraded = await _fixture.CreateContextAsync(options);
+        await FrozenInstallScripts.ReplayAsync(upgraded, version: 1, _fixture.ProviderName);
+        await AuditSchemaMigrator.RunAsync(upgraded);
+        var upgradedSchema = DatabaseSchemaText.Describe(upgraded, _fixture.DesignTimeServices);
+
+        Assert.Contains("table AuditHeader", freshSchema, StringComparison.Ordinal);
+        Assert.Equal(freshSchema, upgradedSchema);
+
+        var version = await upgraded.Set<AuditSchemaVersion>().AsNoTracking().SingleAsync();
+        Assert.Equal(AuditSchemaConstants.CurrentSchemaVersion, version.Version);
+    }
+
+
+
+    /// <summary>
     /// The case a fresh-database test can never cover: an existing install,
     /// with rows in it, taken forward a version. Asserts the table really was
     /// altered and that the data survived, rather than trusting the version row.
