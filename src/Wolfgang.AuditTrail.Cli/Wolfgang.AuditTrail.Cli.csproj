@@ -65,7 +65,7 @@
       (warning as error). Override to the patched 9.0.x release. Drop this once a
       SqlClient release depends on 9.0.21 or later directly.
     -->
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.21" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.12" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
     <!-- NU1903 transitive override — see issue #121. -->
