@@ -22,13 +22,13 @@
     <PackageReference Include="coverlet.collector" Version="10.1.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.13" />
     <!--
       Inherited through the project reference to Wolfgang.AuditTrail.Cli: the
       same SqlClient dependency chain brings System.Security.Cryptography.Pkcs
       9.0.x in here too, so the same override is needed to keep restore clean.
     -->
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.21" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
   </ItemGroup>
 
 </Project>

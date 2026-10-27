@@ -73,7 +73,7 @@
   -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
-    <PackageReference Include="Testcontainers.MySql" Version="4.15.0" />
+    <PackageReference Include="Testcontainers.MySql" Version="4.16.0" />
 
     <Compile Remove="SaveChangesBenchmarks.cs" />
   </ItemGroup>

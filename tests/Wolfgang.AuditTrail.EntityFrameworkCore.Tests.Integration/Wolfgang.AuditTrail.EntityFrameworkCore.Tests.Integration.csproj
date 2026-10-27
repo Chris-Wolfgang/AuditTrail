@@ -76,7 +76,7 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
 
-    <PackageReference Include="Testcontainers.MySql" Version="4.15.0" />
+    <PackageReference Include="Testcontainers.MySql" Version="4.16.0" />
 
     <Compile Remove="SqlServerAuditTests.cs" />
     <Compile Remove="PostgresAuditTests.cs" />
@@ -122,10 +122,10 @@
     <PackageReference Include="IBM.EntityFrameworkCore" Version="10.0.0.100" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <PackageReference Include="IBM.EntityFrameworkCore-lnx" Version="10.0.0.100" Condition="!$([MSBuild]::IsOSPlatform('Windows'))" />
 
-    <PackageReference Include="Testcontainers.MsSql" Version="4.15.0" />
-    <PackageReference Include="Testcontainers.PostgreSql" Version="4.15.0" />
-    <PackageReference Include="Testcontainers.Oracle" Version="4.15.0" />
-    <PackageReference Include="Testcontainers.Db2" Version="4.15.0" />
+    <PackageReference Include="Testcontainers.MsSql" Version="4.16.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.16.0" />
+    <PackageReference Include="Testcontainers.Oracle" Version="4.16.0" />
+    <PackageReference Include="Testcontainers.Db2" Version="4.16.0" />
 
     <Compile Remove="MySqlAuditTests.cs" />
     <Compile Remove="TestSupport\MySqlFixture.cs" />
