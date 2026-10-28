@@ -123,7 +123,7 @@ Three end-to-end samples ship in [`examples/`](./examples):
 
 - [Console](./examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.Console) — minimal SQLite demo that prints the audit history.
 - [Web API](./examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.WebApi) — ASP.NET Core minimal API showing the on-behalf-of pattern (service account as `UserId`, authenticated human as `OnBehalfOfUserId`).
-- [AdventureWorks](./examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.AdventureWorks) — SQL Server demo (via Testcontainers) against the well-known AdventureWorks sample schema, covering Insert/Update and a secondary-row add-then-remove scenario.
+- [AdventureWorks](./examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.AdventureWorks) — SQL Server demo (via Testcontainers) against the well-known AdventureWorks sample schema, covering Insert/Update and a secondary-row add-then-remove scenario. Installs only the audit tables into an existing database with `MigrateAuditSchemaAsync()`. Needs Docker to run.
 
 ---
 
