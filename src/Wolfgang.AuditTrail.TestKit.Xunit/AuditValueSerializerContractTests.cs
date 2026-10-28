@@ -105,8 +105,8 @@ public abstract class AuditValueSerializerContractTests<TSut>
     [Fact]
     public void Double_NaN_round_trips()
     {
-        var decoded = RoundTrip(double.NaN);
-        Assert.True(decoded is double d && double.IsNaN(d));
+        var decoded = Assert.IsType<double>(RoundTrip(double.NaN));
+        Assert.True(double.IsNaN(decoded));
     }
 
     [Fact]
@@ -223,7 +223,7 @@ public abstract class AuditValueSerializerContractTests<TSut>
         var buffer = new InMemoryAuditValueBuffer();
         var valueType = sut.Encode(SampleEnum.Beta, typeof(SampleEnum), buffer);
         Assert.StartsWith("Enum:", valueType, StringComparison.Ordinal);
-        Assert.Contains(nameof(SampleEnum), valueType, StringComparison.Ordinal);
+        Assert.Contains(typeof(SampleEnum).FullName!, valueType, StringComparison.Ordinal);
     }
 
     [Fact]
