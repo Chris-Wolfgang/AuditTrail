@@ -61,10 +61,23 @@ internal static class IHostBuilderExtensions
         {
             configurationBuilder
                 .SetBasePath(AppContext.BaseDirectory)
+                .AddInMemoryCollection(DefaultLogFileSettings())
                 .AddJsonFile("AppSettings.json", optional, reloadOnChange)
                 .AddEnvironmentVariables();
         });
 
         return builder;
     }
+
+
+
+    // Default path for the File sink (WriteTo index 1 in AppSettings.json): the
+    // per-user temp directory, so running `audittrail migrate` from a repository
+    // root no longer drops a logs/ folder there. Added ahead of AppSettings.json,
+    // so a "path" set in that file (or via environment variables) still wins.
+    private static Dictionary<string, string?> DefaultLogFileSettings()
+        => new(StringComparer.Ordinal)
+        {
+            ["Serilog:WriteTo:1:Args:path"] = Path.Combine(Path.GetTempPath(), "audittrail", "logs", "Wolfgang.AuditTrail.Cli-.log"),
+        };
 }
