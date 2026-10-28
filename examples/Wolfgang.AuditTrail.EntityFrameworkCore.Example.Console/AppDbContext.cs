@@ -9,6 +9,13 @@ public class Product
     public string Name { get; set; } = string.Empty;
 
     public decimal Price { get; set; }
+
+    /// <summary>
+    /// <c>[NotAudited]</c> keeps this column out of the audit details: no
+    /// detail row is written for it on insert, update or delete.
+    /// </summary>
+    [NotAudited]
+    public string? InternalNotes { get; set; }
 }
 
 public class AppDbContext : AuditingDbContext

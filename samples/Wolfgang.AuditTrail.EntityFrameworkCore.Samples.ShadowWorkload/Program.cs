@@ -3,7 +3,6 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Wolfgang.AuditTrail;
 using Wolfgang.AuditTrail.Samples.ShadowWorkload;
-using Wolfgang.AuditTrail.Serializers;
 
 // Realistic mixed-traffic workload for shadow-testing (#43) -- distinct from
 // benchmarks/ (curated micro-benchmarks graphed on every push to main): this
@@ -117,8 +116,6 @@ static AppDbContext OpenContext(string dbPath)
 {
     var auditOptions = new AuditOptions
     {
-        ValueSerializer = new StringAuditValueSerializer(),
-        EntityKeySerializer = new PipeDelimitedEntityKeySerializer(),
         CaptureDeletedValues = true,
     };
     var userProvider = new StaticAuditUserProvider("shadow-workload@example.com");

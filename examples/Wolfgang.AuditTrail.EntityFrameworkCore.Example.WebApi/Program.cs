@@ -3,18 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using Wolfgang.AuditTrail;
 using Wolfgang.AuditTrail.Entities;
 using Wolfgang.AuditTrail.Example.WebApi;
-using Wolfgang.AuditTrail.Serializers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton(new AuditOptions
-{
-    ValueSerializer = new StringAuditValueSerializer(),
-    EntityKeySerializer = new PipeDelimitedEntityKeySerializer(),
-});
-
+// Registers AuditOptions (defaults: StringAuditValueSerializer +
+// PipeDelimitedEntityKeySerializer) and the scoped IAuditUserProvider.
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IAuditUserProvider, HttpContextAuditUserProvider>();
+builder.Services.AddEfCoreAuditing<HttpContextAuditUserProvider>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -26,6 +21,9 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var ctx = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    // Creates this demo's Products table and the audit tables together. An app
+    // whose tables are managed by EF Core Migrations installs just the audit
+    // tables with ctx.MigrateAuditSchemaAsync() instead.
     await ctx.Database.EnsureCreatedAsync();
 }
 
