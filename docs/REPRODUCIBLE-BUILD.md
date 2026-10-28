@@ -6,8 +6,9 @@ This page is the **consumer-side** procedure: how *you* independently verify the
 claim, without trusting our CI.
 
 Tracks issue #65. Pairs with the internal round-3 reproducibility check
-(`.github/workflows/reproducible-build.yaml`), which proves our own builds are
-byte-stable across runners.
+(`.github/workflows/reproducible-build.yaml`), which builds every TFM of every
+packable project on Ubuntu and on Windows and fails unless every `.dll` and `.pdb`
+is byte-identical.
 
 ## What makes the build reproducible
 
@@ -20,15 +21,36 @@ time-dependent inputs from the compiled output:
 - `<EmbedUntrackedSources>true</EmbedUntrackedSources>` + `Microsoft.SourceLink.GitHub`
   — source references resolve to the exact commit rather than local paths.
 
-The **managed IL** in each assembly is therefore expected to be byte-for-byte
-identical given the same source commit and a matching compiler (SDK) version.
+`Directory.Build.targets` removes the last OS-dependent input: the SDK writes its
+generated sources (`<Project>.AssemblyInfo.cs`, `*.AssemblyAttributes.cs`,
+`*.GlobalUsings.g.cs`) with the build machine's newline, and the portable PDB
+embeds and hashes them, so a Windows build and a Linux build used to differ in the
+PDB, and through the PDB checksum and module version id in the DLL too. Its
+`NormalizeGeneratedLineEndings` target rewrites those files to LF before compiling
+the packable projects.
+
+## What is guaranteed
+
+Given the same source commit, the same .NET SDK **and the same .NET runtime patch
+running the compiler**, the **compiled assemblies and symbols (`.dll` and `.pdb`,
+every target framework)** are byte-for-byte identical on Linux, macOS and Windows.
+
+The package files (`.nupkg` / `.snupkg`) are **not** byte-reproducible and are not
+part of the guarantee: NuGet stamps the pack time into every zip entry, so two packs
+of one commit differ even on one machine. Compare the assemblies inside them.
+
+The runtime patch matters because the compiler records the version of the runtime it
+ran on in the PDB. The SDK rolls the compiler forward to the newest installed patch
+runtime, so a machine with a newer `Microsoft.NETCore.App` patch than the SDK's own
+produces different PDB bytes. Set `DOTNET_ROLL_FORWARD=Disable` to pin the compiler
+to the SDK's bundled runtime when comparing.
 
 ## Tooling
 
 | Tool | Version |
 | --- | --- |
 | .NET SDK | 10.0.x (latest patch — the released packages are packed with the 10.0 SDK) |
-| OS | Any (Linux/macOS/Windows). Managed IL is expected to match cross-OS; see the advisory note below. |
+| OS | Any (Linux/macOS/Windows). `.dll` / `.pdb` match cross-OS; see [What is guaranteed](#what-is-guaranteed). |
 
 There is no `global.json` SDK pin, so use the latest **.NET 10** SDK. The Roslyn
 compiler ships with the SDK, so a different SDK *major* can change the emitted IL;
@@ -51,20 +73,18 @@ stay on 10.0.x to reproduce a package built during the 0.2.0+ cycle.
    dotnet pack src/Wolfgang.AuditTrail.TestKit.Xunit/Wolfgang.AuditTrail.TestKit.Xunit.csproj -c Release -p:ContinuousIntegrationBuild=true
    ```
 
-3. **Compare against the published hashes.** Each release attaches a
-   `reproducible-build-manifest.json` listing the expected SHA-256 of every
-   published `.nupkg`. Download it from the release page and compare:
+3. **Compare the compiled assemblies with the published package.** The `.nupkg`
+   file itself never matches (pack time is stamped into it), so extract both
+   packages and diff the `.dll` hashes (and the `.pdb` hashes from the `.snupkg`).
+   The `reproducible-build-manifest.json` attached to each release lists the SHA-256
+   of the published `.nupkg` files: use it to confirm the package you downloaded is
+   the one that was released, not to compare with your own pack.
 
    ```bash
-   # your local package hash
-   sha256sum src/Wolfgang.AuditTrail.Abstractions/bin/Release/*.nupkg
-   # expected hash from the release
-   cat reproducible-build-manifest.json
+   sha256sum published.nupkg   # compare with reproducible-build-manifest.json
    ```
 
-   For the most robust check, compare the **compiled assemblies** rather than the
-   `.nupkg` wrapper (the wrapper's zip framing can vary by SDK patch even when the
-   IL is identical). Extract both packages and diff the `.dll` hashes:
+   Then compare the assemblies:
 
    ```bash
    unzip -o your.nupkg -d local && unzip -o published.nupkg -d published
@@ -72,12 +92,12 @@ stay on 10.0.x to reproduce a package built during the 0.2.0+ cycle.
         <(cd published && find . -name '*.dll' -exec sha256sum {} + | sort)
    ```
 
-## Advisory, not a guarantee
+## Interpreting a mismatch
 
-Per the round-3 internal check, managed-IL differences are treated as
-**investigate-worthy**, not proof of tampering — a different SDK patch or OS can
-introduce benign wrapper/native differences while the IL still matches. A
-mismatch in the **managed `.dll`** content built with a matching SDK is the signal
+A different `.dll` or `.pdb` is not by itself proof of tampering: first rule out a
+different SDK, a different runtime patch running the compiler (see
+[What is guaranteed](#what-is-guaranteed)) or a different commit. A mismatch in the
+`.dll` built from the release tag with the same SDK and runtime patch is the signal
 that warrants a report.
 
 ## Report a discrepancy
