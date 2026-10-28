@@ -1,5 +1,5 @@
 # Sequential PR validation workflow with coverage gating
-# Stage 1: Linux tests with 90% coverage requirement
+# Stage 1: Linux tests with the coverage gate (CODECOV_MINIMUM / CODECOV_TEST_MINIMUM below)
 # Stage 2: Windows .NET (5.0-10.0) and .NET Framework (4.6.2-4.8.1) tests (only if Linux passes)
 # Stage 3: macOS tests (only if Stage 2 passes)
 #
@@ -32,8 +32,8 @@ env:
   # Minimum line coverage for PRODUCTION assemblies (anything under src/).
   CODECOV_MINIMUM: 95
   # Minimum line coverage for TEST assemblies (anything under tests/). Stage 1's gate
-  # tells the two apart by project location (repo-template's src/test split). Kept at
-  # this repo's existing 90; repo-template holds test assemblies to 100.
+  # tells the two apart by project location (repo-template's src/test split). Matches
+  # repo-template, which holds test assemblies to 100.
   CODECOV_TEST_MINIMUM: 100
 
 on:
@@ -375,7 +375,7 @@ jobs:
             -targetdir:"CoverageReport" \
             -reporttypes:"Html;TextSummary;MarkdownSummaryGithub;CsvSummary"
 
-      - name: Enforce 90% coverage threshold
+      - name: Enforce coverage threshold
         if: steps.check-coverage.outputs.has-coverage == 'true'
         run: |
           if [ ! -f CoverageReport/Summary.txt ]; then
@@ -793,7 +793,7 @@ jobs:
           }
           Write-Host "Every test assembly that collected coverage is present in the report."
 
-      - name: Enforce 90% coverage threshold
+      - name: Enforce coverage threshold
         if: steps.check-coverage.outputs.has-coverage == 'true'
         shell: pwsh
         run: |
@@ -1057,7 +1057,7 @@ jobs:
             echo "ℹ️  No coverage files found - skipping report generation"
           fi
 
-      - name: Enforce 90% coverage threshold
+      - name: Enforce coverage threshold
         run: |
           if [ ! -f "CoverageReport/Summary.txt" ]; then
             echo "❌ Coverage report not generated!"
@@ -1137,7 +1137,7 @@ jobs:
           echo "=========================================="
           echo "✅ ALL STAGES PASSED"
           echo "=========================================="
-          echo "Stage 1: Linux tests + 90% coverage ✅"
+          echo "Stage 1: Linux tests + coverage gate ✅"
           echo "Stage 2: Windows .NET Core & .NET Framework tests ✅"
           echo "Stage 3: macOS tests ✅"
           echo ""

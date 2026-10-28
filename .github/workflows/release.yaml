@@ -9,7 +9,10 @@ permissions:
   contents: read  # Default to read-only; individual jobs declare write where required
 
 env:
-  CODECOV_MINIMUM: 90
+  # Same gates as pr.yaml: production assemblies (src/) and test assemblies
+  # (tests/) are held to separate minimums.
+  CODECOV_MINIMUM: 95
+  CODECOV_TEST_MINIMUM: 100
 
 concurrency:
   # Serialize releases so a duplicate / re-published Release event can't run two
@@ -284,7 +287,7 @@ jobs:
           $coverageFiles = Get-ChildItem -Path "TestResults" -Recurse -Filter "coverage.cobertura.xml" -ErrorAction SilentlyContinue
           
           if ($coverageFiles.Count -eq 0) {
-            Write-Error "❌ No coverage files found - coverage data is required to enforce the 90% threshold"
+            Write-Error "❌ No coverage files found - coverage data is required to enforce the coverage threshold"
             exit 1
           }
           
@@ -301,9 +304,13 @@ jobs:
           Get-Content CoverageReport/Summary.txt
           Write-Host ""
           
-          # Parse coverage and enforce threshold per module (matching pr.yaml)
+          # Parse coverage and enforce threshold per module (matching pr.yaml):
+          # a module named after a project under tests/ is a test assembly and is
+          # held to CODECOV_TEST_MINIMUM; everything else to CODECOV_MINIMUM.
           $summaryContent = Get-Content CoverageReport/Summary.txt
-          $threshold = if ($env:CODECOV_MINIMUM) { [int]$env:CODECOV_MINIMUM } else { 90 }
+          $srcThreshold  = if ($env:CODECOV_MINIMUM) { [int]$env:CODECOV_MINIMUM } else { 95 }
+          $testThreshold = if ($env:CODECOV_TEST_MINIMUM) { [int]$env:CODECOV_TEST_MINIMUM } else { 100 }
+          $testModules = @(Get-ChildItem -Path tests -Recurse -File -Include *.csproj,*.vbproj,*.fsproj -ErrorAction SilentlyContinue | ForEach-Object { $_.BaseName })
           $failedModules = @()
           $coverageFound = $false
           
@@ -314,7 +321,10 @@ jobs:
               $module = $matches[1]
               $coverage = [decimal]$matches[2]
               
-              Write-Host "Checking module: '$module' - Coverage: ${coverage}%" -ForegroundColor Cyan
+              $isTest = $testModules -contains $module
+              $threshold = if ($isTest) { $testThreshold } else { $srcThreshold }
+              $kind = if ($isTest) { 'test' } else { 'src' }
+              Write-Host "Checking $kind module: '$module' - Coverage: ${coverage}%" -ForegroundColor Cyan
               
               if ($coverage -lt $threshold) {
                 Write-Host "  ❌ FAIL: Below ${threshold}% threshold" -ForegroundColor Red
@@ -336,13 +346,13 @@ jobs:
             Write-Host "==========================================" -ForegroundColor Red
             Write-Host "❌ COVERAGE GATE FAILED" -ForegroundColor Red
             Write-Host "==========================================" -ForegroundColor Red
-            Write-Host "Modules below ${threshold}% coverage: $($failedModules -join ', ')" -ForegroundColor Red
+            Write-Host "Modules below their threshold (src ${srcThreshold}%, tests ${testThreshold}%): $($failedModules -join ', ')" -ForegroundColor Red
             exit 1
           }
           
           Write-Host ""
           Write-Host "==========================================" -ForegroundColor Green
-          Write-Host "✅ All modules meet ${threshold}% coverage threshold" -ForegroundColor Green
+          Write-Host "✅ All modules meet their coverage threshold (src ${srcThreshold}%, tests ${testThreshold}%)" -ForegroundColor Green
           Write-Host "==========================================" -ForegroundColor Green
 
       - name: Upload coverage report
@@ -352,13 +362,12 @@ jobs:
           name: release-coverage
           path: CoverageReport/
 
-  # pr.yaml's secrets-scan (gitleaks) only runs on the pull_request_target
-  # event -- never re-run on push-to-main or here at release time. A secret
-  # introduced by the merge itself (conflict resolution, an admin-bypass
-  # merge of a protected-file-split PR) would never be scanned again before
-  # this pipeline packs and publishes. Re-scan the actual tagged commit here,
-  # gating pack-and-validate below, so nothing with a leaked secret reaches
-  # NuGet.org.
+  # pr.yaml's secrets-scan (gitleaks) runs on pull_request and push-to-main,
+  # but nothing guarantees the push-to-main run passed (or ran at all) for
+  # the exact commit being released: a release can be cut from a commit whose
+  # main run failed, was cancelled, or -- as under the current Actions billing
+  # lock -- never started. Re-scan the actual tagged commit here, gating
+  # pack-and-validate below, so nothing with a leaked secret reaches NuGet.org.
   secrets-scan-release:
     name: "Secrets Scan (gitleaks)"
     runs-on: ubuntu-latest
