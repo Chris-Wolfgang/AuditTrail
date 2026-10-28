@@ -8,13 +8,14 @@
     <LangVersion>latest</LangVersion>
     <Version>0.4.1</Version>
     <!--
-      Excluded from the v0.1.0 NuGet publish. This is a self-contained single-
+      Excluded from the NuGet publish. This is a self-contained single-
       file exe (PublishSingleFile, AssemblyName=audittrail), NOT a `dotnet tool`
       (no PackAsTool) — so `dotnet pack`ing it would produce a broken library-
       style package and fail the release smoke test. The CLI's distribution
       model (dotnet tool vs. GitHub-Release self-contained binaries) is decided
       separately; until then it's built from source. The 3 library packages
-      (Abstractions / EFCore / TestKit.Xunit) are the v0.1.0 NuGet deliverable.
+      (Abstractions / EFCore / TestKit.Xunit) and the Npgsql add-on are the
+      NuGet deliverables.
     -->
     <IsPackable>false</IsPackable>
     <Authors>Chris Wolfgang</Authors>

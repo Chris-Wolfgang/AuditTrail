@@ -12,9 +12,10 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Registers <see cref="NpgsqlCopyAuditBulkWriter"/> as <see cref="IAuditBulkWriter"/>
     /// (singleton -- the writer is stateless). <c>DbContextOptionsBuilderExtensions
-    /// .UseAuditing</c> and <c>AuditingDbContext</c>'s DI constructor both resolve
-    /// <see cref="IAuditBulkWriter"/> automatically once registered; this call must run
-    /// before either constructs its context. Has no effect on its own -- also set
+    /// .UseAuditing</c> resolves <see cref="IAuditBulkWriter"/> from the service provider
+    /// once registered; an <c>AuditingDbContext</c>-derived context receives it when its
+    /// own constructor declares an <see cref="IAuditBulkWriter"/> parameter and passes it
+    /// to the base constructor. This call must run before either constructs its context. Has no effect on its own -- also set
     /// <see cref="AuditOptions.BulkInsertRowThreshold"/> to opt a save path into using it.
     /// </summary>
     /// <example>

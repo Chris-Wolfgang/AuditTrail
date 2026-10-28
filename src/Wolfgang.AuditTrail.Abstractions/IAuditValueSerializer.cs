@@ -10,13 +10,12 @@ namespace Wolfgang.AuditTrail;
 /// <remarks>
 /// <para>
 /// The serializer declares the value column(s) it expects on the <c>AuditDetail</c>
-/// table via <see cref="Columns"/>. v1's DDL path is just
-/// <c>Database.EnsureCreatedAsync</c> against the EF Core model — which contains the
-/// fixed <c>ValueText</c> / <c>ValueBinary</c> property set on <c>AuditDetail</c>
-/// regardless of which serializer is configured. <see cref="Columns"/> is therefore
-/// advisory in v1 (used by the serializer to keep its writes consistent with the
-/// entity properties); a future schema installer that emits per-serializer DDL is
-/// planned but not shipped.
+/// table via <see cref="Columns"/>. The audit schema is installed from the EF Core
+/// model (the schema migrator applies it with EF Core's model differ and the
+/// provider's SQL generator), and that model contains the fixed <c>ValueText</c>
+/// property on <c>AuditDetail</c> regardless of which serializer is configured.
+/// <see cref="Columns"/> is therefore advisory (used by the serializer to keep its
+/// writes consistent with the entity properties); no per-serializer DDL is emitted.
 /// </para>
 /// <para>
 /// v1 ships <c>StringAuditValueSerializer</c> (text-only). Future implementations
