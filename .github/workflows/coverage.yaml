@@ -11,7 +11,7 @@
 # converts cobertura.xml → static HTML + history trend.
 #
 # Why this is separate from pr.yaml (which already collects coverage):
-#   pr.yaml's coverage step is a gate (≥ 90% required), not a publisher.
+#   pr.yaml's coverage step is a gate (CODECOV_MINIMUM / CODECOV_TEST_MINIMUM), not a publisher.
 #   It runs as part of the matrix and would fan out to N artifacts. This
 #   workflow runs once per push, generates a single merged report, and
 #   publishes the chart.
