@@ -339,7 +339,10 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
             return;
         }
 
-        await AbortAuditAsync(context, cancellationToken).ConfigureAwait(false);
+        // CancellationToken.None: on net6.0 a cancelled save is routed through
+        // this hook with the already-cancelled token, which would make the
+        // rollback throw before it runs.
+        await AbortAuditAsync(context, CancellationToken.None).ConfigureAwait(false);
     }
 
 
@@ -389,7 +392,10 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
         }
         catch
         {
-            ownedTx?.Rollback();
+            // A throwing Rollback() must neither replace the audit-pass exception
+            // nor skip the ChangeTracker.Clear() below. Mirrors AbortAudit.
+            try     { ownedTx?.Rollback(); }
+            catch   { /* swallow — the original exception is propagating */ }
             // ChangeTracker still reflects the user-pass-accepted state but the
             // DB just got rolled back. Clear so a downstream reuse can't
             // silently no-op a re-save of stale entries. See class XML doc.
@@ -440,7 +446,7 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
         {
             if (ownedTx is not null)
             {
-                await ownedTx.RollbackAsync(cancellationToken).ConfigureAwait(false);
+                await RollbackSwallowingFailureAsync(ownedTx).ConfigureAwait(false);
             }
             // ChangeTracker still reflects the user-pass-accepted state but
             // the DB just got rolled back. Clear so a downstream reuse can't
@@ -455,6 +461,25 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
                 await ownedTx.DisposeAsync().ConfigureAwait(false);
             }
             ClearItems(context);
+        }
+    }
+
+
+
+    // Used by FinishAuditAsync's failure path. CancellationToken.None: when the
+    // audit pass failed because the caller's token was cancelled, passing that
+    // token would make RollbackAsync throw before rolling back. A throwing
+    // rollback must neither replace the audit-pass exception nor skip the
+    // caller's ChangeTracker.Clear(). Mirrors AbortAuditAsync.
+    private static async Task RollbackSwallowingFailureAsync(IDbContextTransaction ownedTx)
+    {
+        try
+        {
+            await ownedTx.RollbackAsync(CancellationToken.None).ConfigureAwait(false);
+        }
+        catch
+        {
+            // swallow — the original exception is propagating
         }
     }
 
