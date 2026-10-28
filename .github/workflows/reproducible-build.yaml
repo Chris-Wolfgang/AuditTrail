@@ -1,11 +1,13 @@
 name: Build reproducibility
 
-# Verifies that the deterministic-build knobs in Directory.Build.props
-# (<Deterministic>, <ContinuousIntegrationBuild>, SourceLink + EmbedUntrackedSources)
-# actually produce byte-identical managed assemblies when the same commit is
-# built on different runners. Advisory — cross-OS differences are reported as a
-# warning, not a hard failure (managed IL is expected to match; native/embedded
-# differences, if any, surface here for investigation).
+# Verifies that the same commit builds to byte-identical assemblies and symbols on
+# Ubuntu and Windows: every TFM's .dll and .pdb of every packable src project is
+# hashed on both runners and the job FAILS on any difference. The deterministic-build
+# knobs in Directory.Build.props (<Deterministic>, <ContinuousIntegrationBuild>,
+# SourceLink + EmbedUntrackedSources) plus Directory.Build.targets' LF normalization
+# of the SDK-generated sources are what make that hold. Package files (.nupkg /
+# .snupkg) are not compared: NuGet stamps the pack time into every zip entry, so two
+# packs of one commit differ even on one machine. See docs/REPRODUCIBLE-BUILD.md.
 
 on:
   workflow_dispatch:
@@ -42,28 +44,43 @@ jobs:
             8.0.x
             10.0.x
 
-      - name: Build src (net8.0, Release, deterministic)
+      - name: Build src (every TFM, Release, deterministic)
         shell: bash
         run: |
-          for proj in \
-            src/Wolfgang.AuditTrail.Abstractions/Wolfgang.AuditTrail.Abstractions.csproj \
-            src/Wolfgang.AuditTrail.EntityFrameworkCore/Wolfgang.AuditTrail.EntityFrameworkCore.csproj \
-            src/Wolfgang.AuditTrail.TestKit.Xunit/Wolfgang.AuditTrail.TestKit.Xunit.csproj
+          for name in \
+            Wolfgang.AuditTrail.Abstractions \
+            Wolfgang.AuditTrail.EntityFrameworkCore \
+            Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql \
+            Wolfgang.AuditTrail.TestKit.Xunit
           do
-            dotnet build "$proj" -c Release -f net8.0 -p:ContinuousIntegrationBuild=true
+            dotnet build "src/$name/$name.csproj" -c Release -p:ContinuousIntegrationBuild=true
           done
 
-      - name: Hash assemblies
+      - name: Hash assemblies and symbols
         shell: bash
         run: |
-          sha256sum \
-            src/Wolfgang.AuditTrail.Abstractions/bin/Release/net8.0/Wolfgang.AuditTrail.Abstractions.dll \
-            src/Wolfgang.AuditTrail.EntityFrameworkCore/bin/Release/net8.0/Wolfgang.AuditTrail.EntityFrameworkCore.dll \
-            src/Wolfgang.AuditTrail.TestKit.Xunit/bin/Release/net8.0/Wolfgang.AuditTrail.TestKit.Xunit.dll \
-            | awk '{ n = split($2, parts, "/"); print $1 "  " parts[n] }' \
-            | sort > "hashes-${{ matrix.os }}.txt"
+          set -euo pipefail
+          out="hashes-${{ matrix.os }}.txt"
+          : > "$out"
+          for name in \
+            Wolfgang.AuditTrail.Abstractions \
+            Wolfgang.AuditTrail.EntityFrameworkCore \
+            Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql \
+            Wolfgang.AuditTrail.TestKit.Xunit
+          do
+            base="src/$name/bin/Release"
+            # Keyed by <project>/<tfm>/<file>, so the two runners' lines line up.
+            while IFS= read -r f; do
+              printf '%s  %s\n' "$(sha256sum "$f" | cut -d' ' -f1)" "$name/${f#"$base"/}" >> "$out"
+            done < <(find "$base" -type f \( -name "$name.dll" -o -name "$name.pdb" \) | sort)
+          done
+          if [ ! -s "$out" ]; then
+            echo "::error::No assemblies were hashed - the build output layout changed."
+            exit 1
+          fi
+          sort -k2 "$out" -o "$out"
           echo "== ${{ matrix.os }} =="
-          cat "hashes-${{ matrix.os }}.txt"
+          cat "$out"
 
       - name: Upload hashes
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -89,7 +106,8 @@ jobs:
           echo "== ubuntu-latest =="; cat "$ubuntu"
           echo "== windows-latest =="; cat "$windows"
           if diff -u "$ubuntu" "$windows"; then
-            echo "✅ Reproducible: managed assembly hashes match across ubuntu + windows."
+            echo "✅ Reproducible: every .dll and .pdb matches across ubuntu + windows."
           else
-            echo "::warning::Assembly hashes differ across runners — the build is not byte-identical cross-OS. Investigate embedded paths / SourceLink normalization."
+            echo "::error::Assembly/symbol hashes differ across runners - the build is not byte-identical cross-OS. Check Directory.Build.targets' line-ending normalization, embedded paths and SourceLink."
+            exit 1
           fi
