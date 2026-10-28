@@ -33,6 +33,7 @@ Facts a maintainer would need at 2am if the release identity is compromised. Gen
 - **Package coordinates for unlisting** (the CLI, `Wolfgang.AuditTrail.Cli`, is `IsPackable=false` and not published):
   - `Wolfgang.AuditTrail.Abstractions` — https://www.nuget.org/packages/Wolfgang.AuditTrail.Abstractions/
   - `Wolfgang.AuditTrail.EntityFrameworkCore` — https://www.nuget.org/packages/Wolfgang.AuditTrail.EntityFrameworkCore/
+  - `Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql` — https://www.nuget.org/packages/Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql/
   - `Wolfgang.AuditTrail.TestKit.Xunit` — https://www.nuget.org/packages/Wolfgang.AuditTrail.TestKit.Xunit/
 
 ## Verifying the supply chain
