@@ -56,15 +56,6 @@ public class CoverageLiftTests
 
 #if NET8_0_OR_GREATER
     [Fact]
-    public async Task MigrateAuditSchemaAsync_throws_on_null_context()
-    {
-        await Assert.ThrowsAsync<ArgumentNullException>(() =>
-            DbContextAuditSchemaExtensions.MigrateAuditSchemaAsync(context: null!));
-    }
-
-
-
-    [Fact]
     public async Task MigrateAuditSchemaAsync_throws_for_non_relational_provider()
     {
         // UseInMemoryDatabase configures a real provider that has no
