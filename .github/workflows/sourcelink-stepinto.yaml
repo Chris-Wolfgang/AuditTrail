@@ -22,6 +22,12 @@ env:
   CONSUMER: .github/sourcelink/consumer
   EXPECTED_SRC: PipeDelimitedEntityKeySerializer.cs
 
+concurrency:
+  # Scheduled / manually dispatched only; queue rather than cancel, so a long run
+  # is never killed by a second trigger on the same ref.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   step-into:
     name: F11 step-into resolves library source

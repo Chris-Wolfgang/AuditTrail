@@ -77,7 +77,7 @@ dotnet_diagnostic.VSTHRD107.severity = warning    # Await Task within using expr
 dotnet_diagnostic.VSTHRD108.severity = warning    # Assert thread affinity unconditionally
 dotnet_diagnostic.VSTHRD109.severity = warning    # Switch instead of assert in async methods
 dotnet_diagnostic.VSTHRD110.severity = warning    # Observe result of async calls
-dotnet_diagnostic.VSTHRD111.severity = none       # ConfigureAwait - not needed in library code targeting modern .NET
+dotnet_diagnostic.VSTHRD111.severity = none       # ConfigureAwait - off by default (xUnit1030 forbids it in tests); enabled for src/ below
 dotnet_diagnostic.VSTHRD112.severity = warning    # Implement System.IAsyncDisposable
 dotnet_diagnostic.VSTHRD114.severity = warning    # Avoid returning null from a Task-returning method
 dotnet_diagnostic.VSTHRD200.severity = suggestion # Use Async naming convention
@@ -368,11 +368,14 @@ dotnet_diagnostic.RS0036.severity = warning   # Annotate nullability on declared
 dotnet_diagnostic.RS0037.severity = warning   # Enable nullability in PublicAPI files
 dotnet_diagnostic.RS0041.severity = warning   # Public members should not use oblivious types
 
-# Library code should preserve synchronization context by default
-# Consumers decide whether to use ConfigureAwait(false) when calling library methods
-dotnet_diagnostic.MA0004.severity = none     # Meziantou: Use ConfigureAwait
-dotnet_diagnostic.S3216.severity = none      # SonarAnalyzer: ConfigureAwait
-dotnet_diagnostic.CA2007.severity = none     # .NET Analyzer: Use ConfigureAwait
+# Library code must not capture the caller's synchronization context: every
+# await in src/ carries .ConfigureAwait(false) (see .github/copilot-instructions.md).
+# These analyzers enforce it, so a missing call fails the Release build.
+# CA2007 does not flag `await foreach`; check those by hand.
+dotnet_diagnostic.MA0004.severity = warning  # Meziantou: Use ConfigureAwait
+dotnet_diagnostic.S3216.severity = warning   # SonarAnalyzer: ConfigureAwait
+dotnet_diagnostic.CA2007.severity = warning  # .NET Analyzer: Use ConfigureAwait
+dotnet_diagnostic.VSTHRD111.severity = warning # VS Threading: Use ConfigureAwait(bool)
 
 # Test projects - relaxed naming, no doc requirements
 [tests/**/*.cs]

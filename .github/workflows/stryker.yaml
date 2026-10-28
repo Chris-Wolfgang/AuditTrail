@@ -27,6 +27,12 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  # Scheduled / manually dispatched only; queue rather than cancel, so a long run
+  # is never killed by a second trigger on the same ref.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   stryker:
     name: Run Stryker
