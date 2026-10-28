@@ -80,9 +80,9 @@ it**, not transport or authentication (which the host owns).
   could amplify into a very large audit write and slow/abort the save.
   - **Mitigation:** the cost is bounded by and proportional to the consumer's own
     change set, in the same transaction, so it cannot exceed the work the
-    consumer already initiated. Performance characteristics and the planned
-    COPY-protocol bulk path are documented
-    ([POSTGRES-PERFORMANCE.md](POSTGRES-PERFORMANCE.md), v1.1 bulk-insert issue).
+    consumer already initiated. Performance characteristics and the opt-in
+    COPY-protocol bulk path (the `Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql`
+    package) are documented in [POSTGRES-PERFORMANCE.md](POSTGRES-PERFORMANCE.md).
     **Accepted:** no separate rate limiting — the library is not a public entry
     point.
 

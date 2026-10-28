@@ -30,7 +30,7 @@ First run takes ~60–90 sec because it pulls the SQL Server image and restores 
   Before: Ken J Sánchez (type=EM)
   After:  Ken J Sánchez-Smith
 
-📧  Updating their email...
+📧  Updating their primary email...
   Before: ken0@adventure-works.com
   After:  ken.sanchez-smith@adventure-works.com
 
