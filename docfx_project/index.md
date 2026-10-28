@@ -14,13 +14,15 @@ Welcome to the Wolfgang.AuditTrail documentation. This site contains comprehensi
 
 ## About Wolfgang.AuditTrail
 
-A library that add tracking of inserts, updates and deletes to apps that use Entity Framework
+An EF Core change-tracking library. Every Insert / Update / Delete that goes through `SaveChanges` / `SaveChangesAsync` is captured from the `ChangeTracker` and written as a row-by-row audit history (one **header** per changed entity plus per-column **detail** rows) **in the same transaction** as the save, so the data change and its audit rows commit or roll back together. Existing `SaveChangesAsync` call sites do not change.
 
 ## Installation
 
 ```bash
-dotnet add package Wolfgang.AuditTrail
+dotnet add package Wolfgang.AuditTrail.EntityFrameworkCore
 ```
+
+`Wolfgang.AuditTrail.Abstractions` (contracts) comes along as a dependency. Optional packages: `Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql` (PostgreSQL `COPY` bulk writer) and `Wolfgang.AuditTrail.TestKit.Xunit` (contract tests for custom serializers).
 
 ## Documentation Sections
 
