@@ -51,7 +51,7 @@
   -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
-    <PackageReference Include="Testcontainers.MySql" Version="4.15.0" />
+    <PackageReference Include="Testcontainers.MySql" Version="4.16.0" />
 
     <Compile Remove="SqlServerAuditSchemaMigratorTests.cs" />
     <Compile Remove="PostgresAuditSchemaMigratorTests.cs" />
@@ -71,11 +71,11 @@
       (warning as error). Override to the patched 9.0.x release. Drop this once a
       SqlClient release depends on 9.0.21 or later directly.
     -->
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.21" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
     <PackageReference Include="Npgsql" Version="10.0.3" />
 
-    <PackageReference Include="Testcontainers.MsSql" Version="4.15.0" />
-    <PackageReference Include="Testcontainers.PostgreSql" Version="4.15.0" />
+    <PackageReference Include="Testcontainers.MsSql" Version="4.16.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.16.0" />
 
     <Compile Remove="MySqlAuditSchemaMigratorTests.cs" />
     <Compile Remove="TestSupport\MySqlSchemaFixture.cs" />
