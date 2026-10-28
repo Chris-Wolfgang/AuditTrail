@@ -60,6 +60,7 @@ jobs:
             src/Wolfgang.AuditTrail.Abstractions/Wolfgang.AuditTrail.Abstractions.csproj
             src/Wolfgang.AuditTrail.EntityFrameworkCore/Wolfgang.AuditTrail.EntityFrameworkCore.csproj
             src/Wolfgang.AuditTrail.TestKit.Xunit/Wolfgang.AuditTrail.TestKit.Xunit.csproj
+            src/Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql/Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.csproj
           )
           {
             echo "# Third-party notices"
