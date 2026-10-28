@@ -53,9 +53,10 @@ namespace Wolfgang.AuditTrail;
 /// support <c>SaveChanges(acceptAllChangesOnSuccess: false)</c>: when the caller
 /// passes <c>false</c>, EF leaves user entries in their dirty state and the
 /// interceptor's audit-pass save would re-emit them. The interceptor detects
-/// this case at runtime and throws <see cref="InvalidOperationException"/>
-/// pointing at <see cref="AuditingDbContext"/>, which threads the value through
-/// both passes correctly.
+/// this case at runtime and throws <see cref="InvalidOperationException"/>.
+/// <see cref="AuditingDbContext"/> does not support <c>false</c> either: neither
+/// integration model accepts it when audit work is pending, so call
+/// <c>SaveChanges()</c> / <c>SaveChangesAsync()</c> without the override.
 /// </para>
 /// <para>
 /// <strong>Retry-strategy caveat.</strong> EF Core's retrying execution strategies
@@ -556,8 +557,9 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
         // true (the default). If the caller passed false, the entries remain in
         // Added/Modified/Deleted and our internal audit-pass SaveChanges would
         // re-emit them. The interceptor cannot safely roundtrip that semantic, so
-        // detect and fail loudly pointing at AuditingDbContext (which composes
-        // correctly because it owns the override and can thread the value through).
+        // detect and fail loudly. AuditingDbContext rejects false as well (see
+        // AuditingDbContext.EnsureAcceptAllChangesOnSuccess), so the message does
+        // not point there as a workaround.
         var stillDirty = context.ChangeTracker
             .Entries()
             .Any(e => e.Entity is not AuditHeader
@@ -574,8 +576,8 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
                 "SaveChanges(acceptAllChangesOnSuccess: false) because the inner " +
                 "audit-pass save would re-emit the still-dirty user entries. Either " +
                 "call SaveChanges() / SaveChangesAsync() without the false override, " +
-                "or inherit your DbContext from AuditingDbContext, which routes " +
-                "acceptAllChangesOnSuccess through both passes correctly."
+                "or split the audit-relevant work into a separate save. AuditingDbContext " +
+                "does not support acceptAllChangesOnSuccess: false either."
             );
         }
     }
