@@ -977,6 +977,12 @@ jobs:
 
       - name:  Run tests (.NET 6.0 - 10.0 only - ARM64 compatible)
         run: |
+          # Assemblies that actually ran tests in this stage. "Enforce coverage threshold"
+          # requires a coverage row for each, as Stages 1 and 2 do, so a test assembly
+          # whose coverage is never collected cannot silently drop out of the gate.
+          ran_assemblies_file="$RUNNER_TEMP/stage3-ran-test-assemblies.txt"
+          : > "$ran_assemblies_file"
+
           # Find all test projects (C#, VB.NET, F#).
           # Gracefully skip if there is no ./tests directory (e.g. template-publishing
           # repos or library repos in early development that have no tests yet).
@@ -1040,6 +1046,23 @@ jobs:
                 --results-directory "./TestResults" \
                 --logger "console;verbosity=normal" || exit 1
             done <<< "$frameworks"
+            # Same rule as Stage 1: record the assembly only when MSBuild evaluates the
+            # project as a test project (the integration projects without
+            # RunIntegrationTests=true and the AotSmoke apps run nothing).
+            is_test_project=false
+            while IFS= read -r fw; do
+              [ -z "$fw" ] && continue
+              if dotnet msbuild "$test_proj" -noLogo -p:Configuration=Release "-p:TargetFramework=$fw" -getProperty:IsTestProject 2>/dev/null | grep -qi '^true$'; then
+                is_test_project=true; break
+              fi
+            done <<< "$frameworks"
+            if [ "$is_test_project" = true ]; then
+              asm=$(grep -oE '<AssemblyName>[^<]+' "$test_proj" 2>/dev/null | head -1 | cut -d'>' -f2 || true)
+              if [ -z "$asm" ]; then
+                asm=$(basename "$test_proj"); asm="${asm%.*}"
+              fi
+              echo "$asm" >> "$ran_assemblies_file"
+            fi
             echo ""
           done
 
@@ -1085,12 +1108,32 @@ jobs:
             fi
           done < CoverageReport/Summary.txt
 
+          # Every test assembly that ran must appear in the report (Stages 1 and 2 check
+          # the same). A missing row means its coverage was never collected.
+          ran_assemblies_file="$RUNNER_TEMP/stage3-ran-test-assemblies.txt"
+          if [ ! -f "$ran_assemblies_file" ]; then
+            echo "❌ The ran-assemblies ledger is missing, so the coverage-row check cannot run."
+            exit 1
+          fi
+          if ! grep -q '[^[:space:]]' "$ran_assemblies_file"; then
+            echo "❌ Coverage files exist but no test assembly was recorded as having run - refusing to pass a check that measured nothing (mirrors Stage 2)."
+            exit 1
+          fi
+          while IFS= read -r asm; do
+            [ -z "$asm" ] && continue
+            if ! awk -v asm="$asm" '/^[^ ]/ && $1 == asm { found = 1 } END { exit !found }' CoverageReport/Summary.txt; then
+              echo "Checking module: '$asm' - Coverage: none collected"
+              echo "  ❌ FAIL: tests ran but no coverage was recorded (is coverlet.collector referenced?)"
+              FAILED=1
+            fi
+          done < <(sort -u "$ran_assemblies_file")
+
           if [ "$FAILED" -ne 0 ]; then
             echo ""
             echo "=========================================="
             echo "❌ COVERAGE GATE FAILED"
             echo "=========================================="
-            echo "One or more modules are below ${THRESHOLD}% coverage."
+            echo "One or more modules are below ${THRESHOLD}% coverage or recorded no coverage."
             echo "Stage 3 failed."
             exit 1
           fi
