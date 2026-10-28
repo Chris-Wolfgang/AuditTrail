@@ -57,7 +57,7 @@
       transitively via Microsoft.EntityFrameworkCore.Tasks; pinning below
       that trips NU1605 (package downgrade, warning as error).
     -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
