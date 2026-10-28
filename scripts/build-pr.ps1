@@ -23,7 +23,7 @@
 
 .PARAMETER CoverageThreshold
     Minimum line coverage for PRODUCTION assemblies (anything under src/).
-    Defaults to 90. Mirrors CODECOV_MINIMUM in pr.yaml.
+    Defaults to 95. Mirrors CODECOV_MINIMUM in pr.yaml.
 
 .PARAMETER TestCoverageThreshold
     Minimum line coverage for TEST assemblies (anything under tests/).
@@ -39,7 +39,7 @@ param(
     [switch]$SkipTests,
     [switch]$SkipCoverage,
     [switch]$SkipSecurity,
-    [int]$CoverageThreshold = 90,
+    [int]$CoverageThreshold = 95,
     [int]$TestCoverageThreshold = 100
 )
 
@@ -145,6 +145,17 @@ if (-not $SkipTests -and $failed.Count -eq 0) {
             }
             $tfmRaw = ("$tfmRaw" -replace '^TargetFrameworks?[=:]\s*', '') -replace '\s', ''
 
+            # Mirrors pr.yaml: a project whose MSBuild evaluation says IsTestProject=false
+            # (the AotSmoke console apps; the integration projects unless
+            # RunIntegrationTests=true) runs no tests, so it is skipped instead of
+            # tripping the zero-tests guard below.
+            $isTestRaw = (dotnet msbuild $testProj.FullName -noLogo -p:Configuration=Release -getProperty:IsTestProject 2>$null |
+                Where-Object { $_ -and "$_".Trim() } | Select-Object -Last 1)
+            if ("$isTestRaw".Trim() -ne 'true') {
+                Write-Host "  IsTestProject=false - skipping (not a test project in this configuration)" -ForegroundColor Yellow
+                continue
+            }
+
             if (-not $tfmRaw) {
                 Write-Host "  No target frameworks found — skipping" -ForegroundColor Yellow
                 continue
@@ -192,7 +203,7 @@ if (-not $SkipTests -and $failed.Count -eq 0) {
                 }
                 $testOutput = Get-Content $testLog -Raw
                 Remove-Item $testLog -Force -ErrorAction SilentlyContinue
-                if ($testOutput -match 'No test is available' -or $testOutput -notmatch '(?i)total:\s*[1-9][0-9]*') {
+                if ($testOutput -match 'No test is available' -or $testOutput -notmatch '(?i)total(?: tests)?:\s*[1-9][0-9]*') {
                     Write-Fail "  Zero tests ran for $fw — the test adapter found nothing to execute (missing/incompatible xunit.runner.visualstudio for this TFM?)"
                     $failed += "Tests (${fw}: zero ran)"
                     break
