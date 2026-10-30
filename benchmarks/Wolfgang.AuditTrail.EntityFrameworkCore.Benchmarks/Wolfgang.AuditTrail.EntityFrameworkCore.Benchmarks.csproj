@@ -73,6 +73,12 @@
   -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
+    <!--
+      Pomelo 9.0.0 only floors MySqlConnector at 2.4.0, which carries
+      GHSA-473q-m89c-ghf8 (fixed in 2.6.1). Pin the patched release; drop this
+      once Pomelo floors it itself.
+    -->
+    <PackageReference Include="MySqlConnector" Version="2.6.2" />
     <PackageReference Include="Testcontainers.MySql" Version="4.16.0" />
 
     <Compile Remove="SaveChangesBenchmarks.cs" />
