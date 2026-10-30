@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Wolfgang.AuditTrail.Serializers;
@@ -21,7 +22,7 @@ namespace Wolfgang.AuditTrail.Serializers;
 ///   <item><description><see cref="Guid"/> uses the <c>"D"</c> format (32 digits separated by hyphens).</description></item>
 ///   <item><description><see cref="bool"/> renders as <c>True</c> / <c>False</c>.</description></item>
 ///   <item><description><c>byte[]</c> is base64-encoded.</description></item>
-///   <item><description>Enums use <see cref="Enum.ToString()"/> (the symbolic name); the discriminator records the enum's assembly-qualified type name (not the bare full type name — <c>Type.GetType</c> can't resolve a bare full name for a consumer-assembly enum).</description></item>
+///   <item><description>Enums use <see cref="Enum.ToString()"/> (the symbolic name); the discriminator records the enum's assembly-qualified type name (not the bare full type name — <c>Type.GetType</c> can't resolve a bare full name for a consumer-assembly enum). When the enum type cannot be resolved at decode time (for example because trimming removed it), <see cref="Decode"/> returns the stored symbolic name as text.</description></item>
 ///   <item><description><c>null</c> writes SQL <c>NULL</c>; the discriminator still records the declared CLR type.</description></item>
 /// </list>
 /// <para>
@@ -94,6 +95,12 @@ public sealed class StringAuditValueSerializer : IAuditValueSerializer
     }
 
     /// <inheritdoc />
+    [UnconditionalSuppressMessage
+    (
+        "Trimming",
+        "IL2057:Unrecognized value passed to the parameter of method. It's not possible to guarantee the availability of the target type.",
+        Justification = "The enum type name comes from the stored discriminator. When trimming removed that enum, Type.GetType returns null and Decode returns the stored symbolic name as text, the documented fallback; it never throws."
+    )]
     public object? Decode(IAuditValueReader reader, string valueType)
     {
         ArgumentNullException.ThrowIfNull(reader);
