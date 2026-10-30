@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using Wolfgang.AuditTrail.Serializers;
 using Wolfgang.AuditTrail.TestKit.Xunit;
 using Xunit;
@@ -214,5 +215,114 @@ public sealed class StringAuditValueSerializerExactFormatTests
     public void Decode_unknown_discriminator_falls_back_to_raw_text()
     {
         Assert.Equal("whatever", Decode("whatever", "SomethingUnknown"));
+    }
+
+
+
+    [Fact]
+    public void Encode_DateOnly_uses_round_trip_o_format()
+    {
+        var (text, valueType) = Encode(new DateOnly(2026, 5, 12));
+        Assert.Equal("2026-05-12", text);
+        Assert.Equal("DateOnly", valueType);
+    }
+
+
+
+    [Fact]
+    public void Encode_TimeOnly_uses_round_trip_o_format()
+    {
+        var (text, valueType) = Encode(new TimeOnly(14, 30, 45, 123));
+        Assert.Equal("14:30:45.1230000", text);
+        Assert.Equal("TimeOnly", valueType);
+    }
+
+
+
+    [Fact]
+    public void Encode_TimeSpan_uses_constant_c_format()
+    {
+        var (text, valueType) = Encode(new TimeSpan(1, 2, 3, 4, 5));
+        Assert.Equal("1.02:03:04.0050000", text);
+        Assert.Equal("TimeSpan", valueType);
+    }
+
+
+
+    [Fact]
+    public void Encode_Char_writes_the_single_character()
+    {
+        var (text, valueType) = Encode('x');
+        Assert.Equal("x", text);
+        Assert.Equal("Char", valueType);
+    }
+
+
+
+    [Fact]
+    public void Decode_DateOnly_returns_a_DateOnly()
+    {
+        Assert.Equal(new DateOnly(2026, 5, 12), Assert.IsType<DateOnly>(Decode("2026-05-12", "DateOnly")));
+    }
+
+
+
+    [Fact]
+    public void Decode_DateOnly_when_row_has_the_legacy_invariant_format_still_returns_a_DateOnly()
+    {
+        // Rows written before the "o" format used IFormattable.ToString(null, Invariant).
+        var legacy = new DateOnly(2026, 5, 12).ToString(format: null, CultureInfo.InvariantCulture);
+        Assert.Equal("05/12/2026", legacy);
+
+        Assert.Equal(new DateOnly(2026, 5, 12), Assert.IsType<DateOnly>(Decode(legacy, "DateOnly")));
+    }
+
+
+
+    [Fact]
+    public void Decode_TimeOnly_returns_a_TimeOnly()
+    {
+        Assert.Equal(new TimeOnly(14, 30, 45, 123), Assert.IsType<TimeOnly>(Decode("14:30:45.1230000", "TimeOnly")));
+    }
+
+
+
+    [Fact]
+    public void Decode_TimeOnly_when_row_has_the_legacy_invariant_format_still_returns_a_TimeOnly()
+    {
+        // Rows written before the "o" format used IFormattable.ToString(null, Invariant),
+        // the short-time pattern, so they decode at minute precision.
+        var legacy = new TimeOnly(14, 30, 45).ToString(format: null, CultureInfo.InvariantCulture);
+        Assert.Equal("14:30", legacy);
+
+        Assert.Equal(new TimeOnly(14, 30), Assert.IsType<TimeOnly>(Decode(legacy, "TimeOnly")));
+    }
+
+
+
+    [Fact]
+    public void Decode_TimeSpan_returns_a_TimeSpan()
+    {
+        Assert.Equal(new TimeSpan(1, 2, 3, 4, 5), Assert.IsType<TimeSpan>(Decode("1.02:03:04.0050000", "TimeSpan")));
+    }
+
+
+
+    [Fact]
+    public void Decode_TimeSpan_when_row_has_the_legacy_invariant_format_still_returns_a_TimeSpan()
+    {
+        // Rows written before the change used IFormattable.ToString(null, Invariant),
+        // which for TimeSpan is already the constant "c" format.
+        var legacy = new TimeSpan(-3, 4, 5, 6).ToString(format: null, CultureInfo.InvariantCulture);
+
+        Assert.Equal(new TimeSpan(-3, 4, 5, 6), Assert.IsType<TimeSpan>(Decode(legacy, "TimeSpan")));
+    }
+
+
+
+    [Fact]
+    public void Decode_Char_returns_a_char()
+    {
+        Assert.Equal('x', Assert.IsType<char>(Decode("x", "Char")));
     }
 }
