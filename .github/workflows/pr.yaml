@@ -255,6 +255,14 @@ jobs:
           echo "✅ All compatible projects built successfully"
 
       - name: Run tests with coverage (.NET Core 5.0 - 10.0)
+        env:
+          # Every test project runs here, *.Tests.Integration.* included: this is the
+          # job that gates coverage, and every test assembly is held to
+          # CODECOV_TEST_MINIMUM. The integration csprojs only become test projects
+          # when RunIntegrationTests=true (MSBuild reads it from the environment), and
+          # Linux runners have Docker, so their Testcontainers suites run here as they
+          # do in integration.yaml. (Leaving them out left them unmeasured everywhere.)
+          RunIntegrationTests: 'true'
         run: |
           # Find all test projects (C#, VB.NET, F#).
           # Gracefully skip if there is no ./tests directory (e.g. template-publishing
@@ -324,10 +332,9 @@ jobs:
                 --logger "console;verbosity=minimal" || exit 1
             done <<< "$frameworks"
             # Record the assembly only when MSBuild evaluates the project as a test
-            # project. Here, `dotnet test` runs nothing for this repo's *.Tests.Integration
-            # projects (IsTestProject is false unless integration.yaml sets
-            # RunIntegrationTests=true) or for the AotSmoke console apps, so they must not
-            # be expected to have a coverage row.
+            # project. The *.Tests.Integration projects are test projects here (this
+            # step sets RunIntegrationTests=true), so they are recorded and must have a
+            # coverage row; the AotSmoke console apps run nothing and are not recorded.
             is_test_project=false
             while IFS= read -r fw; do
               [ -z "$fw" ] && continue
