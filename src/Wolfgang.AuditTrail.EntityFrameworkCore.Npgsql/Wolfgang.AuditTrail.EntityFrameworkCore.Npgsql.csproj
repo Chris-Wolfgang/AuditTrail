@@ -25,7 +25,7 @@
     <RepositoryUrl>https://github.com/Chris-Wolfgang/AuditTrail</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>audit;ef;ef-core;postgresql;npgsql;bulk-insert;copy</PackageTags>
   </PropertyGroup>
