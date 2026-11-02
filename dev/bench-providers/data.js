@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793644845158,
+  "lastUpdate": 1793644850345,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -6146,6 +6146,42 @@ window.BENCHMARK_DATA = {
             "value": 56407585.666666664,
             "unit": "ns",
             "range": "± 1488961.0970170891"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b5a0dd17b5ddc0a1dc96ae9d03d7582a85e12b0e",
+          "message": "ci(pr): run Stage 1 on ubuntu-24.04; netcoreapp3.1 finds no ICU on 26.04 (#455)\n\nubuntu-latest now resolves to ubuntu-26.04, where the netcoreapp3.1 test\nhost aborts with \"Couldn't find a valid ICU package installed on the\nsystem\" (DateTime-Extensions run 40694706624). Pin the Stage 1 job only.\nLong-term fix: Chris-Wolfgang/repo-template#775.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-02T13:31:03-05:00",
+          "tree_id": "c57088e4663aec9577e01419a04b901c3cc9fc4e",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b5a0dd17b5ddc0a1dc96ae9d03d7582a85e12b0e"
+        },
+        "date": 1793644848744,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 19874476.833333332,
+            "unit": "ns",
+            "range": "± 1126775.1859219004"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 85578231.33333333,
+            "unit": "ns",
+            "range": "± 1420084.7474578177"
           }
         ]
       }
