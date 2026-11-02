@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793636833990,
+  "lastUpdate": 1793636838198,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -6038,6 +6038,42 @@ window.BENCHMARK_DATA = {
             "value": 80173582.16666667,
             "unit": "ns",
             "range": "± 1941395.3514630483"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "6133c2772d5b7ae6d888540d03f978a7254b2448",
+          "message": "fix(security): pin MySqlConnector 2.6.2 (GHSA-473q-m89c-ghf8) (#451)\n\nPomelo.EntityFrameworkCore.MySql 9.0.0 floors MySqlConnector at 2.4.0,\nwhich carries GHSA-473q-m89c-ghf8 (published 2026-10-28: account password\nsent before the TLS certificate is verified in zero-configuration TLS mode;\nfixed in 2.6.1). NuGetAudit turns it into NU1902-as-error, so restore of\nboth integration projects and the benchmarks fails on main today. Pin the\npatched release on the net8.0 (Pomelo) slot of each.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-02T10:32:06-05:00",
+          "tree_id": "a9d1d4f04163b2e7f07cf6b485b0816653fe2c50",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/6133c2772d5b7ae6d888540d03f978a7254b2448"
+        },
+        "date": 1793636836080,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 51656803.5,
+            "unit": "ns",
+            "range": "± 60391124.69844645"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 56407585.666666664,
+            "unit": "ns",
+            "range": "± 1488961.0970170891"
           }
         ]
       }
