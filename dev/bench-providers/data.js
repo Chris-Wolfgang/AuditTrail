@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793649145076,
+  "lastUpdate": 1793655746179,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -4380,6 +4380,78 @@ window.BENCHMARK_DATA = {
             "value": 591659225,
             "unit": "ns",
             "range": "± 760471445.3408002"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2f4a367c8aa2c68be2bcc12fe58c9f3ded0c94dc",
+          "message": "ci(integration): pin the integration job to ubuntu-24.04 (#458)\n\nOn ubuntu-latest (now ubuntu-26.04) the IBM DB2 driver cannot load\nlibdb2.so, so every Db2AuditTests case fails with DllNotFoundException.\nThe last green Integration Tests run (39049997075, 2026-10-17) ran on\nubuntu-latest when that was still 24.04.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-02T16:33:30-05:00",
+          "tree_id": "39c77ab6492108176c310593d9d78fd67de1298c",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/2f4a367c8aa2c68be2bcc12fe58c9f3ded0c94dc"
+        },
+        "date": 1793655743410,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6695827.333333333,
+            "unit": "ns",
+            "range": "± 43089.02900197837"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 39568483.833333336,
+            "unit": "ns",
+            "range": "± 2194883.8813862875"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7423325.666666667,
+            "unit": "ns",
+            "range": "± 63847.146093880605"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 48556634.833333336,
+            "unit": "ns",
+            "range": "± 87292.79520288792"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12151125.666666666,
+            "unit": "ns",
+            "range": "± 7135130.908380471"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 62786587.666666664,
+            "unit": "ns",
+            "range": "± 2254382.92826071"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 340627445.3333333,
+            "unit": "ns",
+            "range": "± 301680566.4355014"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 556882182.6666666,
+            "unit": "ns",
+            "range": "± 435725619.9156445"
           }
         ]
       }
