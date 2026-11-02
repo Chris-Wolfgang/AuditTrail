@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793644850345,
+  "lastUpdate": 1793649141607,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -4308,6 +4308,78 @@ window.BENCHMARK_DATA = {
             "value": 309991836.1666667,
             "unit": "ns",
             "range": "± 261321202.2631956"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b488e6bedf896e18e68b4bfda9201b377d49802a",
+          "message": "fix(security): lift opentelemetry-api to 1.45.1 in the semgrep lock (#430)\n\nDependabot alert 38 (GHSA-xcq7-p3pf-p88h, unbounded tracestate parsing,\nopentelemetry-api <= 1.45.0). semgrep 1.180.0 pins the 1.37.0 family, so\na uv --override file lifts api/sdk/exporter to 1.45.1 and the matching\n0.66b1 instrumentation packages together. semgrep.yaml installs with\n--no-deps, so the override is what gets installed.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-02T14:29:41-05:00",
+          "tree_id": "f21cbf06e3237a5331b5d4beda399652f289774e",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b488e6bedf896e18e68b4bfda9201b377d49802a"
+        },
+        "date": 1793649139243,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7779938.333333333,
+            "unit": "ns",
+            "range": "± 1633897.8391601886"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 49823926.833333336,
+            "unit": "ns",
+            "range": "± 15474716.674092658"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6456110.666666667,
+            "unit": "ns",
+            "range": "± 156134.79014727412"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 48772692.333333336,
+            "unit": "ns",
+            "range": "± 9284238.705787854"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 11810983,
+            "unit": "ns",
+            "range": "± 7006849.68509151"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 56177788,
+            "unit": "ns",
+            "range": "± 10504929.722764974"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 24167431.666666668,
+            "unit": "ns",
+            "range": "± 358306.7713933597"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 591659225,
+            "unit": "ns",
+            "range": "± 760471445.3408002"
           }
         ]
       }
