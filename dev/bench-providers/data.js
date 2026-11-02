@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793655746179,
+  "lastUpdate": 1793655750720,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -6362,6 +6362,42 @@ window.BENCHMARK_DATA = {
             "value": 79867387.66666667,
             "unit": "ns",
             "range": "± 1910535.629793209"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2f4a367c8aa2c68be2bcc12fe58c9f3ded0c94dc",
+          "message": "ci(integration): pin the integration job to ubuntu-24.04 (#458)\n\nOn ubuntu-latest (now ubuntu-26.04) the IBM DB2 driver cannot load\nlibdb2.so, so every Db2AuditTests case fails with DllNotFoundException.\nThe last green Integration Tests run (39049997075, 2026-10-17) ran on\nubuntu-latest when that was still 24.04.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-02T16:33:30-05:00",
+          "tree_id": "39c77ab6492108176c310593d9d78fd67de1298c",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/2f4a367c8aa2c68be2bcc12fe58c9f3ded0c94dc"
+        },
+        "date": 1793655748880,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 18312054,
+            "unit": "ns",
+            "range": "± 596831.8126566311"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 91332058.66666667,
+            "unit": "ns",
+            "range": "± 6530693.316326401"
           }
         ]
       }
