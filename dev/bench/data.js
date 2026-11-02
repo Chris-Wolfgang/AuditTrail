@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793649149179,
+  "lastUpdate": 1793655754079,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -12804,6 +12804,138 @@ window.BENCHMARK_DATA = {
             "value": 21868208.31707317,
             "unit": "ns",
             "range": "± 7809994.186249407"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2f4a367c8aa2c68be2bcc12fe58c9f3ded0c94dc",
+          "message": "ci(integration): pin the integration job to ubuntu-24.04 (#458)\n\nOn ubuntu-latest (now ubuntu-26.04) the IBM DB2 driver cannot load\nlibdb2.so, so every Db2AuditTests case fails with DllNotFoundException.\nThe last green Integration Tests run (39049997075, 2026-10-17) ran on\nubuntu-latest when that was still 24.04.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-02T16:33:30-05:00",
+          "tree_id": "39c77ab6492108176c310593d9d78fd67de1298c",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/2f4a367c8aa2c68be2bcc12fe58c9f3ded0c94dc"
+        },
+        "date": 1793655752628,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 533428.4166666666,
+            "unit": "ns",
+            "range": "± 4722.685820172734"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1559930.7142857143,
+            "unit": "ns",
+            "range": "± 22133.3599179664"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 835530.5,
+            "unit": "ns",
+            "range": "± 12798.516645820067"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2951242.1428571427,
+            "unit": "ns",
+            "range": "± 13946.202844707024"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 712899.2727272727,
+            "unit": "ns",
+            "range": "± 17109.901349335207"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 2266159.287234043,
+            "unit": "ns",
+            "range": "± 291804.8304687486"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1666919.4285714286,
+            "unit": "ns",
+            "range": "± 7654.487770776503"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 10239131.642105263,
+            "unit": "ns",
+            "range": "± 746155.2979074959"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 3424380.785714286,
+            "unit": "ns",
+            "range": "± 45040.576405620624"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 20841153.24,
+            "unit": "ns",
+            "range": "± 6122690.703990653"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 2646856.1428571427,
+            "unit": "ns",
+            "range": "± 18615.97768608437"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 18123764.57142857,
+            "unit": "ns",
+            "range": "± 426444.6147092927"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 6707590.916666667,
+            "unit": "ns",
+            "range": "± 29094.86393431082"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 25969688.96,
+            "unit": "ns",
+            "range": "± 13910682.755196778"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 15968538.848484848,
+            "unit": "ns",
+            "range": "± 2398176.7716241777"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 21251829.85,
+            "unit": "ns",
+            "range": "± 2806878.49241297"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 11310497.69,
+            "unit": "ns",
+            "range": "± 3267941.4997918475"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 22267815.726190478,
+            "unit": "ns",
+            "range": "± 8127063.545780652"
           }
         ]
       }
