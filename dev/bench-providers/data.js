@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793636838198,
+  "lastUpdate": 1793644845158,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -4236,6 +4236,78 @@ window.BENCHMARK_DATA = {
             "value": 266469659,
             "unit": "ns",
             "range": "± 190972421.79518214"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b5a0dd17b5ddc0a1dc96ae9d03d7582a85e12b0e",
+          "message": "ci(pr): run Stage 1 on ubuntu-24.04; netcoreapp3.1 finds no ICU on 26.04 (#455)\n\nubuntu-latest now resolves to ubuntu-26.04, where the netcoreapp3.1 test\nhost aborts with \"Couldn't find a valid ICU package installed on the\nsystem\" (DateTime-Extensions run 40694706624). Pin the Stage 1 job only.\nLong-term fix: Chris-Wolfgang/repo-template#775.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-02T13:31:03-05:00",
+          "tree_id": "c57088e4663aec9577e01419a04b901c3cc9fc4e",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b5a0dd17b5ddc0a1dc96ae9d03d7582a85e12b0e"
+        },
+        "date": 1793644841161,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6773893,
+            "unit": "ns",
+            "range": "± 7750.470695383604"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 51452767.5,
+            "unit": "ns",
+            "range": "± 14238970.481272724"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7448466.5,
+            "unit": "ns",
+            "range": "± 286638.4569889393"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 46295412.166666664,
+            "unit": "ns",
+            "range": "± 922476.8692039563"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12266442.333333334,
+            "unit": "ns",
+            "range": "± 7147022.292017448"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 52060643.333333336,
+            "unit": "ns",
+            "range": "± 1346436.4199836296"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 50737891.666666664,
+            "unit": "ns",
+            "range": "± 3661111.1793271634"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 309991836.1666667,
+            "unit": "ns",
+            "range": "± 261321202.2631956"
           }
         ]
       }
