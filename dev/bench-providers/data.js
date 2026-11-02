@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793649141607,
+  "lastUpdate": 1793649145076,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -6254,6 +6254,42 @@ window.BENCHMARK_DATA = {
             "value": 85578231.33333333,
             "unit": "ns",
             "range": "± 1420084.7474578177"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b488e6bedf896e18e68b4bfda9201b377d49802a",
+          "message": "fix(security): lift opentelemetry-api to 1.45.1 in the semgrep lock (#430)\n\nDependabot alert 38 (GHSA-xcq7-p3pf-p88h, unbounded tracestate parsing,\nopentelemetry-api <= 1.45.0). semgrep 1.180.0 pins the 1.37.0 family, so\na uv --override file lifts api/sdk/exporter to 1.45.1 and the matching\n0.66b1 instrumentation packages together. semgrep.yaml installs with\n--no-deps, so the override is what gets installed.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-02T14:29:41-05:00",
+          "tree_id": "f21cbf06e3237a5331b5d4beda399652f289774e",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b488e6bedf896e18e68b4bfda9201b377d49802a"
+        },
+        "date": 1793649143841,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 16524507.666666666,
+            "unit": "ns",
+            "range": "± 1406081.8877449255"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 79867387.66666667,
+            "unit": "ns",
+            "range": "± 1910535.629793209"
           }
         ]
       }
