@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793672326188,
+  "lastUpdate": 1793672329399,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -6470,6 +6470,42 @@ window.BENCHMARK_DATA = {
             "value": 91332058.66666667,
             "unit": "ns",
             "range": "± 6530693.316326401"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c756416c1044665e2b298df0c73dcc08c11610c5",
+          "message": "ci(semgrep): run on Python 3.14; semgrep-core crashes on 3.15 (semgrep/semgrep#11979) (#460)\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-02T21:10:51-05:00",
+          "tree_id": "5de6bc47c929de2f76e26ec114ecfa772fba64c4",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/c756416c1044665e2b298df0c73dcc08c11610c5"
+        },
+        "date": 1793672328218,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 5810600.833333333,
+            "unit": "ns",
+            "range": "± 153876.90613062552"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 36589280.666666664,
+            "unit": "ns",
+            "range": "± 6174499.030708267"
           }
         ]
       }
