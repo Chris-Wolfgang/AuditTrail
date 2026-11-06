@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793980416917,
+  "lastUpdate": 1793980420039,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -6794,6 +6794,42 @@ window.BENCHMARK_DATA = {
             "value": 72863459.33333333,
             "unit": "ns",
             "range": "± 1408549.044787697"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "ce87e45e65127b674a25ced71a0868b1bfb2762a",
+          "message": "ci(pr): Stage 3 requires a coverage row for every test assembly it ran (#443)\n\nStages 1 and 2 record the assemblies that ran tests and fail the gate when\none of them has no row in the coverage report; Stage 3 (macOS) only\nchecked the modules that did appear, so an assembly that ran but\nrecorded nothing dropped out of its gate. Stage 3 now keeps the same\nledger (same IsTestProject / AssemblyName rule as Stage 1), fails when\nthe ledger is missing or empty, and fails on any ledgered assembly\nwithout a row (exact module-name match).\n\nRefs #371\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-06T10:45:05-05:00",
+          "tree_id": "20c03306d11f5ecb0cb5ca19e58e675be78a5360",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/ce87e45e65127b674a25ced71a0868b1bfb2762a"
+        },
+        "date": 1793980418919,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6534803.5,
+            "unit": "ns",
+            "range": "± 1105609.7677788488"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 32044823.333333332,
+            "unit": "ns",
+            "range": "± 1811885.9304526688"
           }
         ]
       }
