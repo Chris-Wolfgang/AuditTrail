@@ -16,8 +16,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
-    <PackageReference Include="Testcontainers.MsSql" Version="4.14.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
+    <PackageReference Include="Testcontainers.MsSql" Version="4.15.0" />
+    <!--
+      Microsoft.Data.SqlClient (via the SQL Server provider) brings
+      System.Security.Cryptography.Pkcs 9.0.x, which carries the
+      CVE-2026-70162 / CVE-2026-84008 advisories and trips NU1902/NU1903
+      (warning as error). Same override as the integration-test projects.
+    -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
   </ItemGroup>
 
 </Project>
