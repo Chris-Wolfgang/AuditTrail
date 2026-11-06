@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793980420039,
+  "lastUpdate": 1794002701234,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -4740,6 +4740,78 @@ window.BENCHMARK_DATA = {
             "value": 91222151.16666667,
             "unit": "ns",
             "range": "± 16638901.992365552"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "8cff75f89b8cd2c49dc69cc8ac5cfacf54f3e850",
+          "message": "perf(capture): cache [NotAudited] reflection lookups (#479)\n\nAuditCapture called GetCustomAttribute<NotAuditedAttribute> once per\ntracked entry and once per property of every changed entity on every\nsave. Both results are constant per CLR type / IProperty, so they are\nnow cached in ConcurrentDictionaries next to ColumnNameCache, which also\ngains a comment on its (and their) lack of eviction (#412 nit).\n\nRefs #414\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-06T16:56:45-05:00",
+          "tree_id": "233eee411abc0a8d4af35288d669d6d99eae82bb",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/8cff75f89b8cd2c49dc69cc8ac5cfacf54f3e850"
+        },
+        "date": 1794002699058,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 1954846,
+            "unit": "ns",
+            "range": "± 19467.490310771955"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 11390354.333333334,
+            "unit": "ns",
+            "range": "± 756995.8153578745"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4947786.666666667,
+            "unit": "ns",
+            "range": "± 124171.03823490135"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 31011816.166666668,
+            "unit": "ns",
+            "range": "± 8862342.503606614"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7080875.333333333,
+            "unit": "ns",
+            "range": "± 5096860.451304247"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 21326365.833333332,
+            "unit": "ns",
+            "range": "± 148975.30659251328"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12209197.833333334,
+            "unit": "ns",
+            "range": "± 265182.5307110808"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 184558103,
+            "unit": "ns",
+            "range": "± 211466810.93995297"
           }
         ]
       }
