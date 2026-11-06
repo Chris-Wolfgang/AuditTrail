@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793758617943,
+  "lastUpdate": 1793972862944,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -13200,6 +13200,138 @@ window.BENCHMARK_DATA = {
             "value": 18576377.58,
             "unit": "ns",
             "range": "± 10575229.666576149"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "be944173fea5014a2787854c1f7bd99bc0982ae2",
+          "message": "ci(differential): run the macos-arm64 leg on macos-latest (#470)\n\nmacos-14 is rejected for this repo ('macos-14-arm64-us-default' is not\nsupported), so the job was cancelled in ~1s with no runner. macos-latest\n(macos-26-arm64) is what pr.yaml's macOS job already runs on.\n\nCloses #469\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-06T08:38:38-05:00",
+          "tree_id": "20012f42158353c7f7d39a3a527d2af1ef3ebf4f",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/be944173fea5014a2787854c1f7bd99bc0982ae2"
+        },
+        "date": 1793972860984,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 539616.2631578947,
+            "unit": "ns",
+            "range": "± 11536.175988034362"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1332067.625,
+            "unit": "ns",
+            "range": "± 24540.13203679502"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 819693.36,
+            "unit": "ns",
+            "range": "± 21138.837042041832"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2601278.2666666666,
+            "unit": "ns",
+            "range": "± 31562.41461763086"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 677914.52,
+            "unit": "ns",
+            "range": "± 17537.080114051674"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1596863.888888889,
+            "unit": "ns",
+            "range": "± 32259.844720622772"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1265352.142857143,
+            "unit": "ns",
+            "range": "± 21137.51772726234"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 9760831.638297873,
+            "unit": "ns",
+            "range": "± 1489741.580363397"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 2435340.785714286,
+            "unit": "ns",
+            "range": "± 35155.691947893225"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 15749170.232558139,
+            "unit": "ns",
+            "range": "± 1668432.5975420193"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1919417.2142857143,
+            "unit": "ns",
+            "range": "± 21037.178731688593"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 13214888.324742269,
+            "unit": "ns",
+            "range": "± 860461.6723206164"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 4852245.615384615,
+            "unit": "ns",
+            "range": "± 43572.8281033384"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 40442791.84,
+            "unit": "ns",
+            "range": "± 1077123.7098616962"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 12396878.153846154,
+            "unit": "ns",
+            "range": "± 177009.4176213261"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 18831728.4375,
+            "unit": "ns",
+            "range": "± 4380698.587397929"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 9678898.09,
+            "unit": "ns",
+            "range": "± 1835360.216422445"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 23963181.891304348,
+            "unit": "ns",
+            "range": "± 15010107.2918592"
           }
         ]
       }
