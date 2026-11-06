@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793758614544,
+  "lastUpdate": 1793972855310,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -4596,6 +4596,78 @@ window.BENCHMARK_DATA = {
             "value": 46242821.166666664,
             "unit": "ns",
             "range": "± 2952780.8504266506"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "be944173fea5014a2787854c1f7bd99bc0982ae2",
+          "message": "ci(differential): run the macos-arm64 leg on macos-latest (#470)\n\nmacos-14 is rejected for this repo ('macos-14-arm64-us-default' is not\nsupported), so the job was cancelled in ~1s with no runner. macos-latest\n(macos-26-arm64) is what pr.yaml's macOS job already runs on.\n\nCloses #469\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-06T08:38:38-05:00",
+          "tree_id": "20012f42158353c7f7d39a3a527d2af1ef3ebf4f",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/be944173fea5014a2787854c1f7bd99bc0982ae2"
+        },
+        "date": 1793972852236,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4687136,
+            "unit": "ns",
+            "range": "± 138608.00734445322"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 29194576.833333332,
+            "unit": "ns",
+            "range": "± 2467636.003349427"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6697621.5,
+            "unit": "ns",
+            "range": "± 428790.15730191383"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 40064793.333333336,
+            "unit": "ns",
+            "range": "± 969070.9725465588"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 10533124.5,
+            "unit": "ns",
+            "range": "± 7137415.207181028"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 39916854.5,
+            "unit": "ns",
+            "range": "± 245320.06270992188"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 229651247,
+            "unit": "ns",
+            "range": "± 169624323.96327698"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 176003683.33333334,
+            "unit": "ns",
+            "range": "± 71190432.8280306"
           }
         ]
       }
