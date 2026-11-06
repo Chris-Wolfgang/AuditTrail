@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793972855310,
+  "lastUpdate": 1793972858662,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -6686,6 +6686,42 @@ window.BENCHMARK_DATA = {
             "value": 32981739.166666668,
             "unit": "ns",
             "range": "± 1268274.3653848458"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "be944173fea5014a2787854c1f7bd99bc0982ae2",
+          "message": "ci(differential): run the macos-arm64 leg on macos-latest (#470)\n\nmacos-14 is rejected for this repo ('macos-14-arm64-us-default' is not\nsupported), so the job was cancelled in ~1s with no runner. macos-latest\n(macos-26-arm64) is what pr.yaml's macOS job already runs on.\n\nCloses #469\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-06T08:38:38-05:00",
+          "tree_id": "20012f42158353c7f7d39a3a527d2af1ef3ebf4f",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/be944173fea5014a2787854c1f7bd99bc0982ae2"
+        },
+        "date": 1793972857023,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 15463442,
+            "unit": "ns",
+            "range": "± 1625180.1478411555"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 72863459.33333333,
+            "unit": "ns",
+            "range": "± 1408549.044787697"
           }
         ]
       }
