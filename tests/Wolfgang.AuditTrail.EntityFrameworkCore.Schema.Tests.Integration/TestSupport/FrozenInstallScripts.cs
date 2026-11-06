@@ -109,7 +109,7 @@ public static class FrozenInstallScripts
                 new List<List<string>> { new() },
                 (statements, line) =>
                 {
-                    if (line.Trim() == ";")
+                    if (string.Equals(line.Trim(), ";", StringComparison.Ordinal))
                     {
                         statements.Add([]);
                     }
