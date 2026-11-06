@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793972858662,
+  "lastUpdate": 1793980416917,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -4668,6 +4668,78 @@ window.BENCHMARK_DATA = {
             "value": 176003683.33333334,
             "unit": "ns",
             "range": "± 71190432.8280306"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "ce87e45e65127b674a25ced71a0868b1bfb2762a",
+          "message": "ci(pr): Stage 3 requires a coverage row for every test assembly it ran (#443)\n\nStages 1 and 2 record the assemblies that ran tests and fail the gate when\none of them has no row in the coverage report; Stage 3 (macOS) only\nchecked the modules that did appear, so an assembly that ran but\nrecorded nothing dropped out of its gate. Stage 3 now keeps the same\nledger (same IsTestProject / AssemblyName rule as Stage 1), fails when\nthe ledger is missing or empty, and fails on any ledgered assembly\nwithout a row (exact module-name match).\n\nRefs #371\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-06T10:45:05-05:00",
+          "tree_id": "20c03306d11f5ecb0cb5ca19e58e675be78a5360",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/ce87e45e65127b674a25ced71a0868b1bfb2762a"
+        },
+        "date": 1793980414709,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 1846733.5,
+            "unit": "ns",
+            "range": "± 28327.848700527895"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 11096598.5,
+            "unit": "ns",
+            "range": "± 869622.5445622946"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3632518.1666666665,
+            "unit": "ns",
+            "range": "± 103046.21381367359"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 21744233.333333332,
+            "unit": "ns",
+            "range": "± 181941.28291933454"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 5997688,
+            "unit": "ns",
+            "range": "± 4590489.678834274"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 21636665.666666668,
+            "unit": "ns",
+            "range": "± 373451.9078279469"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17659701.5,
+            "unit": "ns",
+            "range": "± 2113778.108607429"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 91222151.16666667,
+            "unit": "ns",
+            "range": "± 16638901.992365552"
           }
         ]
       }
