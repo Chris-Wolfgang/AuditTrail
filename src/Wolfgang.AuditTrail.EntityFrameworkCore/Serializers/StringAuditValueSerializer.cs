@@ -15,13 +15,26 @@ namespace Wolfgang.AuditTrail.Serializers;
 /// <list type="bullet">
 ///   <item><description><c>String</c> stored as-is.</description></item>
 ///   <item><description>Integral, decimal, and floating-point types use <see cref="CultureInfo.InvariantCulture"/>.</description></item>
-///   <item><description><see cref="DateTime"/> and <see cref="DateTimeOffset"/> use the round-trip <c>"o"</c> format.</description></item>
+///   <item><description><see cref="DateTime"/>, <see cref="DateTimeOffset"/>, <see cref="DateOnly"/> and <see cref="TimeOnly"/> use the round-trip <c>"o"</c> format (the same format <see cref="PipeDelimitedEntityKeySerializer"/> uses for key parts).</description></item>
+///   <item><description><see cref="TimeSpan"/> uses the invariant constant <c>"c"</c> format.</description></item>
+///   <item><description><see cref="char"/> is stored as its single character.</description></item>
 ///   <item><description><see cref="Guid"/> uses the <c>"D"</c> format (32 digits separated by hyphens).</description></item>
 ///   <item><description><see cref="bool"/> renders as <c>True</c> / <c>False</c>.</description></item>
 ///   <item><description><c>byte[]</c> is base64-encoded.</description></item>
 ///   <item><description>Enums use <see cref="Enum.ToString()"/> (the symbolic name); the discriminator records the enum's assembly-qualified type name (not the bare full type name — <c>Type.GetType</c> can't resolve a bare full name for a consumer-assembly enum).</description></item>
 ///   <item><description><c>null</c> writes SQL <c>NULL</c>; the discriminator still records the declared CLR type.</description></item>
 /// </list>
+/// <para>
+/// <see cref="Decode"/> returns the original CLR type for every discriminator listed above. Any other
+/// type (for example <c>Half</c> or <c>Int128</c>) is encoded through
+/// <see cref="IFormattable"/> or <see cref="object.ToString()"/> and decodes back as its <see cref="string"/> text.
+/// </para>
+/// <para>
+/// Rows written before <see cref="DateOnly"/> and <see cref="TimeOnly"/> moved to the <c>"o"</c> format
+/// (invariant <c>"MM/dd/yyyy"</c> and <c>"HH:mm"</c>) still decode: <see cref="Decode"/> tries the
+/// <c>"o"</c> format first and falls back to an invariant-culture parse. A legacy <see cref="TimeOnly"/> row
+/// decodes at the minute precision it was written with.
+/// </para>
 /// </remarks>
 public sealed class StringAuditValueSerializer : IAuditValueSerializer
 {
@@ -70,6 +83,10 @@ public sealed class StringAuditValueSerializer : IAuditValueSerializer
             Guid g => g.ToString("D", CultureInfo.InvariantCulture),
             DateTime dt => dt.ToString("o", CultureInfo.InvariantCulture),
             DateTimeOffset dto => dto.ToString("o", CultureInfo.InvariantCulture),
+            DateOnly d => d.ToString("o", CultureInfo.InvariantCulture),
+            TimeOnly t => t.ToString("o", CultureInfo.InvariantCulture),
+            TimeSpan ts => ts.ToString("c", CultureInfo.InvariantCulture),
+            char c => c.ToString(),
             byte[] bytes => Convert.ToBase64String(bytes),
             IFormattable formattable => formattable.ToString(format: null, CultureInfo.InvariantCulture),
             _ => value.ToString() ?? string.Empty,
@@ -115,10 +132,32 @@ public sealed class StringAuditValueSerializer : IAuditValueSerializer
             "Guid" => Guid.ParseExact(text, "D"),
             "DateTime" => DateTime.Parse(text, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
             "DateTimeOffset" => DateTimeOffset.Parse(text, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+            "DateOnly" => ParseDateOnly(text),
+            "TimeOnly" => ParseTimeOnly(text),
+            "TimeSpan" => TimeSpan.ParseExact(text, "c", CultureInfo.InvariantCulture),
+            "Char" => char.Parse(text),
             "Bytes" => Convert.FromBase64String(text),
             _ => text,
         };
     }
+
+
+
+    // Current rows use "o" (yyyy-MM-dd). Rows written before that used the
+    // invariant default ("MM/dd/yyyy"), so fall back to an invariant parse.
+    private static DateOnly ParseDateOnly(string text) =>
+        DateOnly.TryParseExact(text, "o", CultureInfo.InvariantCulture, DateTimeStyles.None, out var value)
+            ? value
+            : DateOnly.Parse(text, CultureInfo.InvariantCulture);
+
+
+
+    // Current rows use "o" (HH:mm:ss.fffffff). Rows written before that used the
+    // invariant default short time ("HH:mm"), so fall back to an invariant parse.
+    private static TimeOnly ParseTimeOnly(string text) =>
+        TimeOnly.TryParseExact(text, "o", CultureInfo.InvariantCulture, DateTimeStyles.None, out var value)
+            ? value
+            : TimeOnly.Parse(text, CultureInfo.InvariantCulture);
 
     private static string ResolveValueType(Type underlying)
     {
