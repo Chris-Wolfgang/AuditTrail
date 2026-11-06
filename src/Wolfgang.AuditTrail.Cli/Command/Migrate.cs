@@ -26,7 +26,7 @@ internal class Migrate
 
 
 
-    [Option("-p|--provider <PROVIDER>", Description = "Database provider: sqlserver | postgresql | mysql | sqlite. Auto-detected from the connection string when possible.")]
+    [Option("-p|--provider <PROVIDER>", Description = "Database provider: sqlserver | postgresql | sqlite (mysql is recognised but not yet supported). Auto-detected from the connection string when possible.")]
     public string? Provider { get; set; }
 
 
@@ -70,6 +70,12 @@ internal class Migrate
             }
 
             await runner.RunAsync(options, console, cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            logger.LogWarning("{Command} cancelled", GetType().Name);
+            WriteError(console, "Cancelled.");
+            return ExitCode.Cancelled;
         }
         catch (Exception e)
         {
@@ -158,7 +164,7 @@ internal class Migrate
                 WriteError(
                     console,
                     $"Error: unrecognized provider '{Provider}'. " +
-                    "Valid values: sqlserver, postgresql, mysql, sqlite.");
+                    "Valid values: sqlserver, postgresql, sqlite (mysql is recognised but not yet supported).");
                 return null;
             }
 
@@ -171,7 +177,7 @@ internal class Migrate
             WriteError(
                 console,
                 "Error: could not auto-detect provider from the connection string. " +
-                "Specify --provider explicitly (sqlserver|postgresql|mysql|sqlite).");
+                "Specify --provider explicitly (sqlserver|postgresql|sqlite; mysql is not yet supported).");
             return null;
         }
 
