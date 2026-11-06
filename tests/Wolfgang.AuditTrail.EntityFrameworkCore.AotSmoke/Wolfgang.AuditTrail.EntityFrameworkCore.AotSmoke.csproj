@@ -113,7 +113,7 @@
       Design >= 10.0.11 transitively; pinning below that trips NU1605
       (package downgrade, warning as error).
     -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -133,7 +133,7 @@
       references this project anyway, but matches the repo's convention for
       build-only packages).
     -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks" Version="10.0.12">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks" Version="10.0.13">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
