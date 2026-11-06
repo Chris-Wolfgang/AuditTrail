@@ -37,7 +37,9 @@ env:
 jobs:
   integration:
     name: Integration Tests (Linux + Docker)
-    runs-on: ubuntu-latest
+    # Pinned to 24.04: on ubuntu-latest (26.04) the IBM DB2 driver's native libdb2.so fails to
+    # load and every Db2AuditTests case fails. Keep the pin until the DB2 driver loads on 26.04.
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
 
     steps:
