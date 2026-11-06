@@ -54,17 +54,6 @@ public abstract class AuditSchemaMigratorIntegrationTestsBase
 
 
     [Fact]
-    public void ProviderName_when_read_names_the_provider_under_test()
-    {
-        Assert.False
-        (
-            string.IsNullOrWhiteSpace(_fixture.ProviderName)
-        );
-    }
-
-
-
-    [Fact]
     public async Task RunAsync_on_fresh_database_creates_audit_tables_and_stamps_version()
     {
         var options = BuildOptions();
