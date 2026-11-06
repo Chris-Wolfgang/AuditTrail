@@ -11,11 +11,12 @@ namespace Wolfgang.AuditTrail.Schema;
 /// </summary>
 /// <remarks>
 /// <para>
-/// v1 uses EF Core's own model facilities — <c>Database.EnsureCreatedAsync</c>
-/// applied to a context that has the audit entities configured will produce the right
-/// DDL for any supported provider. For consumers using EF Core Migrations, an
-/// alternative is to let migrations own the audit tables; this helper is for the
-/// non-migration path (prototypes, self-contained desktop apps, tests).
+/// <see cref="CreateTablesAsync"/> is obsolete: it relies on <c>Database.EnsureCreatedAsync</c>,
+/// which creates every table in the context's model and cannot evolve an existing
+/// schema. Install and upgrade the audit tables with
+/// <c>AuditingDbContext.MigrateAuditSchemaAsync</c> (or <c>AuditSchemaMigrator.RunAsync</c>)
+/// instead. For consumers using EF Core Migrations, an alternative is to let
+/// migrations own the audit tables.
 /// </para>
 /// </remarks>
 public sealed class AuditSchemaInstaller

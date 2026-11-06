@@ -16,7 +16,7 @@ of the hot path — there is no call site whose contract is "must not allocate":
 
 | Hot-path stage | Source | Why it allocates (by design) |
 | --- | --- | --- |
-| Change capture | `Internal/AuditCapture.cs` | `ChangeTracker.Entries().ToList()`, `new List<PendingAuditEntry>(...)`, `keyProperties.Select(...).ToList()`, `new List<PendingAuditValue>()` — one pass over the tracked graph, sized to the change set. |
+| Change capture | `Internal/AuditCapture.cs` | `new List<PendingAuditEntry>()` (the `ChangeTracker.Entries()` enumeration itself is not copied to a list), `keyProperties.Select(...).ToList()`, `new List<PendingAuditValue>()` — one pass over the tracked graph, sized to the change set. |
 | Entity materialization | `Internal/AuditCapture.cs` | Builds `new AuditHeader` + `new AuditDetail` per changed value and calls `context.Add(header)` — these objects are the library's *output*; they must exist to be persisted. |
 | Value serialization | `Serializers/StringAuditValueSerializer.cs` | `Encode` returns `string` (`value.ToString(...)`, `Convert.ToBase64String(...)`) — the audit column stores text, so a string must be produced. |
 | Key serialization | `Serializers/PipeDelimitedEntityKeySerializer.cs` | `new StringBuilder()` + `sb.ToString()` to join composite key parts — output is a string. |
