@@ -13,6 +13,7 @@ using Wolfgang.AuditTrail.Entities;
 using Wolfgang.AuditTrail.Schema;
 using Wolfgang.AuditTrail.Serializers;
 using Xunit;
+using Xunit.Sdk;
 
 namespace Wolfgang.AuditTrail.Tests.Unit;
 
@@ -470,9 +471,75 @@ public sealed class AuditSchemaUpgradeTests : IDisposable
 
         Assert.Equal(AuditSchemaConstants.CurrentSchemaVersion, currentVersion);
 
-        for (var version = 1; version < currentVersion; version++)
+        AssertEveryVersionBelowCurrentHasAStep(AuditSchemaUpgrades.Instance, upgradeContext);
+    }
+
+
+
+    /// <summary>
+    /// The guard above cannot assert anything while only version 1 exists, so it
+    /// cannot show that it would catch a missing arm either. This runs the same
+    /// check against a stub that claims three versions and supplies a step for
+    /// each, which exercises the loop and proves it accepts a complete set.
+    /// </summary>
+    [Fact]
+    public void The_version_coverage_guard_accepts_a_complete_set_of_steps()
+    {
+        using var context = CreateContext();
+        var upgradeContext = AuditSchemaUpgradeContext.FromModel(DesignTimeModel(context));
+
+        var upgrades = new StubUpgrades(
+            currentVersion: 3,
+            step: (_, ctx) => new[] { AddNullableLongColumn(ctx.HeaderTable, ctx.Schema, AddedColumn) });
+
+        AssertEveryVersionBelowCurrentHasAStep(upgrades, upgradeContext);
+
+        // Both intermediate versions were asked for, so the loop really ran
+        // rather than passing by being skipped.
+        Assert.Equal(new[] { 1, 2 }, upgrades.RequestedVersions);
+    }
+
+
+
+    /// <summary>
+    /// The other half: the guard must fail when a version in range has no step.
+    /// Without this, a vacuous loop and a broken loop look identical.
+    /// </summary>
+    [Fact]
+    public void The_version_coverage_guard_rejects_a_version_with_no_step()
+    {
+        using var context = CreateContext();
+        var upgradeContext = AuditSchemaUpgradeContext.FromModel(DesignTimeModel(context));
+
+        var upgrades = new StubUpgrades(
+            currentVersion: 3,
+            step: (fromVersion, ctx) => fromVersion == 1
+                ? new[] { AddNullableLongColumn(ctx.HeaderTable, ctx.Schema, AddedColumn) }
+                : Array.Empty<MigrationOperation>());
+
+        Assert.ThrowsAny<XunitException>
+        (
+            () => AssertEveryVersionBelowCurrentHasAStep(upgrades, upgradeContext)
+        );
+    }
+
+
+
+    /// <summary>
+    /// Every version below <paramref name="upgrades"/>'s current version must
+    /// return at least one operation. Extracted from the test above so the same
+    /// check can be run against a stub: with only one real schema version the
+    /// loop body never executes, which leaves it both unverified and uncovered.
+    /// </summary>
+    private static void AssertEveryVersionBelowCurrentHasAStep
+    (
+        IAuditSchemaUpgrades upgrades,
+        AuditSchemaUpgradeContext context
+    )
+    {
+        for (var version = 1; version < upgrades.CurrentVersion; version++)
         {
-            var operations = AuditSchemaUpgrades.Instance.StepFrom(version, upgradeContext);
+            var operations = upgrades.StepFrom(version, context);
 
             Assert.NotEmpty(operations);
         }

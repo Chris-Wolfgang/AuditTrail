@@ -379,9 +379,19 @@ _Updated weekly by the security-alerts workflow._
 "@
         if ($summaryIssue -and $summaryIssue.state -eq 'OPEN')
         {
-            if ($DryRun) { Write-Host "DRY-RUN comment on summary #$($summaryIssue.number)" }
+            if ($DryRun) { Write-Host "DRY-RUN refresh summary #$($summaryIssue.number) (body + comment)" }
             else
             {
+                # The body first. It is what a reader sees on opening the issue, and a
+                # comment-only update leaves it frozen at whatever the first run wrote -
+                # so the headline count, the alert rows and any "Incomplete" note all go
+                # stale while the real state sits further down the thread.
+                $edited = & gh issue edit $summaryIssue.number -R $Repository --body $text 2>&1
+                if ($LASTEXITCODE -ne 0) { Write-Warning "summary body refresh failed: $edited"; $script:failures++ }
+
+                # Then the comment, deliberately carrying the same text: the body is the
+                # current state, each comment is a dated snapshot and the thing that
+                # notifies subscribers when the list changes.
                 $out = & gh issue comment $summaryIssue.number -R $Repository --body $text 2>&1
                 if ($LASTEXITCODE -ne 0) { Write-Warning "summary comment failed: $out"; $script:failures++ } else { Write-Host "updated summary #$($summaryIssue.number)" }
             }
