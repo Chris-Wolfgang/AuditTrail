@@ -202,7 +202,9 @@ public abstract class AuditValueSerializerContractTests<TSut>
         return decoded is byte[] bytes && bytes.SequenceEqual(value);
     }
 
-    [Property]
+    // Local values inside a DST spring-forward gap never existed and cannot round-trip (#277),
+    // so the generator skips them.
+    [Property(Arbitrary = new[] { typeof(ExistingLocalTimeArbitrary) })]
     public bool DateTime_with_random_kind_round_trips(DateTime value)
     {
         var decoded = RoundTrip(value);
