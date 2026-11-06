@@ -23,15 +23,16 @@ The header/detail-per-column schema is the same shape that [Z.EntityFramework.Pl
 |---|---|
 | `Wolfgang.AuditTrail.Abstractions` | Shared contracts (interfaces, attributes, entity types). No EF Core dependency. |
 | `Wolfgang.AuditTrail.EntityFrameworkCore` | `AuditingDbContext` base class, auto-transaction `AuditSaveChangesInterceptor`, default serializers, DI helpers. Depends on EF Core 6+ Relational. |
+| `Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql` | Optional PostgreSQL add-on: `NpgsqlCopyAuditBulkWriter`, an `IAuditBulkWriter` that writes large audit batches with the `COPY` protocol. Register with `services.AddNpgsqlAuditBulkWriter()`. |
 | `Wolfgang.AuditTrail.TestKit.Xunit` | xunit contract-test bases (FsCheck-powered) for validating custom `IAuditValueSerializer` implementations. |
 
-The three library packages above are published to NuGet.org under the **`Wolfgang.AuditTrail.*`** prefix from v0.1.0 onward.
+The four library packages above are published to NuGet.org under the **`Wolfgang.AuditTrail.*`** prefix.
 
 ```bash
 dotnet add package Wolfgang.AuditTrail.EntityFrameworkCore
 ```
 
-> **`audittrail` CLI tool** — a command-line companion (`audittrail migrate`) for installing the audit schema is included in the repo (`src/Wolfgang.AuditTrail.Cli`) and is **built from source** for now. Its standalone distribution (a `dotnet tool` or self-contained binaries on the GitHub Release) ships in a later release; it is not part of the v0.1.0 NuGet packages.
+> **`audittrail` CLI tool** — a command-line companion (`audittrail migrate`) for installing the audit schema is included in the repo (`src/Wolfgang.AuditTrail.Cli`) and is **built from source** for now. Its standalone distribution (a `dotnet tool` or self-contained binaries on the GitHub Release) ships in a later release; it is not published to NuGet.
 
 ---
 
@@ -141,21 +142,22 @@ Three end-to-end samples ship in [`examples/`](./examples):
 | **On-behalf-of user identity** | `AuditHeader.UserId` records the service account; `OnBehalfOfUserId` records the authenticated human (web scenarios). |
 | **Configurable delete capture** | `CaptureDeletedValues = false` (default) writes header only on Delete; `true` writes pre-delete column values for forensic audits. |
 | **Same TransactionId per save** | All header rows produced by a single `SaveChanges` share a `Guid` so consumers can group "what changed together". |
-| **Optional bulk-insert fast path** | `IAuditBulkWriter` + `AuditOptions.BulkInsertRowThreshold` let a provider-specific writer bypass EF Core's per-entity insert above a row threshold. No concrete writer ships yet — every save falls back to the standard insert path when none is registered. |
+| **Optional bulk-insert fast path** | `IAuditBulkWriter` + `AuditOptions.BulkInsertRowThreshold` let a provider-specific writer bypass EF Core's per-entity insert above a row threshold. The `Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql` package ships `NpgsqlCopyAuditBulkWriter` (PostgreSQL `COPY`); with no writer registered, every save uses the standard insert path. |
 
 ---
 
 ## 🎯 Supported Frameworks
 
-This repo ships three NuGet packages, each with its own TFM matrix:
+This repo ships four NuGet packages, each with its own TFM matrix:
 
 | Package | Target Frameworks |
 |---|---|
 | `Wolfgang.AuditTrail.Abstractions` | `netstandard2.0`, `net8.0`, `net10.0` |
 | `Wolfgang.AuditTrail.EntityFrameworkCore` | `net6.0`, `net8.0`, `net10.0` |
+| `Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql` | `net8.0`, `net10.0` |
 | `Wolfgang.AuditTrail.TestKit.Xunit` | `netstandard2.0`, `net8.0`, `net10.0` |
 
-The `audittrail` CLI (`src/Wolfgang.AuditTrail.Cli`) targets `net10.0` and is built from source; it isn't a published v0.1.0 package (see [Packages](#-packages)).
+The `audittrail` CLI (`src/Wolfgang.AuditTrail.Cli`) targets `net10.0` and is built from source; it isn't published to NuGet (see [Packages](#-packages)).
 
 EF Core 6, 7, 8, 9, and 10 are all supported (the library targets the LTS `net6.0` / `net8.0` / `net10.0`; an EF Core 7 consumer running on `net6.0+` or `net7.0+` resolves the appropriate TFM automatically).
 
@@ -163,11 +165,13 @@ See each package's NuGet page for the authoritative per-TFM compatibility matrix
 
 ## 🧪 Testing
 
-Ten test projects + the shipped TestKit contract base, spanning unit, integration, and specialty suites:
+Twelve test projects (counting the two AotSmoke projects) + the shipped TestKit contract base, spanning unit, integration, and specialty suites:
 
 - **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit`** — SQLite in-memory, fast, runs on every PR.
 - **`tests/Wolfgang.AuditTrail.Cli.Tests.Unit`** — CLI command/option parsing and error-path coverage.
-- **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration`** — Testcontainers against SQL Server 2022, PostgreSQL 16, MySQL 8.0. Opt-in via `RunIntegrationTests=true`; the dedicated [`integration.yaml`](./.github/workflows/integration.yaml) workflow runs them on Linux with Docker pre-installed.
+- **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.Tests.Unit`** — unit tests for the Npgsql `COPY` bulk writer.
+- **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.Tests.Integration`** — the `COPY` bulk writer against a real PostgreSQL container. Opt-in via `RunIntegrationTests=true`.
+- **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration`** — Testcontainers against SQL Server 2022, PostgreSQL 16, MySQL 8.0, Oracle and Db2. Opt-in via `RunIntegrationTests=true`; the dedicated [`integration.yaml`](./.github/workflows/integration.yaml) workflow runs them on Linux with Docker pre-installed.
 - **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration`** — schema-installer/migrator behavior against real provider containers.
 - **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Smoke`** — end-to-end order-lifecycle scenario validating history reconstruction.
 - **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Fuzz`** — FsCheck property-based fuzzing over the serializers, scheduled continuously.
@@ -210,7 +214,7 @@ Numbers below are from a local run on a single 14700HX laptop; absolute values v
 
 ### CI gating
 
-The [`benchmarks.yaml`](./.github/workflows/benchmarks.yaml) workflow runs the SQLite-only suite on every PR, fails the build if time or allocations regress beyond 2× the previous main-branch baseline, and auto-publishes the chart to [`gh-pages/dev/bench`](https://Chris-Wolfgang.github.io/AuditTrail/dev/bench/) on pushes to `main`. The multi-provider suite is opt-in (Docker required).
+The per-PR gate is [`pr-benchmarks.yaml`](./.github/workflows/pr-benchmarks.yaml): for PRs that touch `src/` or `benchmarks/` it runs the SQLite-only suite and compares it with the PR's merge-base. [`benchmarks.yaml`](./.github/workflows/benchmarks.yaml) runs on pushes to `main` (and on demand), alerts when time or allocations regress beyond 2× the previous main-branch result, and publishes the chart to [`gh-pages/dev/bench`](https://Chris-Wolfgang.github.io/AuditTrail/dev/bench/). The multi-provider suite is opt-in (Docker required).
 
 ```bash
 # SQLite-only fast suite (no Docker required)
