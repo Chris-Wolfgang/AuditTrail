@@ -25,10 +25,4 @@ public class AuditSchemaInstallerTests
         // The audited tables exist and the entity set is queryable.
         Assert.Empty(await context.Set<AuditHeader>().ToListAsync());
     }
-
-    // TODO: Options.HeaderTableName / DetailTableName overrides are honored at the
-    // EF Core model layer (see ModelBuilderExtensions.ApplyAuditing). Validating
-    // this via tests requires either a distinct DbContext type per test or a
-    // library-level IModelCacheKeyFactory, because EF Core caches IModel
-    // process-wide per DbContext type. Both paths are deferred to a focused PR.
 }

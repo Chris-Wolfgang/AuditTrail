@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +29,7 @@ namespace Wolfgang.AuditTrail.Npgsql;
 public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
 {
     private const string HeaderColumns =
-        "(\"HeaderId\", \"TransactionId\", \"AuditedAtUtc\", \"UserId\", \"OnBehalfOfUserId\", " +
+        "(\"HeaderId\", \"TransactionId\", \"Ordinal\", \"AuditedAtUtc\", \"UserId\", \"OnBehalfOfUserId\", " +
         "\"EntityType\", \"EntityTable\", \"EntityKey\", \"Operation\")";
 
     // DetailId is intentionally excluded from the column list -- it's a DB-generated
@@ -163,6 +164,7 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
     {
         writer.Write(header.HeaderId, NpgsqlDbType.Uuid);
         writer.Write(header.TransactionId, NpgsqlDbType.Uuid);
+        writer.Write(header.Ordinal, NpgsqlDbType.Integer);
         writer.Write(header.AuditedAtUtc, NpgsqlDbType.TimestampTz);
         writer.Write(header.UserId, NpgsqlDbType.Text);
         WriteNullableText(writer, header.OnBehalfOfUserId);
@@ -178,6 +180,7 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
     {
         await writer.WriteAsync(header.HeaderId, NpgsqlDbType.Uuid, cancellationToken).ConfigureAwait(false);
         await writer.WriteAsync(header.TransactionId, NpgsqlDbType.Uuid, cancellationToken).ConfigureAwait(false);
+        await writer.WriteAsync(header.Ordinal, NpgsqlDbType.Integer, cancellationToken).ConfigureAwait(false);
         await writer.WriteAsync(header.AuditedAtUtc, NpgsqlDbType.TimestampTz, cancellationToken).ConfigureAwait(false);
         await writer.WriteAsync(header.UserId, NpgsqlDbType.Text, cancellationToken).ConfigureAwait(false);
         await WriteNullableTextAsync(writer, header.OnBehalfOfUserId, cancellationToken).ConfigureAwait(false);
@@ -239,7 +242,20 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
 
 
 
-    private static string GetTableFqn<TEntity>(DbContext context)
+    private const DynamicallyAccessedMemberTypes EntityTypeMembers =
+        DynamicallyAccessedMemberTypes.PublicConstructors
+        | DynamicallyAccessedMemberTypes.NonPublicConstructors
+        | DynamicallyAccessedMemberTypes.PublicFields
+        | DynamicallyAccessedMemberTypes.NonPublicFields
+        | DynamicallyAccessedMemberTypes.PublicProperties
+        | DynamicallyAccessedMemberTypes.NonPublicProperties
+        | DynamicallyAccessedMemberTypes.Interfaces;
+
+
+
+    // IModel.FindEntityType(Type) carries EF's entity-type DynamicallyAccessedMembers
+    // requirement; every caller passes AuditHeader or AuditDetail, which satisfies it (IL2087).
+    private static string GetTableFqn<[DynamicallyAccessedMembers(EntityTypeMembers)] TEntity>(DbContext context)
     {
         var entityType = context.Model.FindEntityType(typeof(TEntity))
             ?? throw new InvalidOperationException(

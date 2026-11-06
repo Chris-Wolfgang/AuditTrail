@@ -2,13 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Wolfgang.AuditTrail;
 using Wolfgang.AuditTrail.Entities;
 using Wolfgang.AuditTrail.Example.Console;
-using Wolfgang.AuditTrail.Serializers;
 
-var auditOptions = new AuditOptions
-{
-    ValueSerializer = new StringAuditValueSerializer(),
-    EntityKeySerializer = new PipeDelimitedEntityKeySerializer(),
-};
+// The defaults (StringAuditValueSerializer + PipeDelimitedEntityKeySerializer)
+// are all this demo needs.
+var auditOptions = new AuditOptions();
 
 var userProvider = new StaticAuditUserProvider("alice@example.com");
 
@@ -18,13 +15,17 @@ var contextOptions = new DbContextOptionsBuilder<AppDbContext>()
 
 await using (var setup = new AppDbContext(contextOptions, userProvider, auditOptions))
 {
+    // EnsureCreatedAsync creates this demo's own Products table and, because
+    // AuditingDbContext maps them, the audit tables in one go. A real app that
+    // manages its tables with EF Core Migrations (or any other tool) installs
+    // and upgrades just the audit tables with setup.MigrateAuditSchemaAsync().
     await setup.Database.EnsureDeletedAsync();
     await setup.Database.EnsureCreatedAsync();
 }
 
 await using (var ctx = new AppDbContext(contextOptions, userProvider, auditOptions))
 {
-    ctx.Products.Add(new Product { Name = "Widget", Price = 9.99m });
+    ctx.Products.Add(new Product { Name = "Widget", Price = 9.99m, InternalNotes = "never audited" });
     await ctx.SaveChangesAsync();
 
     var widget = await ctx.Products.SingleAsync();
