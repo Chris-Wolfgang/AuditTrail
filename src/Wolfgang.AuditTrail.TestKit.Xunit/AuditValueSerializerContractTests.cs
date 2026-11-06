@@ -227,7 +227,7 @@ public abstract class AuditValueSerializerContractTests<TSut>
     /// <summary>
     /// <c>DateOnly</c> round-trips. The generated <see cref="DateTime"/> supplies the date, so the
     /// signature stays the same on <c>netstandard2.0</c>, where <c>DateOnly</c> does not exist and the
-    /// property is vacuously true.
+    /// date part of the <see cref="DateTime"/> is round-tripped instead.
     /// </summary>
     /// <param name="value">FsCheck-generated source of the date.</param>
     /// <returns><see langword="true"/> when the decoded value equals the original.</returns>
@@ -238,15 +238,15 @@ public abstract class AuditValueSerializerContractTests<TSut>
         var original = DateOnly.FromDateTime(value);
         return Equals(original, RoundTrip(original));
 #else
-        _ = value;
-        return true;
+        var original = value.Date;
+        return Equals(original, RoundTrip(original));
 #endif
     }
 
     /// <summary>
     /// <c>TimeOnly</c> round-trips to the tick. The generated <see cref="DateTime"/> supplies the time
     /// of day, so the signature stays the same on <c>netstandard2.0</c>, where <c>TimeOnly</c> does not
-    /// exist and the property is vacuously true.
+    /// exist and the time of day is round-tripped as a <see cref="TimeSpan"/> instead.
     /// </summary>
     /// <param name="value">FsCheck-generated source of the time of day.</param>
     /// <returns><see langword="true"/> when the decoded value equals the original.</returns>
@@ -257,8 +257,8 @@ public abstract class AuditValueSerializerContractTests<TSut>
         var original = TimeOnly.FromDateTime(value);
         return Equals(original, RoundTrip(original));
 #else
-        _ = value;
-        return true;
+        var original = value.TimeOfDay;
+        return Equals(original, RoundTrip(original));
 #endif
     }
 
