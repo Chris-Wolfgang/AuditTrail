@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -37,7 +38,7 @@ public static class ServiceCollectionExtensions
     /// });
     /// </code>
     /// </example>
-    public static IServiceCollection AddEfCoreAuditing<TUserProvider>
+    public static IServiceCollection AddEfCoreAuditing<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TUserProvider>
     (
         this IServiceCollection services,
         Action<AuditOptions>? configure = null

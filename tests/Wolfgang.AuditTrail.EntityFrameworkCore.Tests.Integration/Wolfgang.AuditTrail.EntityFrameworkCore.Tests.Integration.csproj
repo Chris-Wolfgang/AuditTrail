@@ -75,8 +75,15 @@
   -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
+    <!--
+      Pomelo 9.0.0 only floors MySqlConnector at 2.4.0, which carries
+      GHSA-473q-m89c-ghf8 (password sent before the TLS certificate is verified;
+      fixed in 2.6.1) and fails restore under NuGetAudit warnings-as-errors.
+      Pin the patched release; drop this once Pomelo floors it itself.
+    -->
+    <PackageReference Include="MySqlConnector" Version="2.6.2" />
 
-    <PackageReference Include="Testcontainers.MySql" Version="4.15.0" />
+    <PackageReference Include="Testcontainers.MySql" Version="4.16.0" />
 
     <Compile Remove="SqlServerAuditTests.cs" />
     <Compile Remove="PostgresAuditTests.cs" />
@@ -122,10 +129,10 @@
     <PackageReference Include="IBM.EntityFrameworkCore" Version="10.0.0.100" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <PackageReference Include="IBM.EntityFrameworkCore-lnx" Version="10.0.0.100" Condition="!$([MSBuild]::IsOSPlatform('Windows'))" />
 
-    <PackageReference Include="Testcontainers.MsSql" Version="4.15.0" />
-    <PackageReference Include="Testcontainers.PostgreSql" Version="4.15.0" />
-    <PackageReference Include="Testcontainers.Oracle" Version="4.15.0" />
-    <PackageReference Include="Testcontainers.Db2" Version="4.15.0" />
+    <PackageReference Include="Testcontainers.MsSql" Version="4.16.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.16.0" />
+    <PackageReference Include="Testcontainers.Oracle" Version="4.16.0" />
+    <PackageReference Include="Testcontainers.Db2" Version="4.16.0" />
 
     <Compile Remove="MySqlAuditTests.cs" />
     <Compile Remove="TestSupport\MySqlFixture.cs" />
