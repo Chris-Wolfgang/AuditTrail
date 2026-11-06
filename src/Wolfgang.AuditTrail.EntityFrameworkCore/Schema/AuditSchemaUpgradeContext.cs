@@ -1,5 +1,6 @@
 #if NET8_0_OR_GREATER
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Wolfgang.AuditTrail.Entities;
@@ -73,7 +74,24 @@ internal sealed class AuditSchemaUpgradeContext
 
 
 
-    private static (string Table, string? Schema) FindTable(IModel model, Type clrType)
+    private const DynamicallyAccessedMemberTypes EntityTypeMembers =
+        DynamicallyAccessedMemberTypes.PublicConstructors
+        | DynamicallyAccessedMemberTypes.NonPublicConstructors
+        | DynamicallyAccessedMemberTypes.PublicFields
+        | DynamicallyAccessedMemberTypes.NonPublicFields
+        | DynamicallyAccessedMemberTypes.PublicProperties
+        | DynamicallyAccessedMemberTypes.NonPublicProperties
+        | DynamicallyAccessedMemberTypes.Interfaces;
+
+
+
+    // IModel.FindEntityType(Type) carries EF's entity-type DynamicallyAccessedMembers
+    // requirement; both callers pass a typeof literal, which satisfies it (IL2067).
+    private static (string Table, string? Schema) FindTable
+    (
+        IModel model,
+        [DynamicallyAccessedMembers(EntityTypeMembers)] Type clrType
+    )
     {
         var entityType = model.FindEntityType(clrType)
             ?? throw new InvalidOperationException
