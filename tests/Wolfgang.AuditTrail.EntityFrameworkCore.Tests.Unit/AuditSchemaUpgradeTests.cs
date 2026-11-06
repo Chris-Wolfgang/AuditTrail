@@ -24,10 +24,10 @@ namespace Wolfgang.AuditTrail.Tests.Unit;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The library currently ships exactly one schema version, so there is no real
-/// v1 to v2 step to drive these tests with. They use the migrator's internal
-/// <see cref="IAuditSchemaUpgrades"/> seam to supply a synthetic version
-/// sequence instead. Everything below the seam is production code: the real
+/// The real v1 to v2 step is covered by its own tests below. The migrator
+/// tests use the migrator's internal <see cref="IAuditSchemaUpgrades"/> seam to
+/// supply a synthetic version sequence, so they do not depend on what the
+/// shipping steps happen to do. Everything below the seam is production code: the real
 /// version store, the real transaction and execution-strategy wrapper, and the
 /// provider's own <c>IMigrationsSqlGenerator</c> turning the operations into
 /// DDL that is executed against a real (in-memory SQLite) database.
@@ -78,14 +78,23 @@ public sealed class AuditSchemaUpgradeTests : IDisposable
 
 
     /// <summary>
-    /// Brings the database to schema version 1 using the shipping migrator, so
-    /// every upgrade test starts from a genuine v1 install rather than a
-    /// hand-built approximation of one.
+    /// Brings the database to schema version 1 through the real migrator, real
+    /// version store and real SQLite DDL, with the version pinned at 1 by a stub.
+    /// The shipping migrator can no longer be used for this: it installs the
+    /// current version, which is past 1. The tables carry the current model's
+    /// shape; these tests only need a version-1 row and the audit tables to
+    /// alter, because the steps they apply are synthetic.
     /// </summary>
     private async Task InstallVersion1Async()
     {
+        var versionOne = new StubUpgrades
+        (
+            currentVersion: 1,
+            step: (_, _) => throw new InvalidOperationException("A fresh install requests no step.")
+        );
+
         await using var context = CreateContext();
-        await AuditSchemaMigrator.RunAsync(context);
+        await AuditSchemaMigrator.RunAsync(context, versionOne, dryRun: false, CancellationToken.None);
     }
 
 
@@ -317,7 +326,7 @@ public sealed class AuditSchemaUpgradeTests : IDisposable
     public async Task RunAsync_when_the_database_is_ahead_of_this_build_throws()
     {
         // Install straight to a version this build does not know about, then
-        // ask the shipping migrator (version 1) to run against it.
+        // ask the shipping migrator to run against it.
         var future = new StubUpgrades(
             currentVersion: 5,
             step: (_, _) => Array.Empty<MigrationOperation>());
@@ -443,6 +452,36 @@ public sealed class AuditSchemaUpgradeTests : IDisposable
 
 
     [Fact]
+    public void StepFrom_when_upgrading_from_version_1_adds_the_ordinal_column_and_its_index()
+    {
+        _options.HeaderTableName = "MyHeader";
+
+        using var context = CreateContext();
+        var upgradeContext = AuditSchemaUpgradeContext.FromModel(DesignTimeModel(context));
+
+        var operations = AuditSchemaUpgrades.Instance.StepFrom(1, upgradeContext);
+
+        Assert.Equal(2, operations.Count);
+
+        var column = Assert.IsType<AddColumnOperation>(operations[0]);
+        Assert.Equal("MyHeader", column.Table);
+        Assert.Equal(nameof(AuditHeader.Ordinal), column.Name);
+        Assert.False(column.IsNullable);
+        Assert.Equal(0, column.DefaultValue);
+
+        var index = Assert.IsType<CreateIndexOperation>(operations[1]);
+        Assert.Equal("MyHeader", index.Table);
+        Assert.Equal("IX_MyHeader_TransactionId_Ordinal", index.Name);
+        Assert.Equal
+        (
+            new[] { nameof(AuditHeader.TransactionId), nameof(AuditHeader.Ordinal) },
+            index.Columns
+        );
+    }
+
+
+
+    [Fact]
     public void StepFrom_when_context_is_null_throws()
     {
         Assert.Throws<ArgumentNullException>(
@@ -454,8 +493,7 @@ public sealed class AuditSchemaUpgradeTests : IDisposable
     /// <summary>
     /// Fails the moment <see cref="AuditSchemaConstants.CurrentSchemaVersion"/>
     /// is raised without the matching arm being added to
-    /// <see cref="AuditSchemaUpgrades.StepFrom"/>. Vacuous while there is only
-    /// one version, which is the point: it starts asserting by itself.
+    /// <see cref="AuditSchemaUpgrades.StepFrom"/>.
     /// </summary>
     [Fact]
     public void Every_version_below_current_has_an_upgrade_step()
@@ -463,10 +501,8 @@ public sealed class AuditSchemaUpgradeTests : IDisposable
         using var context = CreateContext();
         var upgradeContext = AuditSchemaUpgradeContext.FromModel(DesignTimeModel(context));
 
-        // Read the bound off the instance rather than the const: the const
-        // folds to `version < 1` today, which analysers flag as an expression
-        // that is always false. The property carries the same value and keeps
-        // the loop honest once the version moves.
+        // Read the bound off the instance rather than the const, so the loop
+        // stays honest if the version moves.
         var currentVersion = AuditSchemaUpgrades.Instance.CurrentVersion;
 
         Assert.Equal(AuditSchemaConstants.CurrentSchemaVersion, currentVersion);
@@ -477,10 +513,9 @@ public sealed class AuditSchemaUpgradeTests : IDisposable
 
 
     /// <summary>
-    /// The guard above cannot assert anything while only version 1 exists, so it
-    /// cannot show that it would catch a missing arm either. This runs the same
-    /// check against a stub that claims three versions and supplies a step for
-    /// each, which exercises the loop and proves it accepts a complete set.
+    /// The guard above only proves the shipping steps are complete. This runs the
+    /// same check against a stub that claims three versions and supplies a step
+    /// for each, which exercises the loop and proves it accepts a complete set.
     /// </summary>
     [Fact]
     public void The_version_coverage_guard_accepts_a_complete_set_of_steps()
@@ -527,9 +562,8 @@ public sealed class AuditSchemaUpgradeTests : IDisposable
 
     /// <summary>
     /// Every version below <paramref name="upgrades"/>'s current version must
-    /// return at least one operation. Extracted from the test above so the same
-    /// check can be run against a stub: with only one real schema version the
-    /// loop body never executes, which leaves it both unverified and uncovered.
+    /// return at least one operation. Extracted so the same check can be run
+    /// against both the shipping steps and a stub.
     /// </summary>
     private static void AssertEveryVersionBelowCurrentHasAStep
     (
