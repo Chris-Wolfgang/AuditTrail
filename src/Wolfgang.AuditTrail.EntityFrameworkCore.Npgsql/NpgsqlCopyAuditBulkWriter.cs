@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -239,7 +240,20 @@ public sealed class NpgsqlCopyAuditBulkWriter : IAuditBulkWriter
 
 
 
-    private static string GetTableFqn<TEntity>(DbContext context)
+    private const DynamicallyAccessedMemberTypes EntityTypeMembers =
+        DynamicallyAccessedMemberTypes.PublicConstructors
+        | DynamicallyAccessedMemberTypes.NonPublicConstructors
+        | DynamicallyAccessedMemberTypes.PublicFields
+        | DynamicallyAccessedMemberTypes.NonPublicFields
+        | DynamicallyAccessedMemberTypes.PublicProperties
+        | DynamicallyAccessedMemberTypes.NonPublicProperties
+        | DynamicallyAccessedMemberTypes.Interfaces;
+
+
+
+    // IModel.FindEntityType(Type) carries EF's entity-type DynamicallyAccessedMembers
+    // requirement; every caller passes AuditHeader or AuditDetail, which satisfies it (IL2087).
+    private static string GetTableFqn<[DynamicallyAccessedMembers(EntityTypeMembers)] TEntity>(DbContext context)
     {
         var entityType = context.Model.FindEntityType(typeof(TEntity))
             ?? throw new InvalidOperationException(
