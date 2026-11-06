@@ -60,7 +60,7 @@ internal static class AuditCapture
             return null;
         }
 
-        if (clrType.GetCustomAttribute<NotAuditedAttribute>(inherit: false) is not null)
+        if (IsNotAuditedType(clrType))
         {
             return null;
         }
@@ -306,8 +306,7 @@ internal static class AuditCapture
         var values = new List<PendingAuditValue>(entry.CurrentValues.Properties.Count);
         foreach (var property in entry.Properties)
         {
-            var propInfo = property.Metadata.PropertyInfo;
-            if (propInfo is not null && propInfo.GetCustomAttribute<NotAuditedAttribute>(inherit: false) is not null)
+            if (IsNotAuditedProperty(property.Metadata))
             {
                 continue;
             }
@@ -337,7 +336,42 @@ internal static class AuditCapture
     // column of every save. ConcurrentDictionary: DbContext instances of the
     // same type can run this concurrently across threads (e.g. concurrent
     // web requests).
+    //
+    // No eviction: the caches below are process-wide and grow by one entry per
+    // distinct IProperty / CLR type ever seen. Each distinct compiled model
+    // (e.g. one AuditMigrationsDbContext model per distinct AuditOptions, or a
+    // test fixture that replaces IModelCacheKeyFactory) adds its own IProperty
+    // entries, which are never released. That is bounded by the number of
+    // models an application builds, so it is acceptable for normal use.
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<IProperty, string> ColumnNameCache = new();
+
+    // [NotAudited] lookups are constant per CLR type / per property, but
+    // GetCustomAttribute reflects (and allocates) on every call. Cached for the
+    // same reasons as ColumnNameCache above; inherit: false semantics unchanged.
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, bool> NotAuditedTypeCache = new();
+
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<IProperty, bool> NotAuditedPropertyCache = new();
+
+
+
+    private static bool IsNotAuditedType(Type clrType)
+        => NotAuditedTypeCache.GetOrAdd
+        (
+            clrType,
+            static type => type.GetCustomAttribute<NotAuditedAttribute>(inherit: false) is not null
+        );
+
+
+
+    private static bool IsNotAuditedProperty(IProperty metadata)
+        => NotAuditedPropertyCache.GetOrAdd
+        (
+            metadata,
+            static property => property.PropertyInfo?.GetCustomAttribute<NotAuditedAttribute>(inherit: false) is not null
+        );
+
+
+
 
     /// <summary>
     /// Returns the database column name EF Core mapped the property to, honouring
