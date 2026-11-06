@@ -105,8 +105,8 @@ public abstract class AuditValueSerializerContractTests<TSut>
     [Fact]
     public void Double_NaN_round_trips()
     {
-        var decoded = RoundTrip(double.NaN);
-        Assert.True(decoded is double d && double.IsNaN(d));
+        var decoded = Assert.IsType<double>(RoundTrip(double.NaN));
+        Assert.True(double.IsNaN(decoded));
     }
 
     [Fact]
@@ -202,7 +202,9 @@ public abstract class AuditValueSerializerContractTests<TSut>
         return decoded is byte[] bytes && bytes.SequenceEqual(value);
     }
 
-    [Property]
+    // Local values inside a DST spring-forward gap never existed and cannot round-trip (#277),
+    // so the generator skips them.
+    [Property(Arbitrary = new[] { typeof(ExistingLocalTimeArbitrary) })]
     public bool DateTime_with_random_kind_round_trips(DateTime value)
     {
         var decoded = RoundTrip(value);
@@ -216,6 +218,52 @@ public abstract class AuditValueSerializerContractTests<TSut>
     public bool DateTimeOffset_round_trips(DateTimeOffset value) =>
         Equals(value, RoundTrip(value));
 
+    [Property]
+    public bool TimeSpan_round_trips(TimeSpan value) =>
+        Equals(value, RoundTrip(value));
+
+    [Property]
+    public bool Char_round_trips(char value) =>
+        Equals(value, RoundTrip(value));
+
+    /// <summary>
+    /// <c>DateOnly</c> round-trips. The generated <see cref="DateTime"/> supplies the date, so the
+    /// signature stays the same on <c>netstandard2.0</c>, where <c>DateOnly</c> does not exist and the
+    /// property is vacuously true.
+    /// </summary>
+    /// <param name="value">FsCheck-generated source of the date.</param>
+    /// <returns><see langword="true"/> when the decoded value equals the original.</returns>
+    [Property]
+    public bool DateOnly_round_trips(DateTime value)
+    {
+#if NET6_0_OR_GREATER
+        var original = DateOnly.FromDateTime(value);
+        return Equals(original, RoundTrip(original));
+#else
+        _ = value;
+        return true;
+#endif
+    }
+
+    /// <summary>
+    /// <c>TimeOnly</c> round-trips to the tick. The generated <see cref="DateTime"/> supplies the time
+    /// of day, so the signature stays the same on <c>netstandard2.0</c>, where <c>TimeOnly</c> does not
+    /// exist and the property is vacuously true.
+    /// </summary>
+    /// <param name="value">FsCheck-generated source of the time of day.</param>
+    /// <returns><see langword="true"/> when the decoded value equals the original.</returns>
+    [Property]
+    public bool TimeOnly_round_trips(DateTime value)
+    {
+#if NET6_0_OR_GREATER
+        var original = TimeOnly.FromDateTime(value);
+        return Equals(original, RoundTrip(original));
+#else
+        _ = value;
+        return true;
+#endif
+    }
+
     [Fact]
     public void Enum_discriminator_includes_full_type_name()
     {
@@ -223,7 +271,7 @@ public abstract class AuditValueSerializerContractTests<TSut>
         var buffer = new InMemoryAuditValueBuffer();
         var valueType = sut.Encode(SampleEnum.Beta, typeof(SampleEnum), buffer);
         Assert.StartsWith("Enum:", valueType, StringComparison.Ordinal);
-        Assert.Contains(nameof(SampleEnum), valueType, StringComparison.Ordinal);
+        Assert.Contains(typeof(SampleEnum).FullName!, valueType, StringComparison.Ordinal);
     }
 
     [Fact]
