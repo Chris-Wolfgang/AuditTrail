@@ -217,7 +217,7 @@ public class AuditSaveChangesInterceptorEdgeCasesTests
         Assert.Contains("acceptAllChangesOnSuccess: false", ex.Message, StringComparison.Ordinal);
         Assert.Contains("re-emit the still-dirty user entries", ex.Message, StringComparison.Ordinal);
         Assert.Contains("without the false override", ex.Message, StringComparison.Ordinal);
-        Assert.Contains("inherit your DbContext from AuditingDbContext", ex.Message, StringComparison.Ordinal);
-        Assert.Contains("through both passes correctly", ex.Message, StringComparison.Ordinal);
+        Assert.Contains("split the audit-relevant work into a separate save", ex.Message, StringComparison.Ordinal);
+        Assert.Contains("AuditingDbContext does not support acceptAllChangesOnSuccess: false either", ex.Message, StringComparison.Ordinal);
     }
 }

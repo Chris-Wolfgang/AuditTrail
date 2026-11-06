@@ -9,8 +9,8 @@ namespace Wolfgang.AuditTrail.Cli.Model;
 /// <param name="ConnectionString">ADO.NET connection string; never null/empty by this point.</param>
 /// <param name="Provider">Detected or user-specified provider; never <see cref="DatabaseProvider.Unknown"/>.</param>
 /// <param name="Schema">
-/// Audit-table schema. <c>null</c> means "use the provider default" — the migrations
-/// package will substitute <c>dbo</c> / <c>public</c> / etc. as appropriate.
+/// Audit-table schema. <c>null</c> means "use the provider default" — the EF Core
+/// provider substitutes <c>dbo</c> / <c>public</c> / etc. as appropriate.
 /// </param>
 /// <param name="HeaderTableName">Override for the audit-header table name.</param>
 /// <param name="DetailTableName">Override for the audit-detail table name.</param>

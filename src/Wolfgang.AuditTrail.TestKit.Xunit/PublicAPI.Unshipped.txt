@@ -1,1 +1,5 @@
 #nullable enable
+Wolfgang.AuditTrail.TestKit.Xunit.AuditValueSerializerContractTests<TSut>.Char_round_trips(char value) -> bool
+Wolfgang.AuditTrail.TestKit.Xunit.AuditValueSerializerContractTests<TSut>.DateOnly_round_trips(System.DateTime value) -> bool
+Wolfgang.AuditTrail.TestKit.Xunit.AuditValueSerializerContractTests<TSut>.TimeOnly_round_trips(System.DateTime value) -> bool
+Wolfgang.AuditTrail.TestKit.Xunit.AuditValueSerializerContractTests<TSut>.TimeSpan_round_trips(System.TimeSpan value) -> bool
