@@ -169,7 +169,7 @@ public abstract class AuditSchemaMigratorIntegrationTestsBase
         var options = BuildOptions();
         await using var context = await _fixture.CreateContextAsync(options);
 
-        await AuditSchemaMigrator.RunAsync(context);
+        await StubSchemaUpgrades.InstallVersionOneAsync(context);
 
         var headerId = Guid.NewGuid();
         context.Set<AuditHeader>().Add(new AuditHeader

@@ -22,6 +22,22 @@ public class AuditHeader
 
 
 
+    /// <summary>
+    /// Zero-based position of this header within its <see cref="TransactionId"/>
+    /// group, in the order the change tracker reported the entities. Lets a consumer
+    /// show what happened first inside one <c>SaveChanges</c>, which
+    /// <see cref="AuditedAtUtc"/> cannot: that is captured once per save and is
+    /// identical across every header in the transaction.
+    /// </summary>
+    /// <remarks>
+    /// Rows written before this column existed read <c>0</c>, so on pre-upgrade data
+    /// zero means "unknown" as much as "first". Order within a transaction is only
+    /// meaningful where at least one sibling header is non-zero.
+    /// </remarks>
+    public int Ordinal { get; set; }
+
+
+
     /// <summary>UTC timestamp captured when the interceptor wrote the row.</summary>
     public DateTime AuditedAtUtc { get; set; }
 

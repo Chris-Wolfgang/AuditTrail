@@ -208,6 +208,11 @@ internal static class AuditCapture
                 "something set it back to null on the shared AuditOptions instance afterward.");
         var headers = new List<AuditHeader>(pending.Count);
 
+        // Position within this save, in the order the change tracker reported the
+        // entities. `pending` preserves that order from the ChangeTracker.Entries()
+        // walk, so the counter is the 0-based ordinal.
+        var ordinal = 0;
+
         foreach (var entry in pending)
         {
             var keyValues = entry.Operation == AuditOperation.Delete
@@ -218,6 +223,7 @@ internal static class AuditCapture
             {
                 HeaderId = guidProvider(),
                 TransactionId = transactionId,
+                Ordinal = ordinal++,
                 AuditedAtUtc = auditedAt,
                 UserId = user.UserId,
                 OnBehalfOfUserId = user.OnBehalfOfUserId,
@@ -227,25 +233,42 @@ internal static class AuditCapture
                 Operation = entry.Operation,
             };
 
-            foreach (var changed in entry.ChangedValues)
-            {
-                var detail = new AuditDetail
-                {
-                    HeaderId = header.HeaderId,
-                    ColumnName = changed.ColumnName,
-                };
-
-                var detailValue = ResolveDetailValue(entry, changed);
-
-                var columnWriter = new ColumnValueWriter(detail);
-                detail.ValueType = valueSerializer.Encode(detailValue, changed.ClrType, columnWriter);
-                header.Details.Add(detail);
-            }
+            AddDetails(header, entry, valueSerializer);
 
             headers.Add(header);
         }
 
         return headers;
+    }
+
+
+
+    /// <summary>
+    /// Builds the per-column detail rows for one header. Extracted from
+    /// <see cref="BuildHeaders"/> to keep that method within the length limit; it is
+    /// one logical step of the same loop, not a reusable operation.
+    /// </summary>
+    private static void AddDetails
+    (
+        AuditHeader header,
+        PendingAuditEntry entry,
+        IAuditValueSerializer valueSerializer
+    )
+    {
+        foreach (var changed in entry.ChangedValues)
+        {
+            var detail = new AuditDetail
+            {
+                HeaderId = header.HeaderId,
+                ColumnName = changed.ColumnName,
+            };
+
+            var detailValue = ResolveDetailValue(entry, changed);
+
+            var columnWriter = new ColumnValueWriter(detail);
+            detail.ValueType = valueSerializer.Encode(detailValue, changed.ClrType, columnWriter);
+            header.Details.Add(detail);
+        }
     }
 
 
