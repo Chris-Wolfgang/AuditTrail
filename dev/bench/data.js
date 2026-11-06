@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793972862944,
+  "lastUpdate": 1793980423396,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -13332,6 +13332,138 @@ window.BENCHMARK_DATA = {
             "value": 23963181.891304348,
             "unit": "ns",
             "range": "± 15010107.2918592"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "ce87e45e65127b674a25ced71a0868b1bfb2762a",
+          "message": "ci(pr): Stage 3 requires a coverage row for every test assembly it ran (#443)\n\nStages 1 and 2 record the assemblies that ran tests and fail the gate when\none of them has no row in the coverage report; Stage 3 (macOS) only\nchecked the modules that did appear, so an assembly that ran but\nrecorded nothing dropped out of its gate. Stage 3 now keeps the same\nledger (same IsTestProject / AssemblyName rule as Stage 1), fails when\nthe ledger is missing or empty, and fails on any ledgered assembly\nwithout a row (exact module-name match).\n\nRefs #371\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-06T10:45:05-05:00",
+          "tree_id": "20c03306d11f5ecb0cb5ca19e58e675be78a5360",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/ce87e45e65127b674a25ced71a0868b1bfb2762a"
+        },
+        "date": 1793980422298,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 397209,
+            "unit": "ns",
+            "range": "± 43553.871035134885"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 774389.8095238095,
+            "unit": "ns",
+            "range": "± 18317.035610652307"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 476369.24324324325,
+            "unit": "ns",
+            "range": "± 15999.248606324203"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 1445900,
+            "unit": "ns",
+            "range": "± 16124.016274433048"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 435974.1956521739,
+            "unit": "ns",
+            "range": "± 10988.053200200426"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 914352.6,
+            "unit": "ns",
+            "range": "± 24217.568402573645"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 627045.9230769231,
+            "unit": "ns",
+            "range": "± 4281.411088678172"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 4012238.4105263157,
+            "unit": "ns",
+            "range": "± 849926.7228360199"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1051397.55,
+            "unit": "ns",
+            "range": "± 20788.59717419751"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 10101239.909090908,
+            "unit": "ns",
+            "range": "± 2324660.025923576"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 910233.4666666667,
+            "unit": "ns",
+            "range": "± 9175.083821078124"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 6672712.4387755105,
+            "unit": "ns",
+            "range": "± 1207695.2842740994"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 1908972.4666666666,
+            "unit": "ns",
+            "range": "± 30508.252630270075"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 18661709.03030303,
+            "unit": "ns",
+            "range": "± 4215052.472887152"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 4060462.5384615385,
+            "unit": "ns",
+            "range": "± 48933.1435832187"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 22776307.95,
+            "unit": "ns",
+            "range": "± 16872630.421905722"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 2929568.785714286,
+            "unit": "ns",
+            "range": "± 16027.748501504275"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 19708955.72,
+            "unit": "ns",
+            "range": "± 10501360.078050215"
           }
         ]
       }
