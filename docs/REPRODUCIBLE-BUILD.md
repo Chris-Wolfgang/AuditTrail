@@ -48,6 +48,7 @@ stay on 10.0.x to reproduce a package built during the 0.2.0+ cycle.
    ```bash
    dotnet pack src/Wolfgang.AuditTrail.Abstractions/Wolfgang.AuditTrail.Abstractions.csproj -c Release -p:ContinuousIntegrationBuild=true
    dotnet pack src/Wolfgang.AuditTrail.EntityFrameworkCore/Wolfgang.AuditTrail.EntityFrameworkCore.csproj -c Release -p:ContinuousIntegrationBuild=true
+   dotnet pack src/Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql/Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.csproj -c Release -p:ContinuousIntegrationBuild=true
    dotnet pack src/Wolfgang.AuditTrail.TestKit.Xunit/Wolfgang.AuditTrail.TestKit.Xunit.csproj -c Release -p:ContinuousIntegrationBuild=true
    ```
 
