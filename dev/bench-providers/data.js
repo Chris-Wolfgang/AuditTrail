@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794002701234,
+  "lastUpdate": 1794002704078,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -6902,6 +6902,42 @@ window.BENCHMARK_DATA = {
             "value": 32044823.333333332,
             "unit": "ns",
             "range": "± 1811885.9304526688"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "8cff75f89b8cd2c49dc69cc8ac5cfacf54f3e850",
+          "message": "perf(capture): cache [NotAudited] reflection lookups (#479)\n\nAuditCapture called GetCustomAttribute<NotAuditedAttribute> once per\ntracked entry and once per property of every changed entity on every\nsave. Both results are constant per CLR type / IProperty, so they are\nnow cached in ConcurrentDictionaries next to ColumnNameCache, which also\ngains a comment on its (and their) lack of eviction (#412 nit).\n\nRefs #414\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-06T16:56:45-05:00",
+          "tree_id": "233eee411abc0a8d4af35288d669d6d99eae82bb",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/8cff75f89b8cd2c49dc69cc8ac5cfacf54f3e850"
+        },
+        "date": 1794002702917,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 9050440.666666666,
+            "unit": "ns",
+            "range": "± 257225.7690285585"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 40274676.166666664,
+            "unit": "ns",
+            "range": "± 6589501.504871695"
           }
         ]
       }
