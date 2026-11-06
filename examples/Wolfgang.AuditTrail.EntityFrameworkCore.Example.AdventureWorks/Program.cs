@@ -4,7 +4,7 @@ using Testcontainers.MsSql;
 using Wolfgang.AuditTrail;
 using Wolfgang.AuditTrail.Entities;
 using Wolfgang.AuditTrail.Example.AdventureWorks;
-using Wolfgang.AuditTrail.Serializers;
+using Wolfgang.AuditTrail.Schema;
 
 // AdventureWorks demo
 // -------------------
@@ -37,9 +37,7 @@ var connStr = new SqlConnectionStringBuilder(container.GetConnectionString())
 
 var auditOptions = new AuditOptions
 {
-    Schema              = "Audit",          // keeps audit tables out of AdventureWorks's own schemas
-    ValueSerializer     = new StringAuditValueSerializer(),
-    EntityKeySerializer = new PipeDelimitedEntityKeySerializer(),
+    Schema = "Audit",          // keeps audit tables out of AdventureWorks's own schemas
 };
 IAuditUserProvider userProvider = new StaticAuditUserProvider("hr-admin@adventure-works.com");
 
@@ -47,8 +45,12 @@ var dbOptions = new DbContextOptionsBuilder<AdventureWorksContext>()
     .UseSqlServer(connStr)
     .Options;
 
-// One-time: create the audit tables (and only the audit tables).
-await CreateAuditTablesAsync(connStr, auditOptions);
+// One-time: create the audit tables (and only the audit tables). The migrator
+// creates the "Audit" schema too, and leaves AdventureWorks's own tables alone.
+await using (var setup = new AdventureWorksContext(dbOptions, userProvider, auditOptions))
+{
+    await setup.MigrateAuditSchemaAsync();
+}
 
 // 1. Update — a salesperson gets married and changes her last name.
 Console.WriteLine();
@@ -148,19 +150,15 @@ Console.WriteLine($"✅  Done — {auditRowCount} audit rows captured atomically
 static async Task RestoreAdventureWorksAsync(MsSqlContainer container)
 {
     // AdventureWorks2022 .bak is published as a release asset on the SQL Server
-    // samples repo. We fetch it inside the container, then RESTORE.
-    var bakUrl = "https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorks2022.bak";
+    // samples repo. The SQL Server image ships no curl/wget, so download it on the
+    // host and copy it into the container, then RESTORE.
+    var bakUrl = new Uri("https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorks2022.bak");
     var bakPath = "/var/opt/mssql/backup/AdventureWorks2022.bak";
 
-    var prep = await container.ExecAsync(new[]
+    using (var http = new HttpClient())
     {
-        "bash",
-        "-c",
-        $"mkdir -p /var/opt/mssql/backup && curl -fsSL '{bakUrl}' -o '{bakPath}'",
-    });
-    if (prep.ExitCode != 0)
-    {
-        throw new InvalidOperationException($"Failed to download AdventureWorks .bak: {prep.Stderr}");
+        var bak = await http.GetByteArrayAsync(bakUrl);
+        await container.CopyAsync(bak, bakPath);
     }
 
     // RESTORE DATABASE ... WITH MOVE so the MDF/LDF land where SQL Server expects.
@@ -190,32 +188,6 @@ static async Task RestoreAdventureWorksAsync(MsSqlContainer container)
     {
         throw new InvalidOperationException($"AdventureWorks restore failed: {restore.Stderr}");
     }
-}
-
-
-
-static async Task CreateAuditTablesAsync(string connectionString, AuditOptions options)
-{
-    // Use an audit-only DbContext so EnsureCreatedAsync emits CREATE TABLE for
-    // *just* AuditHeader / AuditDetail. Running this against AdventureWorksContext
-    // (which also has Person + EmailAddress) would try to create those tables
-    // too and fail because the restored .bak already has them.
-    //
-    // The schema is created up-front because EnsureCreatedAsync won't create the
-    // schema itself, only the tables under it. The schema name is read from the
-    // supplied options.Schema so it stays in sync with whatever the consumer
-    // configured rather than being hard-coded here.
-    var schema   = options.Schema ?? "dbo";
-    var setupOpts = new DbContextOptionsBuilder<AuditOnlyContext>()
-        .UseSqlServer(connectionString)
-        .Options;
-
-    await using var setup = new AuditOnlyContext(setupOpts, options);
-#pragma warning disable EF1002 // Schema name comes from in-process AuditOptions, not user input.
-    await setup.Database.ExecuteSqlRawAsync(
-        $"IF SCHEMA_ID('{schema}') IS NULL EXEC('CREATE SCHEMA [{schema}]')");
-#pragma warning restore EF1002
-    await setup.Database.EnsureCreatedAsync();
 }
 
 
