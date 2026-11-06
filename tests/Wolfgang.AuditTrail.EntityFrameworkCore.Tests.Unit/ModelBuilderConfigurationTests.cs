@@ -180,17 +180,18 @@ public sealed class ModelBuilderConfigurationTests : IDisposable
 
 
     [Fact]
-    public void Header_has_exactly_the_three_configured_indexes()
+    public void Header_has_exactly_the_four_configured_indexes()
     {
         var indexes = Header().GetIndexes()
             .Select(i => string.Join(",", i.Properties.Select(p => p.Name)))
             .ToHashSet(StringComparer.Ordinal);
 
         Assert.Contains(nameof(AuditHeader.TransactionId), indexes);
+        Assert.Contains($"{nameof(AuditHeader.TransactionId)},{nameof(AuditHeader.Ordinal)}", indexes);
         Assert.Contains(nameof(AuditHeader.AuditedAtUtc), indexes);
         Assert.Contains($"{nameof(AuditHeader.EntityType)},{nameof(AuditHeader.EntityKey)}", indexes);
-        // Exactly these three — no extra index slips in unnoticed.
-        Assert.Equal(3, indexes.Count);
+        // Exactly these four — no extra index slips in unnoticed.
+        Assert.Equal(4, indexes.Count);
     }
 
 
