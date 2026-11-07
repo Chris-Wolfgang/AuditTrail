@@ -66,5 +66,5 @@ First run takes ~60–90 sec because it pulls the SQL Server image and restores 
 ## What this does NOT demonstrate (intentionally)
 
 - The auto-transaction interceptor model (the `AdventureWorksContext` derives from `AuditingDbContext` for simplicity). For an interceptor example see [the WebApi example](../Wolfgang.AuditTrail.EntityFrameworkCore.Example.WebApi).
-- `[NotAudited]` opt-out — no example project currently demonstrates this; see the attribute's own XML doc in `Wolfgang.AuditTrail.Abstractions` for usage.
+- `[NotAudited]` opt-out — the [Console example](../Wolfgang.AuditTrail.EntityFrameworkCore.Example.Console) shows it on `Product.InternalNotes`.
 - The `on-behalf-of` pattern — the [WebApi example](../Wolfgang.AuditTrail.EntityFrameworkCore.Example.WebApi) covers that.
