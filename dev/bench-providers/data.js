@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794021422176,
+  "lastUpdate": 1794061041456,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -4884,6 +4884,78 @@ window.BENCHMARK_DATA = {
             "value": 624482690.5,
             "unit": "ns",
             "range": "± 676835125.1319543"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "f02bfa00affebc7580cde98dc558a50ad0566ffc",
+          "message": "fix(security): lift mcp to 1.30.0 in the semgrep lock (#505)\n\nDependabot alerts 41-43 and 45-47 (GHSA-w4fh-qvv9-3v23,\nGHSA-5h93-6whr-6q8j, GHSA-rwrf-2pqf-9j8j; mcp < 1.30.0). semgrep pins\nmcp==1.29.0 through its latest release (1.184.0), so the uv --override\nfile lifts it, the same way it already lifts opentelemetry-api.\nsemgrep.yaml installs with --no-deps, so the override is what CI installs.\n\nCloses #461, #462, #463, #464, #465, #466.\n\nCo-authored-by: Claude Fable 5.1 <noreply@anthropic.com>",
+          "timestamp": "2026-11-07T09:03:53-05:00",
+          "tree_id": "2710b0d1cce7973ed1daf326f523a0c1ac0c1796",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/f02bfa00affebc7580cde98dc558a50ad0566ffc"
+        },
+        "date": 1794061038848,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3570544.3333333335,
+            "unit": "ns",
+            "range": "± 80546.52543923502"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 22398224.333333332,
+            "unit": "ns",
+            "range": "± 2119547.140859182"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 5397472.333333333,
+            "unit": "ns",
+            "range": "± 454149.8022154511"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 27179309.5,
+            "unit": "ns",
+            "range": "± 477390.88638871186"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 8375455.5,
+            "unit": "ns",
+            "range": "± 5572115.265316844"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 33393242,
+            "unit": "ns",
+            "range": "± 963082.6590708608"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 21792152.666666668,
+            "unit": "ns",
+            "range": "± 1391751.3458841466"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 119579312.66666667,
+            "unit": "ns",
+            "range": "± 39738899.01551035"
           }
         ]
       }
