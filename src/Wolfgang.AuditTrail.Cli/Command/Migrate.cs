@@ -71,9 +71,9 @@ internal class Migrate
 
             await runner.RunAsync(options, console, cancellationToken).ConfigureAwait(false);
         }
-        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        catch (OperationCanceledException e) when (cancellationToken.IsCancellationRequested)
         {
-            logger.LogWarning("{Command} cancelled", GetType().Name);
+            logger.LogWarning(e, "{Command} cancelled", GetType().Name);
             WriteError(console, "Cancelled.");
             return ExitCode.Cancelled;
         }
