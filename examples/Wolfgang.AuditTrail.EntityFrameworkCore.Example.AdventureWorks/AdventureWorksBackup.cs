@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace Wolfgang.AuditTrail.Example.AdventureWorks;
 
 
@@ -37,8 +35,8 @@ internal static class AdventureWorksBackup
             return new Uri(configured);
         }
 
-        await using var stream = Assembly
-            .GetExecutingAssembly()
+        await using var stream = typeof(AdventureWorksBackup)
+            .Assembly
             .GetManifestResourceStream(DefaultUrlResource)
             ?? throw new InvalidOperationException($"Embedded resource '{DefaultUrlResource}' is missing.");
         using var reader = new StreamReader(stream);
