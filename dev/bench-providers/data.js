@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794061041456,
+  "lastUpdate": 1794061045251,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -7118,6 +7118,42 @@ window.BENCHMARK_DATA = {
             "value": 90547903.66666667,
             "unit": "ns",
             "range": "± 10037012.23611939"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "f02bfa00affebc7580cde98dc558a50ad0566ffc",
+          "message": "fix(security): lift mcp to 1.30.0 in the semgrep lock (#505)\n\nDependabot alerts 41-43 and 45-47 (GHSA-w4fh-qvv9-3v23,\nGHSA-5h93-6whr-6q8j, GHSA-rwrf-2pqf-9j8j; mcp < 1.30.0). semgrep pins\nmcp==1.29.0 through its latest release (1.184.0), so the uv --override\nfile lifts it, the same way it already lifts opentelemetry-api.\nsemgrep.yaml installs with --no-deps, so the override is what CI installs.\n\nCloses #461, #462, #463, #464, #465, #466.\n\nCo-authored-by: Claude Fable 5.1 <noreply@anthropic.com>",
+          "timestamp": "2026-11-07T09:03:53-05:00",
+          "tree_id": "2710b0d1cce7973ed1daf326f523a0c1ac0c1796",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/f02bfa00affebc7580cde98dc558a50ad0566ffc"
+        },
+        "date": 1794061043909,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 73929703.66666667,
+            "unit": "ns",
+            "range": "± 101004394.73065315"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 63390695,
+            "unit": "ns",
+            "range": "± 2699534.372406471"
           }
         ]
       }
