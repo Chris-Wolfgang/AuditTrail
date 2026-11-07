@@ -12,6 +12,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Where the AdventureWorks2022 backup is downloaded from; read by AdventureWorksBackup. -->
+    <EmbeddedResource Include="adventureworks-backup-url.txt" LogicalName="adventureworks-backup-url" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Wolfgang.AuditTrail.EntityFrameworkCore\Wolfgang.AuditTrail.EntityFrameworkCore.csproj" />
   </ItemGroup>
 

@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace Wolfgang.AuditTrail.Example.AdventureWorks;
 
 
@@ -16,10 +18,10 @@ internal static class AdventureWorksBackup
 
 
 
-    // AdventureWorks2022 .bak is published as a release asset on the SQL Server
-    // samples repo.
-    private const string DefaultUrl =
-        "https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorks2022.bak";
+    // The default location (the release asset on the SQL Server samples repo) lives
+    // in an embedded text file rather than in code, so the address is data that can
+    // be changed without touching the program.
+    private const string DefaultUrlResource = "adventureworks-backup-url";
 
 
 
@@ -27,19 +29,28 @@ internal static class AdventureWorksBackup
 
 
 
-    internal static Uri Url
+    internal static async Task<Uri> ResolveUrlAsync()
     {
-        get
+        var configured = Environment.GetEnvironmentVariable(UrlVariable);
+        if (!string.IsNullOrWhiteSpace(configured))
         {
-            var configured = Environment.GetEnvironmentVariable(UrlVariable);
-            return new Uri(string.IsNullOrWhiteSpace(configured) ? DefaultUrl : configured);
+            return new Uri(configured);
         }
+
+        await using var stream = Assembly
+            .GetExecutingAssembly()
+            .GetManifestResourceStream(DefaultUrlResource)
+            ?? throw new InvalidOperationException($"Embedded resource '{DefaultUrlResource}' is missing.");
+        using var reader = new StreamReader(stream);
+        var text = await reader.ReadToEndAsync();
+
+        return new Uri(text.Trim());
     }
 
 
 
-    internal static Task<byte[]> DownloadAsync()
+    internal static async Task<byte[]> DownloadAsync()
     {
-        return Http.GetByteArrayAsync(Url);
+        return await Http.GetByteArrayAsync(await ResolveUrlAsync());
     }
 }
