@@ -42,7 +42,7 @@ public abstract class AuditSchemaMigratorIntegrationTestsBase
 
 
 
-    private static AuditOptions BuildOptions(string? schema = null, string? header = null, string? detail = null) => new()
+    protected static AuditOptions BuildOptions(string? schema = null, string? header = null, string? detail = null) => new()
     {
         Schema              = schema,
         HeaderTableName     = header ?? "AuditHeader",
