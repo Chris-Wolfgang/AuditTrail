@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794061045251,
+  "lastUpdate": 1794064407946,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -4956,6 +4956,78 @@ window.BENCHMARK_DATA = {
             "value": 119579312.66666667,
             "unit": "ns",
             "range": "± 39738899.01551035"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c1a5e345ef50ec727ef5ec6cbc2676bfc3cde5cd",
+          "message": "docs: describe shipped work as shipped, drop hard-coded 90% gates (#499)\n\n* test(schema): freeze the version-1 install DDL per provider\n\nContent of the former #486, rebuilt on test/422-test-suite-cleanup-v2-v3 without the draft #480 underneath.\n\nCo-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\n\n* test(schema): cover DatabaseSchemaText's unique-constraint rendering\n\nThe audit schema declares no unique constraint, so no shared fact reached the\nline that renders one and Stage 1's 100% test-assembly gate failed at 98% for\nSchema.Tests.Integration (line 97 of DatabaseSchemaText.cs). Add a SQLite fact\nthat describes a table with a UNIQUE constraint and asserts it is rendered.\n\nCo-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\n\n* docs: describe shipped work as shipped, drop hard-coded 90% gates\n\nContent of the former #487, rebuilt on test/freeze-v1-install-scripts-v2-v3 without the draft #480 underneath.\n\nCo-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-07T10:05:30-05:00",
+          "tree_id": "b367215de0eefd3a6134015706318301e04a3b6c",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/c1a5e345ef50ec727ef5ec6cbc2676bfc3cde5cd"
+        },
+        "date": 1794064405501,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 2440433.6666666665,
+            "unit": "ns",
+            "range": "± 8271.79861537582"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 14555863.333333334,
+            "unit": "ns",
+            "range": "± 903386.8884682427"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 5231699.5,
+            "unit": "ns",
+            "range": "± 189591.4816546355"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 33320043.166666668,
+            "unit": "ns",
+            "range": "± 413806.37815448584"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7035546.166666667,
+            "unit": "ns",
+            "range": "± 4707105.46176101"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 27298061.333333332,
+            "unit": "ns",
+            "range": "± 979482.7781611749"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 16981136.333333332,
+            "unit": "ns",
+            "range": "± 568533.664409007"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 72647039.5,
+            "unit": "ns",
+            "range": "± 2738193.596576217"
           }
         ]
       }
