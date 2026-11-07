@@ -17,8 +17,9 @@ public sealed class AuditSchemaVersion
     public int Id { get; set; } = 1;
 
     /// <summary>
-    /// The installed schema version. Increments only when a new
-    /// <c>AuditSchemaSnapshotV{N}</c> is shipped.
+    /// The installed schema version. Increments only when a release bumps
+    /// <see cref="AuditSchemaConstants.CurrentSchemaVersion"/> and ships the
+    /// matching upgrade step.
     /// </summary>
     public int Version { get; set; }
 }
