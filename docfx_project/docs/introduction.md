@@ -4,17 +4,22 @@ Welcome to Wolfgang.AuditTrail!
 
 ## Overview
 
-A library that add tracking of inserts, updates and deletes to apps that use Entity Framework
+Wolfgang.AuditTrail adds an audit trail to applications that use Entity Framework Core. Every Insert, Update and Delete that goes through `SaveChanges` / `SaveChangesAsync` is captured from the `ChangeTracker` and written as:
 
-<!-- Add your project overview here -->
+- one **`AuditHeader`** row per changed entity (operation, entity type and key, user, timestamp, and a `TransactionId` shared by everything one save changed), and
+- one **`AuditDetail`** row per changed column (column name, value, value type).
+
+The audit rows are written **in the same transaction** as the user's save, through EF Core's `IExecutionStrategy`, so either both commit or both roll back. Call sites do not change.
 
 ## Key Features
 
-<!-- List the main features of your project. For example:
-- Feature 1: Description
-- Feature 2: Description
-- Feature 3: Description
--->
+- **Atomic audit writes** - no orphaned audit history after a rollback.
+- **Two integration models** - derive from `AuditingDbContext`, or attach the auto-transaction `AuditSaveChangesInterceptor` to a context that already has another base class (for example `IdentityDbContext<TUser>`).
+- **Opt-out with `[NotAudited]`** - on an entity class to exclude the entity, or on a property to exclude one column.
+- **Pluggable serializers** - `IAuditValueSerializer` (detail values) and `IAuditEntityKeySerializer` (entity keys); the defaults are `StringAuditValueSerializer` and `PipeDelimitedEntityKeySerializer`.
+- **Configurable schema and table names** - `AuditOptions.Schema`, `HeaderTableName`, `DetailTableName`.
+- **Schema install and upgrade** - `MigrateAuditSchemaAsync()` creates or upgrades just the audit tables (also available as the `audittrail migrate` CLI command, built from source).
+- **Optional PostgreSQL bulk path** - `Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql` writes large batches with `COPY` above `AuditOptions.BulkInsertRowThreshold`.
 
 ## Getting Help
 
