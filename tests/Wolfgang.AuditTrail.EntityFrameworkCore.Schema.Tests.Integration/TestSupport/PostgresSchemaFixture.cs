@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 using Npgsql;
 using NpgsqlTypes;
 using Testcontainers.PostgreSql;
@@ -25,10 +24,6 @@ public sealed class PostgresSchemaFixture : IAsyncLifetime, ISchemaProviderFixtu
     // this provider always has a schema to place the tables in. Only MySQL,
     // where the schema is the database, returns null.
     public string CustomSchema => "audit";
-
-#pragma warning disable EF1001 // Provider design-time services are the documented way to reach IDatabaseModelFactory outside `dotnet ef`.
-    public IDesignTimeServices DesignTimeServices { get; } = new Npgsql.EntityFrameworkCore.PostgreSQL.Design.Internal.NpgsqlDesignTimeServices();
-#pragma warning restore EF1001
 
 
 

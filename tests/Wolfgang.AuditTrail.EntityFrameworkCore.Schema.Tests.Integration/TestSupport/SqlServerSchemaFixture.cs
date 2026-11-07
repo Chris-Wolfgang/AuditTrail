@@ -1,6 +1,5 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 using Testcontainers.MsSql;
 using Wolfgang.AuditTrail;
 using Wolfgang.AuditTrail.Schema;
@@ -23,10 +22,6 @@ public sealed class SqlServerSchemaFixture : IAsyncLifetime, ISchemaProviderFixt
     // this provider always has a schema to place the tables in. Only MySQL,
     // where the schema is the database, returns null.
     public string CustomSchema => "audit";
-
-#pragma warning disable EF1001 // Provider design-time services are the documented way to reach IDatabaseModelFactory outside `dotnet ef`.
-    public IDesignTimeServices DesignTimeServices { get; } = new Microsoft.EntityFrameworkCore.SqlServer.Design.Internal.SqlServerDesignTimeServices();
-#pragma warning restore EF1001
 
 
 
