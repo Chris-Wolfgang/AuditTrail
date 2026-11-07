@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 using MySqlConnector;
 using Testcontainers.MySql;
 using Wolfgang.AuditTrail;
@@ -39,10 +38,6 @@ public sealed class MySqlSchemaFixture : IAsyncLifetime, ISchemaProviderFixture
     public string ProviderName => "MySQL";
 
     public string? CustomSchema => null;
-
-#pragma warning disable EF1001 // Provider design-time services are the documented way to reach IDatabaseModelFactory outside `dotnet ef`.
-    public IDesignTimeServices DesignTimeServices { get; } = new Pomelo.EntityFrameworkCore.MySql.Design.Internal.MySqlDesignTimeServices();
-#pragma warning restore EF1001
 
 
 
