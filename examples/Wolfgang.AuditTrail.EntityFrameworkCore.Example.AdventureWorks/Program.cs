@@ -149,17 +149,12 @@ Console.WriteLine($"✅  Done — {auditRowCount} audit rows captured atomically
 
 static async Task RestoreAdventureWorksAsync(MsSqlContainer container)
 {
-    // AdventureWorks2022 .bak is published as a release asset on the SQL Server
-    // samples repo. The SQL Server image ships no curl/wget, so download it on the
-    // host and copy it into the container, then RESTORE.
-    var bakUrl = new Uri("https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorks2022.bak");
+    // The SQL Server image ships no curl/wget, so download the backup on the host
+    // and copy it into the container, then RESTORE.
     var bakPath = "/var/opt/mssql/backup/AdventureWorks2022.bak";
 
-    using (var http = new HttpClient())
-    {
-        var bak = await http.GetByteArrayAsync(bakUrl);
-        await container.CopyAsync(bak, bakPath);
-    }
+    var bak = await AdventureWorksBackup.DownloadAsync();
+    await container.CopyAsync(bak, bakPath);
 
     // RESTORE DATABASE ... WITH MOVE so the MDF/LDF land where SQL Server expects.
     var sql = $@"
