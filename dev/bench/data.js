@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794021424969,
+  "lastUpdate": 1794061048914,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -13728,6 +13728,138 @@ window.BENCHMARK_DATA = {
             "value": 22291526.976744186,
             "unit": "ns",
             "range": "± 7566422.13342127"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "f02bfa00affebc7580cde98dc558a50ad0566ffc",
+          "message": "fix(security): lift mcp to 1.30.0 in the semgrep lock (#505)\n\nDependabot alerts 41-43 and 45-47 (GHSA-w4fh-qvv9-3v23,\nGHSA-5h93-6whr-6q8j, GHSA-rwrf-2pqf-9j8j; mcp < 1.30.0). semgrep pins\nmcp==1.29.0 through its latest release (1.184.0), so the uv --override\nfile lifts it, the same way it already lifts opentelemetry-api.\nsemgrep.yaml installs with --no-deps, so the override is what CI installs.\n\nCloses #461, #462, #463, #464, #465, #466.\n\nCo-authored-by: Claude Fable 5.1 <noreply@anthropic.com>",
+          "timestamp": "2026-11-07T09:03:53-05:00",
+          "tree_id": "2710b0d1cce7973ed1daf326f523a0c1ac0c1796",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/f02bfa00affebc7580cde98dc558a50ad0566ffc"
+        },
+        "date": 1794061047525,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 488927.51075268816,
+            "unit": "ns",
+            "range": "± 63632.86617752869"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1018150.3333333334,
+            "unit": "ns",
+            "range": "± 15294.478152339196"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 735365.7804878049,
+            "unit": "ns",
+            "range": "± 63475.69724599171"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2004487.5714285714,
+            "unit": "ns",
+            "range": "± 17388.749954913535"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 515704.90625,
+            "unit": "ns",
+            "range": "± 15565.114814368566"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1211912.205882353,
+            "unit": "ns",
+            "range": "± 24224.78018931417"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 979660.6428571428,
+            "unit": "ns",
+            "range": "± 13665.064910803882"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 6826013.263157895,
+            "unit": "ns",
+            "range": "± 921783.8476091174"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1845252.7142857143,
+            "unit": "ns",
+            "range": "± 23025.69937525851"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 13239982.79,
+            "unit": "ns",
+            "range": "± 1827225.5397741832"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1467330.8,
+            "unit": "ns",
+            "range": "± 12722.252822739936"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 11142484.041666666,
+            "unit": "ns",
+            "range": "± 547420.7943566655"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 3727417.9615384615,
+            "unit": "ns",
+            "range": "± 22962.306038430987"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 29168879.328571428,
+            "unit": "ns",
+            "range": "± 951956.4648351213"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 7821210.428571428,
+            "unit": "ns",
+            "range": "± 34240.7662246094"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 15507636.090361446,
+            "unit": "ns",
+            "range": "± 5104251.456921109"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 7167153.230769231,
+            "unit": "ns",
+            "range": "± 70860.40573215511"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 21933763.388888888,
+            "unit": "ns",
+            "range": "± 14988699.251804711"
           }
         ]
       }
