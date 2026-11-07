@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794021418878,
+  "lastUpdate": 1794021422176,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -7010,6 +7010,42 @@ window.BENCHMARK_DATA = {
             "value": 40274676.166666664,
             "unit": "ns",
             "range": "± 6589501.504871695"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "9449e52f660bf2a0ebaf4a79be23b828cd68c717",
+          "message": "test: drop duplicate tests and a stale TODO, make the smoke test deterministic (#497)\n\nContent of the former #485, rebuilt on chore/420-cli-hygiene-v2-v3 without the draft #480 underneath.\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-06T22:07:50-05:00",
+          "tree_id": "1b824eec9523cc764a869a8620152328ebb86868",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/9449e52f660bf2a0ebaf4a79be23b828cd68c717"
+        },
+        "date": 1794021420977,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 18182140.833333332,
+            "unit": "ns",
+            "range": "± 793521.6385054243"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 90547903.66666667,
+            "unit": "ns",
+            "range": "± 10037012.23611939"
           }
         ]
       }
