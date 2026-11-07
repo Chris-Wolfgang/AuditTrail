@@ -30,25 +30,8 @@ public class AuditSaveChangesInterceptorEdgeCasesTests
 
 
 
-    // ── Constructor guards ──────────────────────────────────────────────────
-
-    [Fact]
-    public void Constructor_throws_when_user_provider_is_null()
-    {
-        Assert.Throws<ArgumentNullException>(() =>
-            new AuditSaveChangesInterceptor(userProvider: null!, ValidOptions()));
-    }
-
-
-
-    [Fact]
-    public void Constructor_throws_when_options_is_null()
-    {
-        Assert.Throws<ArgumentNullException>(() =>
-            new AuditSaveChangesInterceptor(new StaticAuditUserProvider("u"), options: null!));
-    }
-
-
+    // Constructor null guards are covered by NullArgumentGuardTests
+    // (Interceptor_ctor_null_userProvider_throws / Interceptor_ctor_null_options_throws).
 
     [Fact]
     public void Constructor_defaults_value_serializer_when_null()
