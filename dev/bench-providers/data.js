@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794064407946,
+  "lastUpdate": 1794064411018,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -7226,6 +7226,42 @@ window.BENCHMARK_DATA = {
             "value": 63390695,
             "unit": "ns",
             "range": "± 2699534.372406471"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c1a5e345ef50ec727ef5ec6cbc2676bfc3cde5cd",
+          "message": "docs: describe shipped work as shipped, drop hard-coded 90% gates (#499)\n\n* test(schema): freeze the version-1 install DDL per provider\n\nContent of the former #486, rebuilt on test/422-test-suite-cleanup-v2-v3 without the draft #480 underneath.\n\nCo-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\n\n* test(schema): cover DatabaseSchemaText's unique-constraint rendering\n\nThe audit schema declares no unique constraint, so no shared fact reached the\nline that renders one and Stage 1's 100% test-assembly gate failed at 98% for\nSchema.Tests.Integration (line 97 of DatabaseSchemaText.cs). Add a SQLite fact\nthat describes a table with a UNIQUE constraint and asserts it is rendered.\n\nCo-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\n\n* docs: describe shipped work as shipped, drop hard-coded 90% gates\n\nContent of the former #487, rebuilt on test/freeze-v1-install-scripts-v2-v3 without the draft #480 underneath.\n\nCo-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-07T10:05:30-05:00",
+          "tree_id": "b367215de0eefd3a6134015706318301e04a3b6c",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/c1a5e345ef50ec727ef5ec6cbc2676bfc3cde5cd"
+        },
+        "date": 1794064409880,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 8787038.166666666,
+            "unit": "ns",
+            "range": "± 455747.98081871227"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 38176623,
+            "unit": "ns",
+            "range": "± 2195263.9195297225"
           }
         ]
       }
