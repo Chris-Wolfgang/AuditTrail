@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794064411018,
+  "lastUpdate": 1794100481453,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -5028,6 +5028,78 @@ window.BENCHMARK_DATA = {
             "value": 72647039.5,
             "unit": "ns",
             "range": "± 2738193.596576217"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "fe44cd1db4ecd65ba5b3e3cefe1b30e811f25669",
+          "message": "chore(templates): drop issue-template labels that do not exist (#503)\n\nContent of the former #491, rebuilt on examples/423-examples-current-api-v2-v3 without the draft #480 underneath.\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-07T20:05:26-05:00",
+          "tree_id": "6f9d7866c5032a75874fd405ca1638dffcccbe5d",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/fe44cd1db4ecd65ba5b3e3cefe1b30e811f25669"
+        },
+        "date": 1794100478620,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6865456.166666667,
+            "unit": "ns",
+            "range": "± 210872.47120080263"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 46998184.833333336,
+            "unit": "ns",
+            "range": "± 10096495.038141917"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6657352.333333333,
+            "unit": "ns",
+            "range": "± 224602.76324287136"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 49349763.166666664,
+            "unit": "ns",
+            "range": "± 9290481.029206848"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12010003.166666666,
+            "unit": "ns",
+            "range": "± 7070510.590491774"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 49580835.833333336,
+            "unit": "ns",
+            "range": "± 759302.8069382684"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 282754383.3333333,
+            "unit": "ns",
+            "range": "± 209512428.8771028"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 139342321.33333334,
+            "unit": "ns",
+            "range": "± 14508055.268479725"
           }
         ]
       }
