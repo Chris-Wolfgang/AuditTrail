@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794100481453,
+  "lastUpdate": 1794100484866,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -7334,6 +7334,42 @@ window.BENCHMARK_DATA = {
             "value": 38176623,
             "unit": "ns",
             "range": "± 2195263.9195297225"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "fe44cd1db4ecd65ba5b3e3cefe1b30e811f25669",
+          "message": "chore(templates): drop issue-template labels that do not exist (#503)\n\nContent of the former #491, rebuilt on examples/423-examples-current-api-v2-v3 without the draft #480 underneath.\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-07T20:05:26-05:00",
+          "tree_id": "6f9d7866c5032a75874fd405ca1638dffcccbe5d",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/fe44cd1db4ecd65ba5b3e3cefe1b30e811f25669"
+        },
+        "date": 1794100483495,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 18119425.333333332,
+            "unit": "ns",
+            "range": "± 129919.02113367901"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 81893352.33333333,
+            "unit": "ns",
+            "range": "± 606452.046039366"
           }
         ]
       }
