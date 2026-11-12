@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794445634508,
+  "lastUpdate": 1794445638076,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -7442,6 +7442,42 @@ window.BENCHMARK_DATA = {
             "value": 81893352.33333333,
             "unit": "ns",
             "range": "± 606452.046039366"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "eda8492f5f80d29c27fc9ca7ce8978d019b9d1d6",
+          "message": "ci(pr): install the pinned libssl1.1 .deb directly instead of through apt (#516)\n\n* ci(pr): install the pinned libssl1.1 .deb directly instead of through apt\n\nStage 1 failed fleet-wide when the runners could not resolve the Ubuntu\nmirrors. Fetch the SHA-256-pinned focal-security .deb from four mirrors in\ndifferent DNS zones and install it with dpkg; no apt-get update runs.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* ci: re-trigger checks after the GitHub Actions outage\n\nThe pull_request and pull_request_target runs created when this PR was\nopened (during the 2026-11-11 Actions outage) stayed queued and never\nstarted. This commit changes no files.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-11T19:58:13-05:00",
+          "tree_id": "3b8ef65fdbb4c3125445d827f699b28957a5ff3e",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/eda8492f5f80d29c27fc9ca7ce8978d019b9d1d6"
+        },
+        "date": 1794445636659,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17228206.333333332,
+            "unit": "ns",
+            "range": "± 322861.0507638438"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 82933675.16666667,
+            "unit": "ns",
+            "range": "± 2447566.339988016"
           }
         ]
       }
