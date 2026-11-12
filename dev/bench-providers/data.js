@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794489195368,
+  "lastUpdate": 1794493125323,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -5244,6 +5244,78 @@ window.BENCHMARK_DATA = {
             "value": 344891983.1666667,
             "unit": "ns",
             "range": "± 241817238.35705864"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "453f679050b3b497e156e84c2881b999ee334263",
+          "message": "ci(stryker): adopt the template workflow and pin dotnet-stryker 5.1.0 in the tool manifest (#514)\n\nThe old workflow installed the latest global dotnet-stryker and, with no root\nstryker-config.json, ran Stryker with defaults in every tests/**/*Test*.csproj\nfolder. The template workflow restores the pinned tool from\n.config/dotnet-tools.json, runs the root config and every\ntests/**/stryker-config.json from its own directory, gates pull requests that\ntouch src/ or tests/, and picks ubuntu-latest when every config pins a modern\ntarget framework and no project targets .NET Framework.\n\nProtected files only (Protected Files Guard); the config move that this\nworkflow needs is a separate pull request.\n\nCo-authored-by: Claude Fable 5.1 <noreply@anthropic.com>",
+          "timestamp": "2026-11-12T09:09:32-05:00",
+          "tree_id": "a456e3659fc1a6f54f5cc3aee8907c4bc21e0e88",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/453f679050b3b497e156e84c2881b999ee334263"
+        },
+        "date": 1794493123101,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3593944,
+            "unit": "ns",
+            "range": "± 84183.88259637351"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 21948196.666666668,
+            "unit": "ns",
+            "range": "± 2035129.1064923457"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 5045336.5,
+            "unit": "ns",
+            "range": "± 596180.1254285487"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 28449905,
+            "unit": "ns",
+            "range": "± 549236.0515543385"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 8746859.166666666,
+            "unit": "ns",
+            "range": "± 6060170.329859577"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 28885466.333333332,
+            "unit": "ns",
+            "range": "± 239906.72367679348"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 54991934.166666664,
+            "unit": "ns",
+            "range": "± 66775231.58675396"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 149498285.33333334,
+            "unit": "ns",
+            "range": "± 54682422.1856104"
           }
         ]
       }
