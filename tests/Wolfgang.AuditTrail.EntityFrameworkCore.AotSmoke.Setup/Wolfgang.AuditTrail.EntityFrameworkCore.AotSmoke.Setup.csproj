@@ -57,7 +57,7 @@
       transitively via Microsoft.EntityFrameworkCore.Tasks; pinning below
       that trips NU1605 (package downgrade, warning as error).
     -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -68,8 +68,8 @@
       CVE-2026-96960 denial-of-service advisories, which trip NU1902/NU1903
       (warning as error). Override both to the patched 10.0.x release.
     -->
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.13" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.14" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
   </ItemGroup>
 
 </Project>

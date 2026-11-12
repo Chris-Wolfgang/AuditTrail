@@ -116,7 +116,7 @@
       framework. The net8.0 slot needs no equivalent: Pomelo reaches MySQL
       through MySqlConnector, which does not depend on Pkcs at all.
     -->
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
 
     <!--
       IBM.EntityFrameworkCore bundles a Windows-only native Db2 CLI driver

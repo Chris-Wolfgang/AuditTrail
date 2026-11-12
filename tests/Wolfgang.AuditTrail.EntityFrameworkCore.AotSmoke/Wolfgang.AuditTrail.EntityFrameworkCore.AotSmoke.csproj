@@ -113,7 +113,7 @@
       Design >= 10.0.11 transitively; pinning below that trips NU1605
       (package downgrade, warning as error).
     -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -124,8 +124,8 @@
       CVE-2026-96960 denial-of-service advisories, which trip NU1902/NU1903
       (warning as error). Override both to the patched 10.0.x release.
     -->
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.13" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.14" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
     <!--
       MSBuild integration that runs query precompilation (and regenerates the
       compiled model) at publish time. PrivateAssets=all: a dev/build-time
@@ -133,7 +133,7 @@
       references this project anyway, but matches the repo's convention for
       build-only packages).
     -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks" Version="10.0.13">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks" Version="10.0.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
