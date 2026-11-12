@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794493125323,
+  "lastUpdate": 1794493128553,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -7658,6 +7658,42 @@ window.BENCHMARK_DATA = {
             "value": 80264283.66666667,
             "unit": "ns",
             "range": "± 1112096.3876132022"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "453f679050b3b497e156e84c2881b999ee334263",
+          "message": "ci(stryker): adopt the template workflow and pin dotnet-stryker 5.1.0 in the tool manifest (#514)\n\nThe old workflow installed the latest global dotnet-stryker and, with no root\nstryker-config.json, ran Stryker with defaults in every tests/**/*Test*.csproj\nfolder. The template workflow restores the pinned tool from\n.config/dotnet-tools.json, runs the root config and every\ntests/**/stryker-config.json from its own directory, gates pull requests that\ntouch src/ or tests/, and picks ubuntu-latest when every config pins a modern\ntarget framework and no project targets .NET Framework.\n\nProtected files only (Protected Files Guard); the config move that this\nworkflow needs is a separate pull request.\n\nCo-authored-by: Claude Fable 5.1 <noreply@anthropic.com>",
+          "timestamp": "2026-11-12T09:09:32-05:00",
+          "tree_id": "a456e3659fc1a6f54f5cc3aee8907c4bc21e0e88",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/453f679050b3b497e156e84c2881b999ee334263"
+        },
+        "date": 1794493127484,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 13629770.666666666,
+            "unit": "ns",
+            "range": "± 1601999.764840911"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 66990709.166666664,
+            "unit": "ns",
+            "range": "± 8719664.987811765"
           }
         ]
       }
