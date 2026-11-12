@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794511247269,
+  "lastUpdate": 1794511250315,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -7982,6 +7982,42 @@ window.BENCHMARK_DATA = {
             "value": 32607952.333333332,
             "unit": "ns",
             "range": "± 1878433.1783285062"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "48992e6b8cacd10eb3f1e70e630e06d5de0f155d",
+          "message": "build: pin the .NET SDK to the 10.0 major in global.json (#517)\n\nUbuntu runner image 20261111.196 preinstalls SDK 11.0.100. Without a\nglobal.json the build takes the newest installed SDK, so Linux and Windows\ncan compile with different SDKs (cross-OS reproducible-build mismatch seen on\nEtl-DbClient main 07871c1). Pin the 10.0 major with latestFeature roll-forward,\nas the fleet reproducible-builds standard specifies.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-12T13:52:27-05:00",
+          "tree_id": "6d8d9d0f205e7a69f0c9fca30a0e81fa14fe7364",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/48992e6b8cacd10eb3f1e70e630e06d5de0f155d"
+        },
+        "date": 1794511249082,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 8674866.5,
+            "unit": "ns",
+            "range": "± 538018.0144558358"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 33588901.166666664,
+            "unit": "ns",
+            "range": "± 833512.8880163361"
           }
         ]
       }
