@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794493128553,
+  "lastUpdate": 1794496239929,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -5316,6 +5316,78 @@ window.BENCHMARK_DATA = {
             "value": 149498285.33333334,
             "unit": "ns",
             "range": "± 54682422.1856104"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "ed3e0db1a65630e794bc8c96bd3685b3060b7b01",
+          "message": "Bump the dotnet-dependencies group with 17 updates (#512)\n\nBumps dotnet-reportgenerator-globaltool from 5.5.11 to 5.5.12\nBumps FsCheck.Xunit from 3.5.0 to 3.6.0\nBumps Meziantou.Analyzer from 3.0.315 to 3.0.320\nBumps Microsoft.AspNetCore.Identity.EntityFrameworkCore from 10.0.13 to 10.0.14\nBumps Microsoft.Bcl.TimeProvider from 10.0.13 to 10.0.14\nBumps Microsoft.EntityFrameworkCore.Design from 10.0.13 to 10.0.14\nBumps Microsoft.EntityFrameworkCore.Tasks from 10.0.13 to 10.0.14\nBumps Microsoft.Extensions.DependencyInjection.Abstractions from 10.0.13 to 10.0.14\nBumps Microsoft.Extensions.Hosting from 10.0.13 to 10.0.14\nBumps Microsoft.Extensions.Logging.Abstractions from 10.0.13 to 10.0.14\nBumps Microsoft.SourceLink.GitHub from 10.0.402 to 10.0.403\nBumps System.Security.Cryptography.Pkcs to 10.0.14\nBumps System.Security.Cryptography.Xml from 10.0.13 to 10.0.14\nBumps Testcontainers.Db2 from 4.15.0 to 4.16.0\nBumps Testcontainers.MsSql from 4.15.0 to 4.16.0\nBumps Testcontainers.Oracle from 4.15.0 to 4.16.0\nBumps Testcontainers.PostgreSql from 4.15.0 to 4.16.0\n\n---\nupdated-dependencies:\n- dependency-name: dotnet-reportgenerator-globaltool\n  dependency-version: 5.5.12\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: FsCheck.Xunit\n  dependency-version: 3.6.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: dotnet-dependencies\n- dependency-name: FsCheck.Xunit\n  dependency-version: 3.6.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: dotnet-dependencies\n- dependency-name: Meziantou.Analyzer\n  dependency-version: 3.0.320\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.AspNetCore.Identity.EntityFrameworkCore\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.Bcl.TimeProvider\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.EntityFrameworkCore.Design\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.EntityFrameworkCore.Tasks\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.Extensions.DependencyInjection.Abstractions\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.Extensions.Hosting\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.Extensions.Logging.Abstractions\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Microsoft.SourceLink.GitHub\n  dependency-version: 10.0.403\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: System.Security.Cryptography.Pkcs\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-major\n  dependency-group: dotnet-dependencies\n- dependency-name: System.Security.Cryptography.Pkcs\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: System.Security.Cryptography.Pkcs\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: System.Security.Cryptography.Pkcs\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: System.Security.Cryptography.Pkcs\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: System.Security.Cryptography.Pkcs\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: System.Security.Cryptography.Pkcs\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: System.Security.Cryptography.Xml\n  dependency-version: 10.0.14\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: dotnet-dependencies\n- dependency-name: Testcontainers.Db2\n  dependency-version: 4.16.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: dotnet-dependencies\n- dependency-name: Testcontainers.MsSql\n  dependency-version: 4.16.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: dotnet-dependencies\n- dependency-name: Testcontainers.MsSql\n  dependency-version: 4.16.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: dotnet-dependencies\n- dependency-name: Testcontainers.Oracle\n  dependency-version: 4.16.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: dotnet-dependencies\n- dependency-name: Testcontainers.PostgreSql\n  dependency-version: 4.16.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: dotnet-dependencies\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\nCo-authored-by: Chris Wolfgang <210299580+Chris-Wolfgang@users.noreply.github.com>",
+          "timestamp": "2026-11-12T09:50:23-05:00",
+          "tree_id": "8b88d0f77190f8fdab93a97c54b68af139bf37e7",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/ed3e0db1a65630e794bc8c96bd3685b3060b7b01"
+        },
+        "date": 1794496237729,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3850521.5,
+            "unit": "ns",
+            "range": "± 152524.88309452985"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 23412642.333333332,
+            "unit": "ns",
+            "range": "± 1948335.3211396476"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 5218871.166666667,
+            "unit": "ns",
+            "range": "± 326118.9241033604"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 33915716.333333336,
+            "unit": "ns",
+            "range": "± 1097750.5333710082"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 8676733.666666666,
+            "unit": "ns",
+            "range": "± 5796847.456907619"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 32476275,
+            "unit": "ns",
+            "range": "± 279342.8651800507"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 34769276.166666664,
+            "unit": "ns",
+            "range": "± 19328231.05981715"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 379147093.1666667,
+            "unit": "ns",
+            "range": "± 244945073.8670149"
           }
         ]
       }
