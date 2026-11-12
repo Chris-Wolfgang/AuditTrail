@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794445638076,
+  "lastUpdate": 1794489191431,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -5172,6 +5172,78 @@ window.BENCHMARK_DATA = {
             "value": 120011507.66666667,
             "unit": "ns",
             "range": "± 4186528.9646837907"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "cc3c8b4bb61e041ff3aa99bd7dcc874b2d4e8b9b",
+          "message": "build: run Stryker from the unit-test project, not the solution root (#515)\n\ndotnet-stryker 5.1.0 treats a run from a directory holding AuditTrail.slnx as a\nsolution context and aborts when the config names a project or test projects.\nThe config moves next to the unit-test project and drops test-projects; run from\nthere, Stryker is in project mode and `project` picks the source project by\nfile name. Thresholds unchanged (break 70).\n\nCo-authored-by: Claude Fable 5.1 <noreply@anthropic.com>",
+          "timestamp": "2026-11-12T07:54:40-05:00",
+          "tree_id": "add6168421bdc7ccb9c47758a114315b918cf08d",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/cc3c8b4bb61e041ff3aa99bd7dcc874b2d4e8b9b"
+        },
+        "date": 1794489188197,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6704703.666666667,
+            "unit": "ns",
+            "range": "± 61962.67499336462"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 49950772.833333336,
+            "unit": "ns",
+            "range": "± 2390589.758244884"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7010743.5,
+            "unit": "ns",
+            "range": "± 567745.5054361945"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 49612848.5,
+            "unit": "ns",
+            "range": "± 12895301.136522403"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 11998044.333333334,
+            "unit": "ns",
+            "range": "± 7120041.742882294"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 55277234.666666664,
+            "unit": "ns",
+            "range": "± 6744127.81288999"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 125552776.83333333,
+            "unit": "ns",
+            "range": "± 48146954.643015444"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 344891983.1666667,
+            "unit": "ns",
+            "range": "± 241817238.35705864"
           }
         ]
       }
