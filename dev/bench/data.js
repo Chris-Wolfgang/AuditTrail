@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794502319547,
+  "lastUpdate": 1794511253233,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -14784,6 +14784,138 @@ window.BENCHMARK_DATA = {
             "value": 19158363.57,
             "unit": "ns",
             "range": "± 10155940.078625174"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "48992e6b8cacd10eb3f1e70e630e06d5de0f155d",
+          "message": "build: pin the .NET SDK to the 10.0 major in global.json (#517)\n\nUbuntu runner image 20261111.196 preinstalls SDK 11.0.100. Without a\nglobal.json the build takes the newest installed SDK, so Linux and Windows\ncan compile with different SDKs (cross-OS reproducible-build mismatch seen on\nEtl-DbClient main 07871c1). Pin the 10.0 major with latestFeature roll-forward,\nas the fleet reproducible-builds standard specifies.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-12T13:52:27-05:00",
+          "tree_id": "6d8d9d0f205e7a69f0c9fca30a0e81fa14fe7364",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/48992e6b8cacd10eb3f1e70e630e06d5de0f155d"
+        },
+        "date": 1794511252032,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 461924.6595744681,
+            "unit": "ns",
+            "range": "± 85148.72227879181"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1143370.5957446808,
+            "unit": "ns",
+            "range": "± 266562.55311205995"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 710760.0102040817,
+            "unit": "ns",
+            "range": "± 247347.9036406258"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2380464.936170213,
+            "unit": "ns",
+            "range": "± 530043.4277011194"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 665559.1808510638,
+            "unit": "ns",
+            "range": "± 134116.3395332785"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1521557.8709677418,
+            "unit": "ns",
+            "range": "± 197492.504791251"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 906380,
+            "unit": "ns",
+            "range": "± 132189.54551232693"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 4577534.464705883,
+            "unit": "ns",
+            "range": "± 965435.4051115566"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1171480.1538461538,
+            "unit": "ns",
+            "range": "± 13986.280824711492"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 12210088.070707072,
+            "unit": "ns",
+            "range": "± 1508981.3309107195"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 959438.9615384615,
+            "unit": "ns",
+            "range": "± 7873.976172762448"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 7714079.52,
+            "unit": "ns",
+            "range": "± 1310009.3700267177"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 1925472.923076923,
+            "unit": "ns",
+            "range": "± 14103.038085589564"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 17941389.136363637,
+            "unit": "ns",
+            "range": "± 5431527.342027288"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 6300453.170103093,
+            "unit": "ns",
+            "range": "± 1167212.6808097386"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 21679021.05,
+            "unit": "ns",
+            "range": "± 15287991.002942346"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 4608747.478947368,
+            "unit": "ns",
+            "range": "± 701828.0439530902"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 18803305.01,
+            "unit": "ns",
+            "range": "± 10012329.303582614"
           }
         ]
       }
