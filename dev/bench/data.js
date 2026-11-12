@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794445641866,
+  "lastUpdate": 1794489198844,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -14256,6 +14256,138 @@ window.BENCHMARK_DATA = {
             "value": 20246533.7625,
             "unit": "ns",
             "range": "± 4950671.354675521"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "cc3c8b4bb61e041ff3aa99bd7dcc874b2d4e8b9b",
+          "message": "build: run Stryker from the unit-test project, not the solution root (#515)\n\ndotnet-stryker 5.1.0 treats a run from a directory holding AuditTrail.slnx as a\nsolution context and aborts when the config names a project or test projects.\nThe config moves next to the unit-test project and drops test-projects; run from\nthere, Stryker is in project mode and `project` picks the source project by\nfile name. Thresholds unchanged (break 70).\n\nCo-authored-by: Claude Fable 5.1 <noreply@anthropic.com>",
+          "timestamp": "2026-11-12T07:54:40-05:00",
+          "tree_id": "add6168421bdc7ccb9c47758a114315b918cf08d",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/cc3c8b4bb61e041ff3aa99bd7dcc874b2d4e8b9b"
+        },
+        "date": 1794489197190,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 553176.1,
+            "unit": "ns",
+            "range": "± 12558.403841336894"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1512185.2333333334,
+            "unit": "ns",
+            "range": "± 24924.017700851942"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 867237.5,
+            "unit": "ns",
+            "range": "± 19970.803237410568"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2961649.4285714286,
+            "unit": "ns",
+            "range": "± 29536.08209452475"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 702166,
+            "unit": "ns",
+            "range": "± 8577.84906022483"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1813280.857142857,
+            "unit": "ns",
+            "range": "± 27702.583408709077"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1661870.0333333334,
+            "unit": "ns",
+            "range": "± 18767.683466406772"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 10408737.06185567,
+            "unit": "ns",
+            "range": "± 870785.091462438"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 3385182.785714286,
+            "unit": "ns",
+            "range": "± 37220.84811619708"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 19745332.93,
+            "unit": "ns",
+            "range": "± 6715622.506301405"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 2646457.423076923,
+            "unit": "ns",
+            "range": "± 26089.22721629734"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 14803598.823232323,
+            "unit": "ns",
+            "range": "± 2934162.72913827"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 8449475.42857143,
+            "unit": "ns",
+            "range": "± 508238.96540146397"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 24926251.22,
+            "unit": "ns",
+            "range": "± 13945789.260492848"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 17422292.884615384,
+            "unit": "ns",
+            "range": "± 267222.0909747603"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 22019227.217948716,
+            "unit": "ns",
+            "range": "± 3681504.905413925"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 11603858.27,
+            "unit": "ns",
+            "range": "± 3029424.2954132548"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 22828755.827586208,
+            "unit": "ns",
+            "range": "± 7467596.356461557"
           }
         ]
       }
