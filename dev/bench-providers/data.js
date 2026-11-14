@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794660205535,
+  "lastUpdate": 1794663170496,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -5748,6 +5748,78 @@ window.BENCHMARK_DATA = {
             "value": 66546943.333333336,
             "unit": "ns",
             "range": "± 8908131.50953225"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d0cf118da1be7657ae19456883017a4c949481cd",
+          "message": "docs: refresh the reproducible-build verifier for the SDK pin and copyright (#530)\n\nThe verifier said there was no global.json; #517 added one. Say what it\npins, that tags up to v0.4.1 predate it, how the copyright year behaves,\nand add the gh attestation verify step for the provenance attestation.\n\nRefs #507\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-14T08:11:39-05:00",
+          "tree_id": "047d218f8bb9eb7deb69535c16a3fa9c3c257824",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/d0cf118da1be7657ae19456883017a4c949481cd"
+        },
+        "date": 1794663167709,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3405330.6666666665,
+            "unit": "ns",
+            "range": "± 20123.13649343296"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 20250353.833333332,
+            "unit": "ns",
+            "range": "± 1168480.6324609465"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7025310.5,
+            "unit": "ns",
+            "range": "± 173624.75932884688"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 34048686.166666664,
+            "unit": "ns",
+            "range": "± 918001.3112988092"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 9412805.833333334,
+            "unit": "ns",
+            "range": "± 6692657.399300097"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 33947278.333333336,
+            "unit": "ns",
+            "range": "± 1383517.6327428333"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 22529573.333333332,
+            "unit": "ns",
+            "range": "± 888463.1028468956"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 145922162,
+            "unit": "ns",
+            "range": "± 40979410.7434559"
           }
         ]
       }
