@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794629775740,
+  "lastUpdate": 1794629779400,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -8198,6 +8198,42 @@ window.BENCHMARK_DATA = {
             "value": 34386482,
             "unit": "ns",
             "range": "± 488874.8553985979"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "685938e3f8cd0b9dc81ecbd0351c0c548bd459ca",
+          "message": "ci(shadow): re-measure once before failing on a regression (#519)\n\nThe nightly shadow run fails on a single measurement. Run 43414275799\n(2026-11-13) flagged ConcurrentSaves20 +48% with allocations flat, and\nthree manual dispatches afterwards all passed. On a first alert, re-measure\nbaseline then current once and fail only if the re-run alerts as well.\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-13T23:07:03-05:00",
+          "tree_id": "a9befecbd49b4a37e116a81f7d4f850154b51ec9",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/685938e3f8cd0b9dc81ecbd0351c0c548bd459ca"
+        },
+        "date": 1794629777922,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 18480186.666666668,
+            "unit": "ns",
+            "range": "± 65150.217108873345"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 90804540.66666667,
+            "unit": "ns",
+            "range": "± 3065345.541995932"
           }
         ]
       }
