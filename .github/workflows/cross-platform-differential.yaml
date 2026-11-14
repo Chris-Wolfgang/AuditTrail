@@ -22,13 +22,7 @@ on:
   # This isn't a required check today, but if it's ever promoted to one, a
   # paths filter would let a non-matching PR sit "Blocked" forever.
   pull_request:
-    branches: [main, vNext]
-  push:
-    branches: [vNext]
-    paths:
-      - 'src/**'
-      - 'tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit/**'
-      - '.github/workflows/cross-platform-differential.yaml'
+    branches: [main]
   workflow_dispatch:
 
 permissions:
