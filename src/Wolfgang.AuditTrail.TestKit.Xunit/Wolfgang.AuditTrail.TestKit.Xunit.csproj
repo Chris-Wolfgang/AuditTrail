@@ -22,7 +22,6 @@
     <Title>Wolfgang.AuditTrail.TestKit.Xunit</Title>
     <Authors>Chris Wolfgang</Authors>
     <Description>Shipped xunit contract-test bases for the Wolfgang.AuditTrail family. AuditValueSerializerContractTests&lt;TSut&gt; uses FsCheck.Xunit property-based testing plus explicit boundary theories to verify any IAuditValueSerializer implementation round-trips every supported CLR type. Each new serializer (binary, hybrid, custom) inherits the suite and provides CreateSut().</Description>
-    <Copyright>Copyright (c) Chris Wolfgang</Copyright>
     <PackageProjectUrl>https://github.com/Chris-Wolfgang/AuditTrail</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Chris-Wolfgang/AuditTrail</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
