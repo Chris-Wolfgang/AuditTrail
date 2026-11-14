@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794627667694,
+  "lastUpdate": 1794627670992,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -8090,6 +8090,42 @@ window.BENCHMARK_DATA = {
             "value": 33588901.166666664,
             "unit": "ns",
             "range": "± 833512.8880163361"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c2a66af548dbefca0bec579e6dcb1a8c6520d60d",
+          "message": "ci: drop the retired vNext trigger from aot-smoke and cross-platform-differential (#520)\n\nBoth now run on pull requests into main and on manual dispatch only.\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-13T22:32:58-05:00",
+          "tree_id": "b991ad6659269f3417876e0b1b3b0d52a7ec38ff",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/c2a66af548dbefca0bec579e6dcb1a8c6520d60d"
+        },
+        "date": 1794627669688,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6962653,
+            "unit": "ns",
+            "range": "± 280277.2030169418"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 34386482,
+            "unit": "ns",
+            "range": "± 488874.8553985979"
           }
         ]
       }
