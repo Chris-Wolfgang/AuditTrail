@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794627674300,
+  "lastUpdate": 1794629782900,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -15048,6 +15048,138 @@ window.BENCHMARK_DATA = {
             "value": 18385546.17,
             "unit": "ns",
             "range": "± 10368401.05954764"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "685938e3f8cd0b9dc81ecbd0351c0c548bd459ca",
+          "message": "ci(shadow): re-measure once before failing on a regression (#519)\n\nThe nightly shadow run fails on a single measurement. Run 43414275799\n(2026-11-13) flagged ConcurrentSaves20 +48% with allocations flat, and\nthree manual dispatches afterwards all passed. On a first alert, re-measure\nbaseline then current once and fail only if the re-run alerts as well.\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-13T23:07:03-05:00",
+          "tree_id": "a9befecbd49b4a37e116a81f7d4f850154b51ec9",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/685938e3f8cd0b9dc81ecbd0351c0c548bd459ca"
+        },
+        "date": 1794629781392,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 708800.1086956522,
+            "unit": "ns",
+            "range": "± 85840.9352807748"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 2010100.8260869565,
+            "unit": "ns",
+            "range": "± 322220.12107068143"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 956303.5340909091,
+            "unit": "ns",
+            "range": "± 75993.26650985536"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 3709694.8263157895,
+            "unit": "ns",
+            "range": "± 341673.12794433325"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 818563.0752688173,
+            "unit": "ns",
+            "range": "± 65212.11375484394"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 2487526.5833333335,
+            "unit": "ns",
+            "range": "± 509967.3073133148"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 2048308.873493976,
+            "unit": "ns",
+            "range": "± 210930.37687250806"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 12816917.204081632,
+            "unit": "ns",
+            "range": "± 2896689.2218690873"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 3485490.6428571427,
+            "unit": "ns",
+            "range": "± 52342.08918790829"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 18539414.34,
+            "unit": "ns",
+            "range": "± 5363065.469284669"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 2742043.785714286,
+            "unit": "ns",
+            "range": "± 46157.194694082886"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 16464761.09,
+            "unit": "ns",
+            "range": "± 3744755.9003384258"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 6971337.714285715,
+            "unit": "ns",
+            "range": "± 84504.63447320834"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 27092851.09,
+            "unit": "ns",
+            "range": "± 17037575.44260425"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 17345465.35714286,
+            "unit": "ns",
+            "range": "± 297616.9201914556"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 23981501.55421687,
+            "unit": "ns",
+            "range": "± 6192501.8402853105"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 14895955,
+            "unit": "ns",
+            "range": "± 184581.0265022258"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 23371952.244186047,
+            "unit": "ns",
+            "range": "± 8241742.284691661"
           }
         ]
       }
