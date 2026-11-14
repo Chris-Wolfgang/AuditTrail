@@ -99,42 +99,69 @@ jobs:
             -p:UseBaselinePackage=true \
             -- ./baseline.json "$ITERATIONS"
 
-      - name: Compare against baseline
+      # One regression is not trusted; two in a row are. current and baseline run
+      # back to back on one shared runner, so a noisy-neighbour spell during just
+      # one of them (the 2026-11-13 failure: ConcurrentSaves20 +48% with allocations
+      # flat, then three clean dispatches) reads as a regression. On a first alert
+      # this step re-measures BOTH sides once, baseline first (so any warm-up or
+      # ordering bias flips), and fails only if the re-run alerts too. The first
+      # attempt's reports are kept as *-attempt1.json in the artifact.
+      - name: Compare against baseline (re-measure once on alert)
         env:
+          ITERATIONS: ${{ github.event.inputs.iterations || '200' }}
           LATENCY_THRESHOLD_PCT: ${{ github.event.inputs['latency-threshold-pct'] || '20' }}
           ALLOC_THRESHOLD_PCT: ${{ github.event.inputs['alloc-threshold-pct'] || '50' }}
           LATENCY_ABS_FLOOR_MS: ${{ github.event.inputs['latency-abs-floor-ms'] || '20' }}
         run: |
           set -euo pipefail
 
-          regressions="$(jq -n \
-            --argjson current "$(cat current.json)" \
-            --argjson baseline "$(cat baseline.json)" \
-            --argjson latencyThreshold "$LATENCY_THRESHOLD_PCT" \
-            --argjson allocThreshold "$ALLOC_THRESHOLD_PCT" \
-            --argjson latencyAbsFloorMs "$LATENCY_ABS_FLOOR_MS" \
-            '
-            [$current.Operations | keys[] as $op |
-              $current.Operations[$op] as $c |
-              $baseline.Operations[$op] as $b |
-              ($c.MeanMs - $b.MeanMs) as $latencyDeltaMs |
-              ($latencyDeltaMs / $b.MeanMs * 100) as $latencyPct |
-              (if ($b.AllocatedBytesMean != null and $c.AllocatedBytesMean != null)
-               then (($c.AllocatedBytesMean - $b.AllocatedBytesMean) / $b.AllocatedBytesMean * 100)
-               else null end) as $allocPct |
-              select((($latencyPct > $latencyThreshold) and ($latencyDeltaMs > $latencyAbsFloorMs)) or ($allocPct != null and $allocPct > $allocThreshold)) |
-              {
-                operation: $op,
-                baselineMeanMs: $b.MeanMs, currentMeanMs: $c.MeanMs, latencyRegressionPct: ($latencyPct | round),
-                baselineAllocBytes: $b.AllocatedBytesMean, currentAllocBytes: $c.AllocatedBytesMean, allocRegressionPct: ($allocPct | if . == null then null else round end)
-              }
-            ]
-            ')"
+          compare() {
+            jq -n \
+              --argjson current "$(cat current.json)" \
+              --argjson baseline "$(cat baseline.json)" \
+              --argjson latencyThreshold "$LATENCY_THRESHOLD_PCT" \
+              --argjson allocThreshold "$ALLOC_THRESHOLD_PCT" \
+              --argjson latencyAbsFloorMs "$LATENCY_ABS_FLOOR_MS" \
+              '
+              [$current.Operations | keys[] as $op |
+                $current.Operations[$op] as $c |
+                $baseline.Operations[$op] as $b |
+                ($c.MeanMs - $b.MeanMs) as $latencyDeltaMs |
+                ($latencyDeltaMs / $b.MeanMs * 100) as $latencyPct |
+                (if ($b.AllocatedBytesMean != null and $c.AllocatedBytesMean != null)
+                 then (($c.AllocatedBytesMean - $b.AllocatedBytesMean) / $b.AllocatedBytesMean * 100)
+                 else null end) as $allocPct |
+                select((($latencyPct > $latencyThreshold) and ($latencyDeltaMs > $latencyAbsFloorMs)) or ($allocPct != null and $allocPct > $allocThreshold)) |
+                {
+                  operation: $op,
+                  baselineMeanMs: $b.MeanMs, currentMeanMs: $c.MeanMs, latencyRegressionPct: ($latencyPct | round),
+                  baselineAllocBytes: $b.AllocatedBytesMean, currentAllocBytes: $c.AllocatedBytesMean, allocRegressionPct: ($allocPct | if . == null then null else round end)
+                }
+              ]
+              '
+          }
 
+          regressions="$(compare)"
+          echo "Attempt 1:"
           echo "$regressions" | jq .
 
           if [ "$(echo "$regressions" | jq 'length')" -gt 0 ]; then
-            echo "::error::Shadow workload found regressions beyond threshold (latency >${LATENCY_THRESHOLD_PCT}% and >${LATENCY_ABS_FLOOR_MS}ms absolute, or allocations >${ALLOC_THRESHOLD_PCT}%)"
+            echo "::warning::Attempt 1 flagged a regression; re-measuring baseline then current once before failing"
+            echo "$regressions" > ./regressions-attempt1.json
+            mv current.json current-attempt1.json
+            mv baseline.json baseline-attempt1.json
+
+            project=samples/Wolfgang.AuditTrail.EntityFrameworkCore.Samples.ShadowWorkload/Wolfgang.AuditTrail.EntityFrameworkCore.Samples.ShadowWorkload.csproj
+            dotnet run --project "$project" -c Release -p:UseBaselinePackage=true -- ./baseline.json "$ITERATIONS"
+            dotnet run --project "$project" -c Release -- ./current.json "$ITERATIONS"
+
+            regressions="$(compare)"
+            echo "Attempt 2 (re-measure):"
+            echo "$regressions" | jq .
+          fi
+
+          if [ "$(echo "$regressions" | jq 'length')" -gt 0 ]; then
+            echo "::error::Shadow workload found regressions beyond threshold (latency >${LATENCY_THRESHOLD_PCT}% and >${LATENCY_ABS_FLOOR_MS}ms absolute, or allocations >${ALLOC_THRESHOLD_PCT}%), confirmed on re-measure"
             echo "$regressions" > ./regressions.json
             exit 1
           fi
@@ -150,6 +177,9 @@ jobs:
             ./current.json
             ./baseline.json
             ./regressions.json
+            ./current-attempt1.json
+            ./baseline-attempt1.json
+            ./regressions-attempt1.json
           if-no-files-found: warn
 
       - name: File a tracking issue on failure
