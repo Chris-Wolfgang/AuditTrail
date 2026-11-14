@@ -506,3 +506,4 @@ dotnet_diagnostic.S3216.severity = none
 dotnet_diagnostic.S3776.severity = none
 dotnet_diagnostic.S6966.severity = none
 dotnet_diagnostic.VSTHRD200.severity = none
+# DUMMY: verifies Protected Files Guard blocks edits to protected files. Do not merge.
