@@ -20,7 +20,6 @@
     <Title>Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql</Title>
     <Authors>Chris Wolfgang</Authors>
     <Description>PostgreSQL COPY-protocol bulk writer for Wolfgang.AuditTrail.EntityFrameworkCore. Implements IAuditBulkWriter via NpgsqlBinaryImporter so large audit batches bypass EF Core's per-entity insert while staying inside the caller's SaveChanges transaction.</Description>
-    <Copyright>Copyright (c) Chris Wolfgang</Copyright>
     <PackageProjectUrl>https://github.com/Chris-Wolfgang/AuditTrail</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Chris-Wolfgang/AuditTrail</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
