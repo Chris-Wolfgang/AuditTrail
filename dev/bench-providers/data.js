@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794663170496,
+  "lastUpdate": 1794663173870,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -8414,6 +8414,42 @@ window.BENCHMARK_DATA = {
             "value": 39137379.833333336,
             "unit": "ns",
             "range": "± 7041667.790681575"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d0cf118da1be7657ae19456883017a4c949481cd",
+          "message": "docs: refresh the reproducible-build verifier for the SDK pin and copyright (#530)\n\nThe verifier said there was no global.json; #517 added one. Say what it\npins, that tags up to v0.4.1 predate it, how the copyright year behaves,\nand add the gh attestation verify step for the provenance attestation.\n\nRefs #507\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-14T08:11:39-05:00",
+          "tree_id": "047d218f8bb9eb7deb69535c16a3fa9c3c257824",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/d0cf118da1be7657ae19456883017a4c949481cd"
+        },
+        "date": 1794663172489,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12420695.666666666,
+            "unit": "ns",
+            "range": "± 595593.4082957377"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 52770865,
+            "unit": "ns",
+            "range": "± 1390748.8606563732"
           }
         ]
       }
