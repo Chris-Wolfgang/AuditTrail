@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794629779400,
+  "lastUpdate": 1794660202761,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -5676,6 +5676,78 @@ window.BENCHMARK_DATA = {
             "value": 341279313,
             "unit": "ns",
             "range": "± 216247384.37816447"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "38f6b76210ec807d4170a179ecebdd08659cd80e",
+          "message": "fix(deps): lift OpenTelemetry to 1.45.2 / 0.66b2 in the semgrep lock (#527)\n\nopentelemetry-api 1.45.1 has GHSA-mf5v-w3w3-f6cg (Dependabot alerts 48\nand 49, fixed in 1.45.2). Raise the override floor for the family and\nrecompile semgrep.txt with the uv command in its header, upgrading only\nthe opentelemetry-* packages.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-14T07:36:06-05:00",
+          "tree_id": "76c279bc821241503553c024de0fac7bd1af45a3",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/38f6b76210ec807d4170a179ecebdd08659cd80e"
+        },
+        "date": 1794660200844,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 2710928.5,
+            "unit": "ns",
+            "range": "± 57493.33710091979"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 15789554.833333334,
+            "unit": "ns",
+            "range": "± 877285.3264299667"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4705644.833333333,
+            "unit": "ns",
+            "range": "± 66853.49138476863"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 28354581.5,
+            "unit": "ns",
+            "range": "± 727818.4624726141"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7382342.333333333,
+            "unit": "ns",
+            "range": "± 5348174.816388703"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 25649739,
+            "unit": "ns",
+            "range": "± 653231.2450610427"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12798982.833333334,
+            "unit": "ns",
+            "range": "± 430819.65154381405"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 66546943.333333336,
+            "unit": "ns",
+            "range": "± 8908131.50953225"
           }
         ]
       }
