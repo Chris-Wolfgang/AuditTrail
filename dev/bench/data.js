@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794660208450,
+  "lastUpdate": 1794663177179,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -15312,6 +15312,138 @@ window.BENCHMARK_DATA = {
             "value": 19545856.15,
             "unit": "ns",
             "range": "± 10616421.26231462"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "d0cf118da1be7657ae19456883017a4c949481cd",
+          "message": "docs: refresh the reproducible-build verifier for the SDK pin and copyright (#530)\n\nThe verifier said there was no global.json; #517 added one. Say what it\npins, that tags up to v0.4.1 predate it, how the copyright year behaves,\nand add the gh attestation verify step for the provenance attestation.\n\nRefs #507\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-14T08:11:39-05:00",
+          "tree_id": "047d218f8bb9eb7deb69535c16a3fa9c3c257824",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/d0cf118da1be7657ae19456883017a4c949481cd"
+        },
+        "date": 1794663175840,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 769627.4278350516,
+            "unit": "ns",
+            "range": "± 157321.72305900784"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1340112,
+            "unit": "ns",
+            "range": "± 14943.358442647841"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 913067.4235294118,
+            "unit": "ns",
+            "range": "± 66307.59569187781"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2449835.6666666665,
+            "unit": "ns",
+            "range": "± 49837.11797593295"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 822893.3595505618,
+            "unit": "ns",
+            "range": "± 51687.32608770285"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 2000417.305263158,
+            "unit": "ns",
+            "range": "± 214972.80252009092"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1145805.5714285714,
+            "unit": "ns",
+            "range": "± 19345.77347883784"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 5069375.428571428,
+            "unit": "ns",
+            "range": "± 37433.49258138571"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 2030685.3,
+            "unit": "ns",
+            "range": "± 21810.53723776652"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 16071222.69,
+            "unit": "ns",
+            "range": "± 4705358.722842194"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1662433.1923076923,
+            "unit": "ns",
+            "range": "± 22492.267887671296"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 12228727.74226804,
+            "unit": "ns",
+            "range": "± 1646860.9307501833"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 3514985.3333333335,
+            "unit": "ns",
+            "range": "± 42142.883950875614"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 20593733.21212121,
+            "unit": "ns",
+            "range": "± 7884183.113888824"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 7467427.230769231,
+            "unit": "ns",
+            "range": "± 116814.74801878532"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 23520980.285714287,
+            "unit": "ns",
+            "range": "± 14918995.233754443"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 8101498.075757576,
+            "unit": "ns",
+            "range": "± 1632064.5358935196"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 23353807.326530613,
+            "unit": "ns",
+            "range": "± 13607413.978375815"
           }
         ]
       }
