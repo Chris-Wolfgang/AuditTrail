@@ -232,6 +232,9 @@ public sealed class AuditSaveChangesInterceptor : ISaveChangesInterceptor
             return result;
         }
 
+        // DUMMY: deliberate slowdown to verify the PR Benchmarks gate fails. Do not merge.
+        System.Threading.Thread.SpinWait(3_000_000);
+
         try
         {
             await BeginAuditCoreAsync(context, cancellationToken).ConfigureAwait(false);
