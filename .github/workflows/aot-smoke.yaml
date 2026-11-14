@@ -57,14 +57,7 @@ on:
   # never reports, it doesn't report "skipped"). See fleet precedent:
   # ETL-SqlBulkCopy's aot-smoke.yaml and its own required-check history.
   pull_request:
-    branches: [main, vNext]
-  push:
-    branches: [vNext]
-    paths:
-      - 'src/**'
-      - 'tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke/**'
-      - 'tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup/**'
-      - '.github/workflows/aot-smoke.yaml'
+    branches: [main]
   workflow_dispatch:
 
 permissions:
