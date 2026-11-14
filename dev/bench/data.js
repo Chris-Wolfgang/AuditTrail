@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794629782900,
+  "lastUpdate": 1794660208450,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -15180,6 +15180,138 @@ window.BENCHMARK_DATA = {
             "value": 23371952.244186047,
             "unit": "ns",
             "range": "± 8241742.284691661"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "38f6b76210ec807d4170a179ecebdd08659cd80e",
+          "message": "fix(deps): lift OpenTelemetry to 1.45.2 / 0.66b2 in the semgrep lock (#527)\n\nopentelemetry-api 1.45.1 has GHSA-mf5v-w3w3-f6cg (Dependabot alerts 48\nand 49, fixed in 1.45.2). Raise the override floor for the family and\nrecompile semgrep.txt with the uv command in its header, upgrading only\nthe opentelemetry-* packages.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-14T07:36:06-05:00",
+          "tree_id": "76c279bc821241503553c024de0fac7bd1af45a3",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/38f6b76210ec807d4170a179ecebdd08659cd80e"
+        },
+        "date": 1794660207447,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 578750.9382022471,
+            "unit": "ns",
+            "range": "± 67182.26793394948"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1104922.7173913044,
+            "unit": "ns",
+            "range": "± 27940.966723622732"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 725616.6235955056,
+            "unit": "ns",
+            "range": "± 70214.60732960384"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 1924390.923076923,
+            "unit": "ns",
+            "range": "± 30980.47789458586"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 673036.4175824176,
+            "unit": "ns",
+            "range": "± 39730.53788909761"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1526941.8368421053,
+            "unit": "ns",
+            "range": "± 164658.40085194373"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 908822.1052631579,
+            "unit": "ns",
+            "range": "± 20020.758479623477"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 5632164.585858586,
+            "unit": "ns",
+            "range": "± 888392.7488001087"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1594784.1666666667,
+            "unit": "ns",
+            "range": "± 21096.184240848143"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 12925553.303030303,
+            "unit": "ns",
+            "range": "± 3057996.683985953"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1326970.8235294118,
+            "unit": "ns",
+            "range": "± 27014.09020130813"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 10107798.453608247,
+            "unit": "ns",
+            "range": "± 1078798.7837123715"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 2699180.933333333,
+            "unit": "ns",
+            "range": "± 38282.436535135355"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 18628917.67,
+            "unit": "ns",
+            "range": "± 7597699.225236749"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 5781334.1,
+            "unit": "ns",
+            "range": "± 43266.010611762475"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 20070466.94,
+            "unit": "ns",
+            "range": "± 12768378.094479658"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 4280420.533333333,
+            "unit": "ns",
+            "range": "± 34008.231730119755"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 19545856.15,
+            "unit": "ns",
+            "range": "± 10616421.26231462"
           }
         ]
       }
