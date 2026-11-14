@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794660202761,
+  "lastUpdate": 1794660205535,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -8306,6 +8306,42 @@ window.BENCHMARK_DATA = {
             "value": 90804540.66666667,
             "unit": "ns",
             "range": "± 3065345.541995932"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "38f6b76210ec807d4170a179ecebdd08659cd80e",
+          "message": "fix(deps): lift OpenTelemetry to 1.45.2 / 0.66b2 in the semgrep lock (#527)\n\nopentelemetry-api 1.45.1 has GHSA-mf5v-w3w3-f6cg (Dependabot alerts 48\nand 49, fixed in 1.45.2). Raise the override floor for the family and\nrecompile semgrep.txt with the uv command in its header, upgrading only\nthe opentelemetry-* packages.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-14T07:36:06-05:00",
+          "tree_id": "76c279bc821241503553c024de0fac7bd1af45a3",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/38f6b76210ec807d4170a179ecebdd08659cd80e"
+        },
+        "date": 1794660204552,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6611763.5,
+            "unit": "ns",
+            "range": "± 71523.03777804744"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 39137379.833333336,
+            "unit": "ns",
+            "range": "± 7041667.790681575"
           }
         ]
       }
