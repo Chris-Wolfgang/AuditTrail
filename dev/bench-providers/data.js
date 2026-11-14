@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794511250315,
+  "lastUpdate": 1794627667694,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -5532,6 +5532,78 @@ window.BENCHMARK_DATA = {
             "value": 349734372,
             "unit": "ns",
             "range": "± 386034493.1485838"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "c2a66af548dbefca0bec579e6dcb1a8c6520d60d",
+          "message": "ci: drop the retired vNext trigger from aot-smoke and cross-platform-differential (#520)\n\nBoth now run on pull requests into main and on manual dispatch only.\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-13T22:32:58-05:00",
+          "tree_id": "b991ad6659269f3417876e0b1b3b0d52a7ec38ff",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/c2a66af548dbefca0bec579e6dcb1a8c6520d60d"
+        },
+        "date": 1794627665068,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 1802992.3333333333,
+            "unit": "ns",
+            "range": "± 14775.28802877742"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 10622717.5,
+            "unit": "ns",
+            "range": "± 973595.8473160205"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4160876,
+            "unit": "ns",
+            "range": "± 269404.60023355205"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 21795488.333333332,
+            "unit": "ns",
+            "range": "± 433831.1664764685"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6038730.166666667,
+            "unit": "ns",
+            "range": "± 4598865.72859573"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 21771533.166666668,
+            "unit": "ns",
+            "range": "± 493188.0034675756"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 10947473.333333334,
+            "unit": "ns",
+            "range": "± 165075.37224653873"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 49886198.166666664,
+            "unit": "ns",
+            "range": "± 2921840.855259289"
           }
         ]
       }
