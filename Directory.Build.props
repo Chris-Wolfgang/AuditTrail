@@ -27,6 +27,14 @@
     <!-- Modern .snupkg symbol packages, not legacy .symbols.nupkg. -->
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!--
+      Copyright is a literal year range, never computed from the build clock, so
+      rebuilding a tag in a later year gives the same assembly metadata
+      (reproducible-build standard, #507). Use "<first-year>-<release-year>" once
+      they differ; the first release PR of a new year bumps the second year.
+    -->
+    <Copyright>Copyright (c) 2026 Chris Wolfgang</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
