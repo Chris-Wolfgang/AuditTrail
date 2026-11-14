@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794627670992,
+  "lastUpdate": 1794629775740,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -5604,6 +5604,78 @@ window.BENCHMARK_DATA = {
             "value": 49886198.166666664,
             "unit": "ns",
             "range": "± 2921840.855259289"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "685938e3f8cd0b9dc81ecbd0351c0c548bd459ca",
+          "message": "ci(shadow): re-measure once before failing on a regression (#519)\n\nThe nightly shadow run fails on a single measurement. Run 43414275799\n(2026-11-13) flagged ConcurrentSaves20 +48% with allocations flat, and\nthree manual dispatches afterwards all passed. On a first alert, re-measure\nbaseline then current once and fail only if the re-run alerts as well.\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-13T23:07:03-05:00",
+          "tree_id": "a9befecbd49b4a37e116a81f7d4f850154b51ec9",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/685938e3f8cd0b9dc81ecbd0351c0c548bd459ca"
+        },
+        "date": 1794629772510,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7169063.166666667,
+            "unit": "ns",
+            "range": "± 144956.0258227761"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 51209355.5,
+            "unit": "ns",
+            "range": "± 2266669.8595393198"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7434246.833333333,
+            "unit": "ns",
+            "range": "± 192829.74498332286"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 41913178.833333336,
+            "unit": "ns",
+            "range": "± 338660.95465278154"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 12787511.333333334,
+            "unit": "ns",
+            "range": "± 7479469.622394447"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 60822982,
+            "unit": "ns",
+            "range": "± 4153077.309222524"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 75463638.83333333,
+            "unit": "ns",
+            "range": "± 22539710.667709056"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 341279313,
+            "unit": "ns",
+            "range": "± 216247384.37816447"
           }
         ]
       }
