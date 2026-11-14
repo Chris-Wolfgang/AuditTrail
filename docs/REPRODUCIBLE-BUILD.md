@@ -52,9 +52,18 @@ to the SDK's bundled runtime when comparing.
 | .NET SDK | 10.0.x (latest patch — the released packages are packed with the 10.0 SDK) |
 | OS | Any (Linux/macOS/Windows). `.dll` / `.pdb` match cross-OS; see [What is guaranteed](#what-is-guaranteed). |
 
-There is no `global.json` SDK pin, so use the latest **.NET 10** SDK. The Roslyn
-compiler ships with the SDK, so a different SDK *major* can change the emitted IL;
-stay on 10.0.x to reproduce a package built during the 0.2.0+ cycle.
+`global.json` pins the SDK to the 10.0 major (`"version": "10.0.100"`,
+`"rollForward": "latestFeature"`), so `dotnet` refuses to build the repo with any
+other major. The Roslyn compiler ships with the SDK, so a different SDK *major* can
+change the emitted IL. The pin landed after v0.4.1 (#517); for v0.4.1 and earlier
+tags there is no `global.json` in the clone, so install the latest **.NET 10** SDK
+yourself. Run `dotnet --version` in the clone before packing and record it.
+
+**Copyright year.** The assembly and package copyright is a literal string, never
+taken from the build clock, so rebuilding a tag in a later year does not change the
+metadata. Up to v0.4.1 it is `Copyright (c) Chris Wolfgang` (no year), set in each
+`src/` project file; later releases take `Copyright (c) <years> Chris Wolfgang` from
+`Directory.Build.props`.
 
 ## Verify a release
 
@@ -83,6 +92,15 @@ stay on 10.0.x to reproduce a package built during the 0.2.0+ cycle.
 
    ```bash
    sha256sum published.nupkg   # compare with reproducible-build-manifest.json
+   ```
+
+   Every released `.nupkg` also has a SLSA build-provenance attestation in GitHub's
+   attestation store (releases after v0.4.1 also attach it to the release as
+   `AuditTrail-<tag>.intoto.jsonl`). Check that the package you downloaded was built
+   by this repository's release workflow (needs the GitHub CLI):
+
+   ```bash
+   gh attestation verify published.nupkg --repo Chris-Wolfgang/AuditTrail
    ```
 
    Then compare the assemblies:
