@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794663173870,
+  "lastUpdate": 1794703571992,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -5820,6 +5820,78 @@ window.BENCHMARK_DATA = {
             "value": 145922162,
             "unit": "ns",
             "range": "± 40979410.7434559"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "3ecad13eb2dbce96630946bb7f45e83a84325272",
+          "message": "ci: pre-pull the Db2 image with retries before the Docker test suites (#508)\n\nDb2AuditTests failed on the last two push runs of Integration Tests (c1a5e34 and\nfe44cd1): Testcontainers' own pull of icr.io/db2_community/db2 retries three\ntimes a couple of seconds apart and then gives up on 'Get https://icr.io/v2/:\nClient.Timeout exceeded'. Pull the image in a step of its own, five attempts\nwith a growing back-off, in integration.yaml and in the Stage 1 job of pr.yaml,\nthe two jobs that run the Docker suites. The image name is read from\nDb2Fixture.cs so the workflow cannot drift from the tests. A pull that still\nfails fails the job; nothing is skipped.\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-14T19:37:49-05:00",
+          "tree_id": "25cde59133e665208523b62b0ad6ade73e5ae7a9",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/3ecad13eb2dbce96630946bb7f45e83a84325272"
+        },
+        "date": 1794703569500,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3650966.5,
+            "unit": "ns",
+            "range": "± 87950.79584062898"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 21965443.5,
+            "unit": "ns",
+            "range": "± 1963073.460401062"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 4709397.833333333,
+            "unit": "ns",
+            "range": "± 107722.44614904237"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 30570721.833333332,
+            "unit": "ns",
+            "range": "± 2600967.2682679677"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 7908539,
+            "unit": "ns",
+            "range": "± 5273395.2431928525"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 29966888.333333332,
+            "unit": "ns",
+            "range": "± 139776.27643607242"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 15746343,
+            "unit": "ns",
+            "range": "± 380542.2672069425"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 230372796.33333334,
+            "unit": "ns",
+            "range": "± 190262707.97972187"
           }
         ]
       }
