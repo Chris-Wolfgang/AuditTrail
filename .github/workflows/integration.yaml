@@ -68,6 +68,28 @@ jobs:
           docker version
           docker info
 
+      - name: Pre-pull the Db2 image (retry on registry timeouts)
+        # icr.io (IBM's registry) intermittently times out from hosted runners; Testcontainers
+        # retries its own pull only three times, a couple of seconds apart, and every Db2 test
+        # then fails. Pull the image here with a longer back-off so the tests find it locally.
+        # The image name is read from the fixture so this step cannot drift from the tests.
+        # A pull that still fails after the retries fails the job: nothing is skipped.
+        run: |
+          image=$(grep -ohE 'icr\.io/[A-Za-z0-9_./-]+:[A-Za-z0-9_.-]+' tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration/TestSupport/Db2Fixture.cs | head -1)
+          if [ -z "$image" ]; then
+            echo "::error::No icr.io image reference found in Db2Fixture.cs"
+            exit 1
+          fi
+          for attempt in 1 2 3 4 5; do
+            if docker pull "$image"; then
+              exit 0
+            fi
+            echo "::warning::docker pull of $image failed (attempt $attempt of 5)"
+            sleep $((attempt * 20))
+          done
+          echo "::error::Could not pull $image after 5 attempts"
+          exit 1
+
       - name: Restore
         run: |
           dotnet restore tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Integration.csproj
