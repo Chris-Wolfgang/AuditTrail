@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794703571992,
+  "lastUpdate": 1794703575391,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -8522,6 +8522,42 @@ window.BENCHMARK_DATA = {
             "value": 52770865,
             "unit": "ns",
             "range": "± 1390748.8606563732"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "3ecad13eb2dbce96630946bb7f45e83a84325272",
+          "message": "ci: pre-pull the Db2 image with retries before the Docker test suites (#508)\n\nDb2AuditTests failed on the last two push runs of Integration Tests (c1a5e34 and\nfe44cd1): Testcontainers' own pull of icr.io/db2_community/db2 retries three\ntimes a couple of seconds apart and then gives up on 'Get https://icr.io/v2/:\nClient.Timeout exceeded'. Pull the image in a step of its own, five attempts\nwith a growing back-off, in integration.yaml and in the Stage 1 job of pr.yaml,\nthe two jobs that run the Docker suites. The image name is read from\nDb2Fixture.cs so the workflow cannot drift from the tests. A pull that still\nfails fails the job; nothing is skipped.\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-14T19:37:49-05:00",
+          "tree_id": "25cde59133e665208523b62b0ad6ade73e5ae7a9",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/3ecad13eb2dbce96630946bb7f45e83a84325272"
+        },
+        "date": 1794703574178,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 15437962.666666666,
+            "unit": "ns",
+            "range": "± 1514056.783027748"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 62189557.333333336,
+            "unit": "ns",
+            "range": "± 9462886.571944648"
           }
         ]
       }
