@@ -327,12 +327,64 @@ jobs:
       # on exactly the runs where SQLite's gate misfires. Running it last
       # means both provider charts are already pushed by the time this can
       # fail.
-      - name: Store + push SQLite chart history
+      # Retry once on alert. The runner's noise is the problem, not the code: on
+      # shared runners the SQLite suite has alerted on `main` with the unaudited
+      # baselines slowing as much as the audited ones, after commits that only
+      # touched docs (#404 has the evidence). One alert is therefore not trusted;
+      # two in a row are.
+      #
+      # The action commits the new data point to its local gh-pages branch BEFORE it
+      # evaluates the alert, so a plain rerun would compare against the noisy point
+      # the first attempt stored and pass even on a real regression. Hence the
+      # three steps below: check attempt 1 without pushing, throw its local
+      # commit away, and only then store -- from attempt 1 if it was clean, from a
+      # fresh run if it alerted.
+      - name: Check SQLite benchmarks against the trend (attempt 1, nothing pushed)
+        id: sqlite-check
+        continue-on-error: true
         uses: benchmark-action/github-action-benchmark@4322e5726e6334590d251fc4f92bec0efafc45dc # v1.22.2
         with:
           name: Audit Interceptor Benchmarks
           tool: 'benchmarkdotnet'
           output-file-path: ${{ steps.locate-sqlite.outputs.report }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          gh-pages-branch: gh-pages
+          benchmark-data-dir-path: dev/bench
+          auto-push: false
+          alert-threshold: '200%'
+          fail-on-alert: true
+
+      - name: Discard attempt 1's local chart commit
+        # The check above committed to a local gh-pages branch that was never
+        # pushed. Delete it so the next step's fetch recreates it from the remote;
+        # left in place it would make that fetch non-fast-forward.
+        run: git branch -D gh-pages || true
+
+      - name: Re-run SaveChangesBenchmarks (SQLite) after an alert
+        if: steps.sqlite-check.outcome == 'failure'
+        run: |
+          echo "::warning::The SQLite trend check alerted on attempt 1. Re-running the benchmark once; the chart keeps only the run that decides the outcome."
+          dotnet run             --project benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks.csproj             --configuration Release             --framework net10.0             --             --exporters json             --filter '*Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks*'             --memory
+        # Same command as 'Run SaveChangesBenchmarks (SQLite)' above; keep them in sync.
+
+      - name: Locate the re-run report JSON
+        id: locate-sqlite-retry
+        if: steps.sqlite-check.outcome == 'failure'
+        run: |
+          report=$(find . -path '*/BenchmarkDotNet.Artifacts/results/*SaveChangesBenchmarks-report-full*.json' -not -path '*ProviderSaveChangesBenchmarks*' | head -1)
+          if [ -z "$report" ]; then
+            echo "No BDN report found after the re-run"
+            exit 1
+          fi
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+
+      - name: Store + push SQLite chart history
+        uses: benchmark-action/github-action-benchmark@4322e5726e6334590d251fc4f92bec0efafc45dc # v1.22.2
+        with:
+          name: Audit Interceptor Benchmarks
+          tool: 'benchmarkdotnet'
+          # The re-run's report when attempt 1 alerted, else attempt 1's.
+          output-file-path: ${{ steps.locate-sqlite-retry.outputs.report || steps.locate-sqlite.outputs.report }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           gh-pages-branch: gh-pages
           benchmark-data-dir-path: dev/bench
