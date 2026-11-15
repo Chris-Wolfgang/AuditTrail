@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794705566105,
+  "lastUpdate": 1794705569695,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -8630,6 +8630,42 @@ window.BENCHMARK_DATA = {
             "value": 62189557.333333336,
             "unit": "ns",
             "range": "± 9462886.571944648"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "08fb302ff602b7defca3bffb3e414a643b5be4e9",
+          "message": "ci(benchmarks): retry the SQLite trend check once before failing the run (#509)\n\nThe push-to-main SQLite trend gate failed 4 of 13 runs this week (11-02, 11-06,\n11-07, 11-08). The unaudited baselines slowed as much as the audited benchmarks\nand the commits in between only touched docs, examples and templates, which\npoints at shared-runner noise (#404 records the same pattern twice before).\n\nThe action stores its data point before it evaluates the alert, so a plain\nrerun would compare against the noisy point and pass on a real regression.\nCheck attempt 1 with auto-push off, discard the local gh-pages commit, re-run\nthe benchmark only if it alerted, and store the run that decides the outcome.\nTwo alerts in a row still fail the run and file the tracking issue.\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-14T20:09:59-05:00",
+          "tree_id": "f0aac5dbace3e00bfb06925cdf5e53e2d3746ba1",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/08fb302ff602b7defca3bffb3e414a643b5be4e9"
+        },
+        "date": 1794705568503,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 11874888,
+            "unit": "ns",
+            "range": "± 1660113.513801993"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 64532400.833333336,
+            "unit": "ns",
+            "range": "± 9374440.56122243"
           }
         ]
       }
