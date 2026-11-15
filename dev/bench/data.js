@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794663177179,
+  "lastUpdate": 1794703578606,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -15444,6 +15444,138 @@ window.BENCHMARK_DATA = {
             "value": 23353807.326530613,
             "unit": "ns",
             "range": "± 13607413.978375815"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "3ecad13eb2dbce96630946bb7f45e83a84325272",
+          "message": "ci: pre-pull the Db2 image with retries before the Docker test suites (#508)\n\nDb2AuditTests failed on the last two push runs of Integration Tests (c1a5e34 and\nfe44cd1): Testcontainers' own pull of icr.io/db2_community/db2 retries three\ntimes a couple of seconds apart and then gives up on 'Get https://icr.io/v2/:\nClient.Timeout exceeded'. Pull the image in a step of its own, five attempts\nwith a growing back-off, in integration.yaml and in the Stage 1 job of pr.yaml,\nthe two jobs that run the Docker suites. The image name is read from\nDb2Fixture.cs so the workflow cannot drift from the tests. A pull that still\nfails fails the job; nothing is skipped.\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-14T19:37:49-05:00",
+          "tree_id": "25cde59133e665208523b62b0ad6ade73e5ae7a9",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/3ecad13eb2dbce96630946bb7f45e83a84325272"
+        },
+        "date": 1794703577398,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 412716.42307692306,
+            "unit": "ns",
+            "range": "± 11144.887689602176"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1012909.5666666667,
+            "unit": "ns",
+            "range": "± 17956.42232687103"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 618776.6590909091,
+            "unit": "ns",
+            "range": "± 23172.584354615607"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2939615.948979592,
+            "unit": "ns",
+            "range": "± 657205.8217863123"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 585076.5,
+            "unit": "ns",
+            "range": "± 62640.85379532192"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1184950.7333333334,
+            "unit": "ns",
+            "range": "± 19034.79893123069"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 969243.7333333333,
+            "unit": "ns",
+            "range": "± 11905.351434584045"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 7274449.39,
+            "unit": "ns",
+            "range": "± 1293865.7823234499"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1855288.4666666666,
+            "unit": "ns",
+            "range": "± 22826.316738319725"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 15183696.29,
+            "unit": "ns",
+            "range": "± 4003903.0610801824"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1444905.642857143,
+            "unit": "ns",
+            "range": "± 12693.506811371304"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 9965109.895833334,
+            "unit": "ns",
+            "range": "± 970594.3273486389"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 3692523,
+            "unit": "ns",
+            "range": "± 42686.893905187426"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 20424662.85,
+            "unit": "ns",
+            "range": "± 9714143.982708005"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 7637128.769230769,
+            "unit": "ns",
+            "range": "± 66266.91889391198"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 21719003.8125,
+            "unit": "ns",
+            "range": "± 11981077.29917155"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 7062980.131313131,
+            "unit": "ns",
+            "range": "± 965996.4980580739"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 21114774.05050505,
+            "unit": "ns",
+            "range": "± 13035613.864424013"
           }
         ]
       }
