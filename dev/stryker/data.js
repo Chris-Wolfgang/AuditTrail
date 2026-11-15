@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794617366466,
+  "lastUpdate": 1794748249741,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Mutation score": [
@@ -21,6 +21,33 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/48992e6b8cacd10eb3f1e70e630e06d5de0f155d"
         },
         "date": 1794617363481,
+        "tool": "customBiggerIsBetter",
+        "benches": [
+          {
+            "name": "Mutation score (tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit)",
+            "value": 77.14,
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang",
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com"
+          },
+          "committer": {
+            "name": "GitHub",
+            "username": "web-flow",
+            "email": "noreply@github.com"
+          },
+          "id": "08fb302ff602b7defca3bffb3e414a643b5be4e9",
+          "message": "ci(benchmarks): retry the SQLite trend check once before failing the run (#509)\n\nThe push-to-main SQLite trend gate failed 4 of 13 runs this week (11-02, 11-06,\n11-07, 11-08). The unaudited baselines slowed as much as the audited benchmarks\nand the commits in between only touched docs, examples and templates, which\npoints at shared-runner noise (#404 records the same pattern twice before).\n\nThe action stores its data point before it evaluates the alert, so a plain\nrerun would compare against the noisy point and pass on a real regression.\nCheck attempt 1 with auto-push off, discard the local gh-pages commit, re-run\nthe benchmark only if it alerted, and store the run that decides the outcome.\nTwo alerts in a row still fail the run and file the tracking issue.\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-15T01:09:59Z",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/08fb302ff602b7defca3bffb3e414a643b5be4e9"
+        },
+        "date": 1794748246864,
         "tool": "customBiggerIsBetter",
         "benches": [
           {
