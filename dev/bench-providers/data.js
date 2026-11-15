@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794703575391,
+  "lastUpdate": 1794705566105,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -5892,6 +5892,78 @@ window.BENCHMARK_DATA = {
             "value": 230372796.33333334,
             "unit": "ns",
             "range": "± 190262707.97972187"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "08fb302ff602b7defca3bffb3e414a643b5be4e9",
+          "message": "ci(benchmarks): retry the SQLite trend check once before failing the run (#509)\n\nThe push-to-main SQLite trend gate failed 4 of 13 runs this week (11-02, 11-06,\n11-07, 11-08). The unaudited baselines slowed as much as the audited benchmarks\nand the commits in between only touched docs, examples and templates, which\npoints at shared-runner noise (#404 records the same pattern twice before).\n\nThe action stores its data point before it evaluates the alert, so a plain\nrerun would compare against the noisy point and pass on a real regression.\nCheck attempt 1 with auto-push off, discard the local gh-pages commit, re-run\nthe benchmark only if it alerted, and store the run that decides the outcome.\nTwo alerts in a row still fail the run and file the tracking issue.\n\nCo-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-14T20:09:59-05:00",
+          "tree_id": "f0aac5dbace3e00bfb06925cdf5e53e2d3746ba1",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/08fb302ff602b7defca3bffb3e414a643b5be4e9"
+        },
+        "date": 1794705563487,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3849876.1666666665,
+            "unit": "ns",
+            "range": "± 72267.27518270863"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 22880069,
+            "unit": "ns",
+            "range": "± 1761243.8752146165"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 5670689,
+            "unit": "ns",
+            "range": "± 697732.2024222474"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 48364519.666666664,
+            "unit": "ns",
+            "range": "± 14847386.406703785"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 11440781.333333334,
+            "unit": "ns",
+            "range": "± 8487294.433677986"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 34331218.333333336,
+            "unit": "ns",
+            "range": "± 1531019.6994664483"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 18638585.666666668,
+            "unit": "ns",
+            "range": "± 162748.59030521073"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 369285885.8333333,
+            "unit": "ns",
+            "range": "± 376053187.75050676"
           }
         ]
       }
