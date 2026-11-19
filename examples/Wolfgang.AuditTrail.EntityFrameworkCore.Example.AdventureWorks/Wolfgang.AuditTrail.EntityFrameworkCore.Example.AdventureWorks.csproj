@@ -29,7 +29,7 @@
       CVE-2026-70162 / CVE-2026-84008 advisories and trips NU1902/NU1903
       (warning as error). Same override as the integration-test projects.
     -->
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="11.0.0" />
   </ItemGroup>
 
 </Project>
