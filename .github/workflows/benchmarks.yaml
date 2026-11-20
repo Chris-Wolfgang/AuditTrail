@@ -105,6 +105,7 @@ jobs:
           dotnet-version: |
             8.0.x
             10.0.x
+            11.0.x
 
       - name: Verify Docker is available
         # The provider benchmarks below need Docker for every provider except
