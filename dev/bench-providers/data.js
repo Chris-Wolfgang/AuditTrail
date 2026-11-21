@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795055592679,
+  "lastUpdate": 1795219245233,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -6036,6 +6036,78 @@ window.BENCHMARK_DATA = {
             "value": 45506551.666666664,
             "unit": "ns",
             "range": "± 2983631.761662342"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "1eea8c8c494411595215fb8489d550825eaecd0c",
+          "message": "ci: install the .NET 11.0.x SDK and keep net11.0 in every test stage (#536)\n\nSync of repo-template#831 for #513: 11.0.x beside 10.0.x in every\nactions/setup-dotnet step (26 steps in 20 workflows, including this\nrepository's own coverage, coyote, fuzz, integration, shadow and\nsourcelink-stepinto workflows), and 11\\.0 in the 7 pr.yaml TFM filters\nand the scripts/build-pr.ps1 Stage 2 mirror, so a net11.0 TFM is not\nfiltered out silently. Job names unchanged (they are required checks).\nglobal.json still pins the 10.0 SDK, so builds keep using SDK 10 until\nthe net11.0 PR stacked on this one moves the pin.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-20T18:53:34-05:00",
+          "tree_id": "f5835eb9c48c6f1c47ab761453aaa6744a1dab9c",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/1eea8c8c494411595215fb8489d550825eaecd0c"
+        },
+        "date": 1795219242585,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 1775197.5,
+            "unit": "ns",
+            "range": "± 45179.56959733016"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 10440929.666666666,
+            "unit": "ns",
+            "range": "± 830661.2893937777"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3588680.3333333335,
+            "unit": "ns",
+            "range": "± 97740.4993865559"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 23730757.666666668,
+            "unit": "ns",
+            "range": "± 4779303.260114003"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 5583681.666666667,
+            "unit": "ns",
+            "range": "± 4068249.9592173947"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 20439571.333333332,
+            "unit": "ns",
+            "range": "± 234325.28831804162"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 10407217.5,
+            "unit": "ns",
+            "range": "± 260186.34721483753"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 42364719.333333336,
+            "unit": "ns",
+            "range": "± 478719.7544183166"
           }
         ]
       }
