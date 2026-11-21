@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795219245233,
+  "lastUpdate": 1795219248695,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -8846,6 +8846,42 @@ window.BENCHMARK_DATA = {
             "value": 31342295,
             "unit": "ns",
             "range": "± 2499154.060676732"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "1eea8c8c494411595215fb8489d550825eaecd0c",
+          "message": "ci: install the .NET 11.0.x SDK and keep net11.0 in every test stage (#536)\n\nSync of repo-template#831 for #513: 11.0.x beside 10.0.x in every\nactions/setup-dotnet step (26 steps in 20 workflows, including this\nrepository's own coverage, coyote, fuzz, integration, shadow and\nsourcelink-stepinto workflows), and 11\\.0 in the 7 pr.yaml TFM filters\nand the scripts/build-pr.ps1 Stage 2 mirror, so a net11.0 TFM is not\nfiltered out silently. Job names unchanged (they are required checks).\nglobal.json still pins the 10.0 SDK, so builds keep using SDK 10 until\nthe net11.0 PR stacked on this one moves the pin.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-20T18:53:34-05:00",
+          "tree_id": "f5835eb9c48c6f1c47ab761453aaa6744a1dab9c",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/1eea8c8c494411595215fb8489d550825eaecd0c"
+        },
+        "date": 1795219247380,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6087103.666666667,
+            "unit": "ns",
+            "range": "± 646504.4190385193"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 32444530.333333332,
+            "unit": "ns",
+            "range": "± 1155595.7576965801"
           }
         ]
       }
