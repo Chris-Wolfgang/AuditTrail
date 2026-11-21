@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795291976699,
+  "lastUpdate": 1795291979827,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -8954,6 +8954,42 @@ window.BENCHMARK_DATA = {
             "value": 32444530.333333332,
             "unit": "ns",
             "range": "± 1155595.7576965801"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b2f45cc1431c56cc3a57538b403b26d643fc599a",
+          "message": "build: add net11.0 to the packages, Tests.Unit and Tests.Smoke (#537)\n\n* ci: install the .NET 11.0.x SDK and keep net11.0 in every test stage\n\nSync of repo-template#831 for #513: 11.0.x beside 10.0.x in every\nactions/setup-dotnet step (26 steps in 20 workflows, including this\nrepository's own coverage, coyote, fuzz, integration, shadow and\nsourcelink-stepinto workflows), and 11\\.0 in the 7 pr.yaml TFM filters\nand the scripts/build-pr.ps1 Stage 2 mirror, so a net11.0 TFM is not\nfiltered out silently. Job names unchanged (they are required checks).\nglobal.json still pins the 10.0 SDK, so builds keep using SDK 10 until\nthe net11.0 PR stacked on this one moves the pin.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* build: add net11.0 to the packages, Tests.Unit and Tests.Smoke\n\n#513: net11.0 after net10.0 in the four src projects and in Tests.Unit\nand Tests.Smoke (TargetFrameworks kept on one line). The net11.0 slot\ntakes the same package group as net10.0 (EF Core 10.x, Npgsql EF 10.x,\nxunit runner 3.x): EF Core 11.0.0 is out, but Npgsql's EF Core 11\nprovider is still rc.3 and Pomelo has no 11.x, so EF 10 keeps every\nprovider on one EF major. global.json moves to the 11.0.100 SDK\n(latestFeature), which net11.0 needs. Feature changelog fragment added;\nthe version bump happens at release cut.\n\nNeeds the CI SDK change below it (merge that first).\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* docs(readme): list net11.0 in the per-package target frameworks\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-21T15:04:09-05:00",
+          "tree_id": "18e5cee2b2e19bd6367b0f2b3d451f8d5b01572c",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b2f45cc1431c56cc3a57538b403b26d643fc599a"
+        },
+        "date": 1795291978621,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 17177476,
+            "unit": "ns",
+            "range": "± 369058.93779855815"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 80139237.5,
+            "unit": "ns",
+            "range": "± 2102419.4721874604"
           }
         ]
       }
