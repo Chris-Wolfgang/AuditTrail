@@ -5,10 +5,13 @@ from source and confirm the compiled assemblies match what was published to NuGe
 This page is the **consumer-side** procedure: how *you* independently verify the
 claim, without trusting our CI.
 
-Tracks issue #65. Pairs with the internal round-3 reproducibility check
-(`.github/workflows/reproducible-build.yaml`), which builds every TFM of every
-packable project on Ubuntu and on Windows and fails unless every `.dll` and `.pdb`
-is byte-identical.
+Tracks issue #65. Pairs with the internal reproducibility gate
+(`.github/workflows/reproducible-build.yaml`, the canonical fleet copy). On every
+pull request it packs every packable project under `src/` twice on Ubuntu, with a
+full `git clean` in between, and fails unless every `.dll` and `.pdb` is
+byte-identical and every `.nupkg` / `.snupkg` matches entry by entry. A Windows job
+packs the same commit once and reports, without failing the run, how its hashes
+compare with Ubuntu's.
 
 ## What makes the build reproducible
 
