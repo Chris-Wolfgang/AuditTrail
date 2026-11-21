@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795219254899,
+  "lastUpdate": 1795292067879,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -15972,6 +15972,138 @@ window.BENCHMARK_DATA = {
             "value": 19026591.28,
             "unit": "ns",
             "range": "± 9097764.683024006"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b2f45cc1431c56cc3a57538b403b26d643fc599a",
+          "message": "build: add net11.0 to the packages, Tests.Unit and Tests.Smoke (#537)\n\n* ci: install the .NET 11.0.x SDK and keep net11.0 in every test stage\n\nSync of repo-template#831 for #513: 11.0.x beside 10.0.x in every\nactions/setup-dotnet step (26 steps in 20 workflows, including this\nrepository's own coverage, coyote, fuzz, integration, shadow and\nsourcelink-stepinto workflows), and 11\\.0 in the 7 pr.yaml TFM filters\nand the scripts/build-pr.ps1 Stage 2 mirror, so a net11.0 TFM is not\nfiltered out silently. Job names unchanged (they are required checks).\nglobal.json still pins the 10.0 SDK, so builds keep using SDK 10 until\nthe net11.0 PR stacked on this one moves the pin.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* build: add net11.0 to the packages, Tests.Unit and Tests.Smoke\n\n#513: net11.0 after net10.0 in the four src projects and in Tests.Unit\nand Tests.Smoke (TargetFrameworks kept on one line). The net11.0 slot\ntakes the same package group as net10.0 (EF Core 10.x, Npgsql EF 10.x,\nxunit runner 3.x): EF Core 11.0.0 is out, but Npgsql's EF Core 11\nprovider is still rc.3 and Pomelo has no 11.x, so EF 10 keeps every\nprovider on one EF major. global.json moves to the 11.0.100 SDK\n(latestFeature), which net11.0 needs. Feature changelog fragment added;\nthe version bump happens at release cut.\n\nNeeds the CI SDK change below it (merge that first).\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* docs(readme): list net11.0 in the per-package target frameworks\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-21T15:04:09-05:00",
+          "tree_id": "18e5cee2b2e19bd6367b0f2b3d451f8d5b01572c",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b2f45cc1431c56cc3a57538b403b26d643fc599a"
+        },
+        "date": 1795292066633,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 537434.8947368421,
+            "unit": "ns",
+            "range": "± 11867.384518993114"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1472247.2666666666,
+            "unit": "ns",
+            "range": "± 19200.018688482967"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 841068.125,
+            "unit": "ns",
+            "range": "± 15938.333371152707"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2895083.8,
+            "unit": "ns",
+            "range": "± 50114.5942760903"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 722829.125,
+            "unit": "ns",
+            "range": "± 18633.32580016246"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 2175225.112359551,
+            "unit": "ns",
+            "range": "± 190225.75178458352"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1653946.4333333333,
+            "unit": "ns",
+            "range": "± 10159.991946472248"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 11160867.020618556,
+            "unit": "ns",
+            "range": "± 1209422.4778033437"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 3331616.785714286,
+            "unit": "ns",
+            "range": "± 23566.0026910625"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 22927551.702127658,
+            "unit": "ns",
+            "range": "± 884736.7794555796"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 2635085.785714286,
+            "unit": "ns",
+            "range": "± 35596.29160715086"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 14945692.104166666,
+            "unit": "ns",
+            "range": "± 2814400.2830732986"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 6604071.692307692,
+            "unit": "ns",
+            "range": "± 50345.63851414972"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 26129441.05,
+            "unit": "ns",
+            "range": "± 14629447.260354972"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 16188920.40425532,
+            "unit": "ns",
+            "range": "± 2250450.107038777"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 25368921.792134833,
+            "unit": "ns",
+            "range": "± 9814343.296816556"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 12508352.714285715,
+            "unit": "ns",
+            "range": "± 166093.5744768262"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 20481856.7375,
+            "unit": "ns",
+            "range": "± 6406975.115290033"
           }
         ]
       }
