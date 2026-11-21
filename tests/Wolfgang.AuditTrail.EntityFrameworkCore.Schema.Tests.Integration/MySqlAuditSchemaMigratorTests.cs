@@ -54,7 +54,7 @@ public sealed class MySqlAuditSchemaMigratorTests
 
         await using var context = await _fixture.CreateContextAsync(options);
 
-        await AuditSchemaMigrator.RunAsync(context);
+        await StubSchemaUpgrades.InstallVersionOneAsync(context);
 
         // Second operation targets a table that does not exist, so it fails at
         // execution time, after the first ALTER has already been committed.

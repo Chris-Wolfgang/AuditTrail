@@ -19,5 +19,5 @@ public static class AuditSchemaConstants
     /// alongside a model change, together with the explicit upgrade step that
     /// takes the previous version to the new one (see <c>AuditSchemaUpgrades</c>).
     /// </summary>
-    public const int CurrentSchemaVersion = 1;
+    public const int CurrentSchemaVersion = 2;
 }

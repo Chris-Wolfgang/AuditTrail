@@ -7,6 +7,7 @@
 CREATE TABLE "MyHeader" (
     "HeaderId" TEXT NOT NULL CONSTRAINT "PK_MyHeader" PRIMARY KEY,
     "TransactionId" TEXT NOT NULL,
+    "Ordinal" INTEGER NOT NULL DEFAULT 0,
     "AuditedAtUtc" TEXT NOT NULL,
     "UserId" TEXT NOT NULL,
     "OnBehalfOfUserId" TEXT NULL,
@@ -40,3 +41,6 @@ CREATE INDEX "IX_MyHeader_EntityType_EntityKey" ON "MyHeader" ("EntityType", "En
 ;
 
 CREATE INDEX "IX_MyHeader_TransactionId" ON "MyHeader" ("TransactionId");
+;
+
+CREATE INDEX "IX_MyHeader_TransactionId_Ordinal" ON "MyHeader" ("TransactionId", "Ordinal");
