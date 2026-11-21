@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795219248695,
+  "lastUpdate": 1795291976699,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -6108,6 +6108,78 @@ window.BENCHMARK_DATA = {
             "value": 42364719.333333336,
             "unit": "ns",
             "range": "± 478719.7544183166"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b2f45cc1431c56cc3a57538b403b26d643fc599a",
+          "message": "build: add net11.0 to the packages, Tests.Unit and Tests.Smoke (#537)\n\n* ci: install the .NET 11.0.x SDK and keep net11.0 in every test stage\n\nSync of repo-template#831 for #513: 11.0.x beside 10.0.x in every\nactions/setup-dotnet step (26 steps in 20 workflows, including this\nrepository's own coverage, coyote, fuzz, integration, shadow and\nsourcelink-stepinto workflows), and 11\\.0 in the 7 pr.yaml TFM filters\nand the scripts/build-pr.ps1 Stage 2 mirror, so a net11.0 TFM is not\nfiltered out silently. Job names unchanged (they are required checks).\nglobal.json still pins the 10.0 SDK, so builds keep using SDK 10 until\nthe net11.0 PR stacked on this one moves the pin.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* build: add net11.0 to the packages, Tests.Unit and Tests.Smoke\n\n#513: net11.0 after net10.0 in the four src projects and in Tests.Unit\nand Tests.Smoke (TargetFrameworks kept on one line). The net11.0 slot\ntakes the same package group as net10.0 (EF Core 10.x, Npgsql EF 10.x,\nxunit runner 3.x): EF Core 11.0.0 is out, but Npgsql's EF Core 11\nprovider is still rc.3 and Pomelo has no 11.x, so EF 10 keeps every\nprovider on one EF major. global.json moves to the 11.0.100 SDK\n(latestFeature), which net11.0 needs. Feature changelog fragment added;\nthe version bump happens at release cut.\n\nNeeds the CI SDK change below it (merge that first).\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* docs(readme): list net11.0 in the per-package target frameworks\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-21T15:04:09-05:00",
+          "tree_id": "18e5cee2b2e19bd6367b0f2b3d451f8d5b01572c",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/b2f45cc1431c56cc3a57538b403b26d643fc599a"
+        },
+        "date": 1795291974205,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6680193.666666667,
+            "unit": "ns",
+            "range": "± 31892.467548518933"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 44110565.333333336,
+            "unit": "ns",
+            "range": "± 5730926.681183622"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6401149.166666667,
+            "unit": "ns",
+            "range": "± 194129.11367008643"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 44602990.666666664,
+            "unit": "ns",
+            "range": "± 11177161.781853404"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 11376152.666666666,
+            "unit": "ns",
+            "range": "± 6773478.241756176"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 48257278.333333336,
+            "unit": "ns",
+            "range": "± 1241050.2534709596"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 24325566,
+            "unit": "ns",
+            "range": "± 948575.6713979122"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 561263578,
+            "unit": "ns",
+            "range": "± 778033080.0060377"
           }
         ]
       }
