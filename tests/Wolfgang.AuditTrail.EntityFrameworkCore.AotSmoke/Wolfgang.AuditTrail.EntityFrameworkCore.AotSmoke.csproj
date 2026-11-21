@@ -8,6 +8,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
+    <!-- A console app, not a test project: the CI test stages skip a project under tests/ only on
+         this explicit opt-out (they fail one with neither Microsoft.NET.Test.Sdk nor the opt-out). -->
+    <IsTestProject>false</IsTestProject>
     <IsPublishable>true</IsPublishable>
     <RootNamespace>Wolfgang.AuditTrail.AotSmoke</RootNamespace>
     <AssemblyName>Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke</AssemblyName>
