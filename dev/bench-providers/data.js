@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795291979827,
+  "lastUpdate": 1795294599583,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -6180,6 +6180,78 @@ window.BENCHMARK_DATA = {
             "value": 561263578,
             "unit": "ns",
             "range": "± 778033080.0060377"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "cb92b98bdc576e931531fab43c8ab0ee18c91e5e",
+          "message": "docs: describe the canonical reproducible-build gate in the verifier doc (#543)\n\n#507: docs/REPRODUCIBLE-BUILD.md described the old hand-edited workflow\n(build on Ubuntu and Windows, gate on cross-OS identity). State what the\ncanonical workflow does: same-commit double pack on Ubuntu gates\n(.dll/.pdb byte-identical, packages entry by entry), Windows reports.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-21T15:46:46-05:00",
+          "tree_id": "cf1c3f0973a17c030bf15414d48f479018d1956d",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/cb92b98bdc576e931531fab43c8ab0ee18c91e5e"
+        },
+        "date": 1795294596568,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3519753.8333333335,
+            "unit": "ns",
+            "range": "± 74117.67209197367"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 20943555.166666668,
+            "unit": "ns",
+            "range": "± 1060179.139884545"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6739255,
+            "unit": "ns",
+            "range": "± 152583.02537635044"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 47877953.333333336,
+            "unit": "ns",
+            "range": "± 14331270.339565378"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 9689768.833333334,
+            "unit": "ns",
+            "range": "± 7031824.545884043"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 35166630.166666664,
+            "unit": "ns",
+            "range": "± 459294.8442845111"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 24975276,
+            "unit": "ns",
+            "range": "± 1017722.1765142981"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 145362774.33333334,
+            "unit": "ns",
+            "range": "± 40949443.88015005"
           }
         ]
       }
