@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795292067879,
+  "lastUpdate": 1795294609432,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -16104,6 +16104,138 @@ window.BENCHMARK_DATA = {
             "value": 20481856.7375,
             "unit": "ns",
             "range": "± 6406975.115290033"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "cb92b98bdc576e931531fab43c8ab0ee18c91e5e",
+          "message": "docs: describe the canonical reproducible-build gate in the verifier doc (#543)\n\n#507: docs/REPRODUCIBLE-BUILD.md described the old hand-edited workflow\n(build on Ubuntu and Windows, gate on cross-OS identity). State what the\ncanonical workflow does: same-commit double pack on Ubuntu gates\n(.dll/.pdb byte-identical, packages entry by entry), Windows reports.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-21T15:46:46-05:00",
+          "tree_id": "cf1c3f0973a17c030bf15414d48f479018d1956d",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/cb92b98bdc576e931531fab43c8ab0ee18c91e5e"
+        },
+        "date": 1795294608004,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 791490.4141414141,
+            "unit": "ns",
+            "range": "± 165166.3263431565"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1923250.5206185568,
+            "unit": "ns",
+            "range": "± 468855.9371181039"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 897567.5348837209,
+            "unit": "ns",
+            "range": "± 60250.88724046705"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2378729.5833333335,
+            "unit": "ns",
+            "range": "± 33351.447697781856"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 748479.1923076923,
+            "unit": "ns",
+            "range": "± 7568.38004886796"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1542157.375,
+            "unit": "ns",
+            "range": "± 28665.672966982653"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1578603,
+            "unit": "ns",
+            "range": "± 236638.1885691439"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 8255237.795918368,
+            "unit": "ns",
+            "range": "± 1386857.8859503535"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 2092492.4666666666,
+            "unit": "ns",
+            "range": "± 38675.61230444593"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 17401367.64,
+            "unit": "ns",
+            "range": "± 4813043.106557519"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 2371443.311111111,
+            "unit": "ns",
+            "range": "± 313190.95462007634"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 12164135.388888888,
+            "unit": "ns",
+            "range": "± 2298214.896987322"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 3541085.1666666665,
+            "unit": "ns",
+            "range": "± 22552.871741485134"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 21466108.19,
+            "unit": "ns",
+            "range": "± 9998718.22341185"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 10320374.76923077,
+            "unit": "ns",
+            "range": "± 129604.90409069778"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 21093099.155555554,
+            "unit": "ns",
+            "range": "± 11242730.882809633"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 7800501.04040404,
+            "unit": "ns",
+            "range": "± 1007497.5326956261"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 18421843.477272727,
+            "unit": "ns",
+            "range": "± 9604001.444889715"
           }
         ]
       }
