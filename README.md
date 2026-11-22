@@ -163,6 +163,8 @@ EF Core 6, 7, 8, 9, and 10 are all supported (the library targets the LTS `net6.
 
 See each package's NuGet page for the authoritative per-TFM compatibility matrix.
 
+**Test matrix:** every pull request runs the test suite on five legs: linux-x64, linux-arm64 (`ubuntu-24.04-arm`), windows-x64, windows-arm64 (`windows-11-arm`) and macos-arm64. Each leg runs every test target framework that its runtime supports: the two x64 legs run all of them, and the two ARM64 legs and macOS run net6.0 and later. The Docker-backed integration suites run on linux-x64 only. The Native AOT smoke test publishes and runs a native binary on linux-x64 and linux-arm64.
+
 ## 🧪 Testing
 
 Twelve test projects (counting the two AotSmoke projects) + the shipped TestKit contract base, spanning unit, integration, and specialty suites:
