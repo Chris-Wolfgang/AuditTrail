@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794748249741,
+  "lastUpdate": 1795355252191,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Mutation score": [
@@ -48,6 +48,33 @@ window.BENCHMARK_DATA = {
           "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/08fb302ff602b7defca3bffb3e414a643b5be4e9"
         },
         "date": 1794748246864,
+        "tool": "customBiggerIsBetter",
+        "benches": [
+          {
+            "name": "Mutation score (tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit)",
+            "value": 77.14,
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang",
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com"
+          },
+          "committer": {
+            "name": "GitHub",
+            "username": "web-flow",
+            "email": "noreply@github.com"
+          },
+          "id": "cb92b98bdc576e931531fab43c8ab0ee18c91e5e",
+          "message": "docs: describe the canonical reproducible-build gate in the verifier doc (#543)\n\n#507: docs/REPRODUCIBLE-BUILD.md described the old hand-edited workflow\n(build on Ubuntu and Windows, gate on cross-OS identity). State what the\ncanonical workflow does: same-commit double pack on Ubuntu gates\n(.dll/.pdb byte-identical, packages entry by entry), Windows reports.\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-21T20:46:46Z",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/cb92b98bdc576e931531fab43c8ab0ee18c91e5e"
+        },
+        "date": 1795355249703,
         "tool": "customBiggerIsBetter",
         "benches": [
           {
