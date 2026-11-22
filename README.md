@@ -152,14 +152,14 @@ This repo ships four NuGet packages, each with its own TFM matrix:
 
 | Package | Target Frameworks |
 |---|---|
-| `Wolfgang.AuditTrail.Abstractions` | `netstandard2.0`, `net8.0`, `net10.0` |
-| `Wolfgang.AuditTrail.EntityFrameworkCore` | `net6.0`, `net8.0`, `net10.0` |
-| `Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql` | `net8.0`, `net10.0` |
-| `Wolfgang.AuditTrail.TestKit.Xunit` | `netstandard2.0`, `net8.0`, `net10.0` |
+| `Wolfgang.AuditTrail.Abstractions` | `netstandard2.0`, `net8.0`, `net10.0`, `net11.0` |
+| `Wolfgang.AuditTrail.EntityFrameworkCore` | `net6.0`, `net8.0`, `net10.0`, `net11.0` |
+| `Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql` | `net8.0`, `net10.0`, `net11.0` |
+| `Wolfgang.AuditTrail.TestKit.Xunit` | `netstandard2.0`, `net8.0`, `net10.0`, `net11.0` |
 
 The `audittrail` CLI (`src/Wolfgang.AuditTrail.Cli`) targets `net10.0` and is built from source; it isn't published to NuGet (see [Packages](#-packages)).
 
-EF Core 6, 7, 8, 9, and 10 are all supported (the library targets the LTS `net6.0` / `net8.0` / `net10.0`; an EF Core 7 consumer running on `net6.0+` or `net7.0+` resolves the appropriate TFM automatically).
+EF Core 6, 7, 8, 9, and 10 are all supported (the library targets the LTS `net6.0` / `net8.0` / `net10.0`, plus `net11.0`, which uses the EF Core 10 packages; an EF Core 7 consumer running on `net6.0+` or `net7.0+` resolves the appropriate TFM automatically).
 
 See each package's NuGet page for the authoritative per-TFM compatibility matrix.
 
