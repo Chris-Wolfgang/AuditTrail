@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795392520981,
+  "lastUpdate": 1795392524304,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -9170,6 +9170,42 @@ window.BENCHMARK_DATA = {
             "value": 57463447.5,
             "unit": "ns",
             "range": "± 9575062.729186216"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "25f06fcf8100787cff9b8030f52acee137225c3c",
+          "message": "docs(readme): state the five-leg test matrix and per-leg TFM rule (#541)\n\n#510: the README test-matrix line from the fleet standard, adapted to\nthis repository (Docker-backed integration suites run on linux-x64 only;\nno .NET Framework TFM here).\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-22T18:52:49-05:00",
+          "tree_id": "f10ae4b5411b21d4247301db6fd4000416d3748a",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/25f06fcf8100787cff9b8030f52acee137225c3c"
+        },
+        "date": 1795392523038,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6951761,
+            "unit": "ns",
+            "range": "± 454474.3895897766"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 33285386.833333332,
+            "unit": "ns",
+            "range": "± 1295490.234971431"
           }
         ]
       }
