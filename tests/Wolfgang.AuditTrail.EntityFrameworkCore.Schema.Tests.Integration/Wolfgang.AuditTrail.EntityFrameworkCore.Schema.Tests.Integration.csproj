@@ -39,7 +39,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-    <PackageReference Include="coverlet.collector" Version="10.1.0">
+    <PackageReference Include="coverlet.collector" Version="10.1.1">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 
@@ -57,8 +57,8 @@
       fixed in 2.6.1) and fails restore under NuGetAudit warnings-as-errors.
       Pin the patched release; drop this once Pomelo floors it itself.
     -->
-    <PackageReference Include="MySqlConnector" Version="2.6.2" />
-    <PackageReference Include="Testcontainers.MySql" Version="4.16.0" />
+    <PackageReference Include="MySqlConnector" Version="3.0.0" />
+    <PackageReference Include="Testcontainers.MySql" Version="4.17.0" />
 
     <Compile Remove="SqlServerAuditSchemaMigratorTests.cs" />
     <Compile Remove="PostgresAuditSchemaMigratorTests.cs" />
@@ -70,7 +70,7 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.2" />
     <!--
       Microsoft.Data.SqlClient pulls System.Security.Cryptography.Pkcs from the
       9.0.x line transitively, and versions up to 9.0.20 carry the CVE-2026-70162
@@ -81,8 +81,8 @@
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="11.0.0" />
     <PackageReference Include="Npgsql" Version="10.0.3" />
 
-    <PackageReference Include="Testcontainers.MsSql" Version="4.16.0" />
-    <PackageReference Include="Testcontainers.PostgreSql" Version="4.16.0" />
+    <PackageReference Include="Testcontainers.MsSql" Version="4.17.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.17.0" />
 
     <Compile Remove="MySqlAuditSchemaMigratorTests.cs" />
     <Compile Remove="TestSupport\MySqlSchemaFixture.cs" />
