@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795615894144,
+  "lastUpdate": 1795615897757,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -9494,6 +9494,42 @@ window.BENCHMARK_DATA = {
             "value": 72665645,
             "unit": "ns",
             "range": "± 6010780.934403865"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "30b212eed33daf241d8b21758b45a796d6411c3a",
+          "message": "fix(deps): override wcmatch to >=11.2 (GHSA-53pm-wgxf-c6qf) (#552)\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-25T09:02:48-05:00",
+          "tree_id": "9b1b54127c2ff11e468fe79bdd15aca15d9eba08",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/30b212eed33daf241d8b21758b45a796d6411c3a"
+        },
+        "date": 1795615896486,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 10101078.5,
+            "unit": "ns",
+            "range": "± 530542.5597225919"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 49349364.5,
+            "unit": "ns",
+            "range": "± 6293866.386661462"
           }
         ]
       }
