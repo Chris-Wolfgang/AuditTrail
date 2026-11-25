@@ -128,10 +128,11 @@ public static class DocExampleCompiler
     // Plain Regex, not [GeneratedRegex]: the source generator emits a large general-
     // purpose matching engine (RunnerFactory/Runner) into THIS assembly, which coverlet
     // then counts as this project's own untested code and drags the coverage gate down.
+    // NonBacktracking instead of a match timeout: matching is linear in the input, and a
+    // wall-clock limit fails a test whenever the machine stalls during the match.
     private static readonly Regex TypeDeclarationStart = new(
         @"^\s*(?:public|internal|private|protected)?\s*(?:sealed\s+|abstract\s+|static\s+)?(?:partial\s+)?(?:class|record|struct|interface)\s+\w+",
-        RegexOptions.Multiline | RegexOptions.Compiled,
-        TimeSpan.FromMilliseconds(100));
+        RegexOptions.Multiline | RegexOptions.NonBacktracking);
 
 
     // Heuristic: a snippet whose first non-blank line looks like a type declaration is
