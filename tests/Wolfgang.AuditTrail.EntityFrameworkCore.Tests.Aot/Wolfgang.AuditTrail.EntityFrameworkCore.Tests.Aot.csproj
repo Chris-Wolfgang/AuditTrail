@@ -1,0 +1,70 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Native AOT test run (fleet standard aot-smoke.md, Tests.Aot conversion plan approved 2026-11-20).
+
+    Runs a subset of Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit as a Native AOT executable
+    with xUnit v3. The canonical aot-smoke.yaml finds this project through its MSBuild-evaluated
+    PublishAot, publishes it for linux-x64 and linux-arm64 and runs the binary; any trim/AOT
+    warning (warnings are errors in Release) or a failing test (exit code 1) fails the job.
+
+    The test sources are linked, not copied: fix a test in Tests.Unit and it is fixed here.
+
+    Linked: the suites that exercise this library's own value and key serialization without an
+    EF Core model (serializers, ColumnValueWriter, culture invariance).
+
+    NOT linked, with the reason:
+    - Every suite that builds a DbContext (AuditingDbContext*, AuditSaveChangesInterceptor*,
+      AuditCapture*, AuditSchema*, ModelBuilder*, UseAuditing, AddEfCoreAuditing, and the rest that
+      use TestSupport/TestDbContext or InterceptorFixture): EF Core builds its model at run time,
+      which throws "Model building is not supported when publishing with NativeAOT". Under Native
+      AOT, EF Core needs a compiled model plus precompiled queries, which are still experimental
+      (https://learn.microsoft.com/ef/core/performance/nativeaot-and-precompiled-queries). The
+      AotSmoke harness (aot-consumer.yaml) keeps exercising that path, informationally, until it is
+      retired.
+    - Serializers/StringAuditValueSerializerContractTests and anything else that derives from
+      Wolfgang.AuditTrail.TestKit.Xunit's contract base: TestKit.Xunit is built on xUnit v2 and
+      FsCheck.Xunit, which cannot load next to xunit.v3.aot. Only its dependency-free
+      InMemoryAuditValueBuffer is linked.
+    - ExistingLocalTimeArbitraryTests: it tests TestKit.Xunit's FsCheck arbitrary (same reason).
+    - NullArgumentGuardTests: it mixes serializer guards with DbContext-based guards in one class.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <!-- Not a dotnet-test project: the pr.yaml test stages and build-pr.ps1 skip a project under
+         tests/ on this explicit opt-out. The AOT smoke job publishes and executes it instead. -->
+    <IsTestProject>false</IsTestProject>
+    <PublishAot>true</PublishAot>
+    <PublishTrimmed>true</PublishTrimmed>
+    <IsAotCompatible>true</IsAotCompatible>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <!-- GlobalizationInvarianceTests run under real cultures, so ICU is required. -->
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <RootNamespace>Wolfgang.AuditTrail.Tests.Aot</RootNamespace>
+    <!-- Same relaxations as Tests.Unit, whose sources this project compiles. -->
+    <NoWarn>$(NoWarn);VSTHRD200;CA1707;S6966</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The AOT (source-generated) edition of xUnit.net v3: discovery, theory data and attribute
+         configuration are resolved at build time, so no reflection is needed at run time. -->
+    <PackageReference Include="xunit.v3.aot" Version="4.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Wolfgang.AuditTrail.EntityFrameworkCore\Wolfgang.AuditTrail.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit\ColumnValueWriterTests.cs" Link="Unit\%(Filename)%(Extension)" />
+    <Compile Include="..\Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit\GlobalizationInvarianceTests.cs" Link="Unit\%(Filename)%(Extension)" />
+    <Compile Include="..\Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit\PipeDelimitedEntityKeySerializerTests.cs" Link="Unit\%(Filename)%(Extension)" />
+    <Compile Include="..\Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit\SerializerEdgeCaseTests.cs" Link="Unit\%(Filename)%(Extension)" />
+    <Compile Include="..\Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit\StringAuditValueSerializerExactFormatTests.cs" Link="Unit\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\Wolfgang.AuditTrail.TestKit.Xunit\InMemoryAuditValueBuffer.cs" Link="TestKit\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>
