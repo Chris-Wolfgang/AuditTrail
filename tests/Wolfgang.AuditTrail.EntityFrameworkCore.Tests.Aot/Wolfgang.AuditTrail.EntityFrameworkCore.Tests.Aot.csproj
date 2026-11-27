@@ -19,9 +19,7 @@
       use TestSupport/TestDbContext or InterceptorFixture): EF Core builds its model at run time,
       which throws "Model building is not supported when publishing with NativeAOT". Under Native
       AOT, EF Core needs a compiled model plus precompiled queries, which are still experimental
-      (https://learn.microsoft.com/ef/core/performance/nativeaot-and-precompiled-queries). The
-      AotSmoke harness (aot-consumer.yaml) keeps exercising that path, informationally, until it is
-      retired.
+      (https://learn.microsoft.com/ef/core/performance/nativeaot-and-precompiled-queries).
     - Serializers/StringAuditValueSerializerContractTests and anything else that derives from
       Wolfgang.AuditTrail.TestKit.Xunit's contract base: TestKit.Xunit is built on xUnit v2 and
       FsCheck.Xunit, which cannot load next to xunit.v3.aot. Only its dependency-free

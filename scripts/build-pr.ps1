@@ -146,7 +146,7 @@ if (-not $SkipTests -and $failed.Count -eq 0) {
             $tfmRaw = ("$tfmRaw" -replace '^TargetFrameworks?[=:]\s*', '') -replace '\s', ''
 
             # Mirrors pr.yaml: a project whose MSBuild evaluation says IsTestProject=false
-            # (the AotSmoke console apps; the integration projects unless
+            # (the Tests.Aot executable; the integration projects unless
             # RunIntegrationTests=true) runs no tests, so it is skipped instead of
             # tripping the zero-tests guard below.
             $isTestRaw = (dotnet msbuild $testProj.FullName -noLogo -p:Configuration=Release -getProperty:IsTestProject 2>$null |

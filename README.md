@@ -167,7 +167,7 @@ See each package's NuGet page for the authoritative per-TFM compatibility matrix
 
 ## 🧪 Testing
 
-Twelve test projects (counting the two AotSmoke projects) + the shipped TestKit contract base, spanning unit, integration, and specialty suites:
+Eleven test projects + the shipped TestKit contract base, spanning unit, integration, and specialty suites:
 
 - **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit`** — SQLite in-memory, fast, runs on every PR.
 - **`tests/Wolfgang.AuditTrail.Cli.Tests.Unit`** — CLI command/option parsing and error-path coverage.
@@ -179,7 +179,7 @@ Twelve test projects (counting the two AotSmoke projects) + the shipped TestKit 
 - **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Fuzz`** — FsCheck property-based fuzzing over the serializers, scheduled continuously.
 - **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Concurrency`** — Coyote systematic concurrency testing over the schema installer's first-time-install path.
 - **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.DocExamples`** — compiles every `<example><code>` block in the public API's XML docs against the current API on every PR.
-- **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke`** (+ `.AotSmoke.Setup`) — Native AOT publish-and-run smoke test.
+- **`tests/Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Aot`** — the serializer unit suites compiled as a Native AOT executable (xUnit v3 AOT); [`aot-smoke.yaml`](./.github/workflows/aot-smoke.yaml) publishes and runs it on linux-x64 and linux-arm64.
 - **`src/Wolfgang.AuditTrail.TestKit.Xunit`** — shipped NuGet package containing `AuditValueSerializerContractTests<TSut>`. Inherit + provide `CreateSut()` and you get FsCheck-powered property tests plus boundary-value theories for every supported CLR type.
 
 ```bash
