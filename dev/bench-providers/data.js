@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795615897757,
+  "lastUpdate": 1795785829185,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -6540,6 +6540,78 @@ window.BENCHMARK_DATA = {
             "value": 79919464,
             "unit": "ns",
             "range": "± 4939879.05990005"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "0c5632ac36d9a96326532a1e3066bebb8fa08aaa",
+          "message": "build(deps): Bump the github-actions group with 2 updates (#549)\n\nBumps the github-actions group with 2 updates: [actions/setup-go](https://github.com/actions/setup-go) and [danielpalme/ReportGenerator-GitHub-Action](https://github.com/danielpalme/reportgenerator-github-action).\n\n\nUpdates `actions/setup-go` from 7.0.0 to 7.1.0\n- [Release notes](https://github.com/actions/setup-go/releases)\n- [Commits](https://github.com/actions/setup-go/compare/b7ad1dad31e06c5925ef5d2fc7ad053ef454303e...d8cbb8045d7f43706b9177cceb36c1f91a6644d5)\n\nUpdates `danielpalme/ReportGenerator-GitHub-Action` from 5.5.12 to 5.6.0\n- [Release notes](https://github.com/danielpalme/reportgenerator-github-action/releases)\n- [Commits](https://github.com/danielpalme/reportgenerator-github-action/compare/861674232075b2c6bd1405a04c4bb9b150653e81...5f3701a41d14548c9b8e575a5c235230e515cbc0)\n\n---\nupdated-dependencies:\n- dependency-name: actions/setup-go\n  dependency-version: 7.1.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: github-actions\n- dependency-name: danielpalme/ReportGenerator-GitHub-Action\n  dependency-version: 5.6.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: github-actions\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\nCo-authored-by: Chris Wolfgang <210299580+Chris-Wolfgang@users.noreply.github.com>",
+          "timestamp": "2026-11-27T08:13:30-05:00",
+          "tree_id": "44af3e2942ff6c66b91e1ba09788bae8b15e2289",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/0c5632ac36d9a96326532a1e3066bebb8fa08aaa"
+        },
+        "date": 1795785826609,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 3751467.5,
+            "unit": "ns",
+            "range": "± 77933.0571452192"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Sqlite, BatchSize: 50, UseBulkInsert: False)",
+            "value": 24876360.666666668,
+            "unit": "ns",
+            "range": "± 1307772.8402724739"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 6143407.833333333,
+            "unit": "ns",
+            "range": "± 334872.67823657"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: SqlServer, BatchSize: 50, UseBulkInsert: False)",
+            "value": 37417018.333333336,
+            "unit": "ns",
+            "range": "± 12303786.510226732"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 9087692.5,
+            "unit": "ns",
+            "range": "± 6540179.086687076"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: PostgreSQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 39186483,
+            "unit": "ns",
+            "range": "± 12825209.598729644"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 122292770.16666667,
+            "unit": "ns",
+            "range": "± 48429087.85672439"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: Oracle, BatchSize: 50, UseBulkInsert: False)",
+            "value": 79358398.33333333,
+            "unit": "ns",
+            "range": "± 7913847.039318256"
           }
         ]
       }
