@@ -221,6 +221,24 @@ jobs:
               }
             }
             
+            # Like pr.yaml and scripts/build-pr.ps1: a project whose MSBuild evaluation says
+            # IsTestProject=false runs no tests here, so it is skipped. That covers the AotSmoke
+            # console apps, the integration projects unless RunIntegrationTests=true, and the
+            # *.Tests.Aot xunit.v3.aot executable, which aot-smoke.yaml publishes and runs instead.
+            # `dotnet test` cannot simply no-op on that last one: Microsoft.Testing.Platform fails the
+            # VSTest target on the .NET 10 SDK ("Testing with VSTest target is no longer supported").
+            # Only an explicit false skips: an empty value (a project that relies on
+            # Microsoft.NET.Test.Sdk to set it) still runs, as before.
+            $evalArgs = @($testProj.FullName, '-noLogo', '-p:Configuration=Release', '-getProperty:IsTestProject')
+            if ($frameworks.Count -gt 0 -and -not [string]::IsNullOrWhiteSpace($frameworks[0])) {
+              $evalArgs += "-p:TargetFramework=$($frameworks[0])"
+            }
+            $isTestRaw = (dotnet msbuild @evalArgs 2>$null | Where-Object { $_ -and "$_".Trim() } | Select-Object -Last 1)
+            if (("$isTestRaw" -replace '^IsTestProject[=:]\s*', '').Trim() -ieq 'false') {
+              Write-Host "⊘ Skipping $($testProj.Name): IsTestProject=false (not a dotnet test project)" -ForegroundColor Yellow
+              continue
+            }
+
             Write-Host "Detected frameworks: $($frameworks -join ', ')" -ForegroundColor Cyan
             
             foreach ($fw in $frameworks) {
