@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using Microsoft.EntityFrameworkCore;
-#if NET10_0
+#if NET10_0_OR_GREATER
 using System.Reflection;
 using System.Runtime.InteropServices;
 using IBM.Data.Db2;
@@ -66,7 +66,7 @@ public enum BenchmarkProvider
 [MemoryDiagnoser]
 public class ProviderSaveChangesBenchmarks
 {
-#if NET10_0
+#if NET10_0_OR_GREATER
     // On Linux, IBM.EntityFrameworkCore-lnx's native driver (clidriver/lib/*.so) is
     // copied nested under the build output rather than the output root, so .NET's
     // default native-library probing never finds it -- DllNotFoundException on
@@ -113,7 +113,7 @@ public class ProviderSaveChangesBenchmarks
 
 
 
-#if NET10_0
+#if NET10_0_OR_GREATER
     [Params(BenchmarkProvider.Sqlite, BenchmarkProvider.SqlServer, BenchmarkProvider.PostgreSQL, BenchmarkProvider.Oracle, BenchmarkProvider.Db2)]
 #elif NET8_0
     [Params(BenchmarkProvider.MySQL)]
@@ -154,7 +154,7 @@ public class ProviderSaveChangesBenchmarks
             // protocol's fixed handshake cost at small batches too, not just its
             // payoff at large ones.
             _options.BulkInsertRowThreshold = 1;
-#if NET10_0
+#if NET10_0_OR_GREATER
             _bulkWriter = Provider == BenchmarkProvider.PostgreSQL ? new NpgsqlCopyAuditBulkWriter() : null;
 #else
             _bulkWriter = null;
@@ -173,7 +173,7 @@ public class ProviderSaveChangesBenchmarks
     {
         switch (Provider)
         {
-#if NET10_0
+#if NET10_0_OR_GREATER
             case BenchmarkProvider.Sqlite:
                 _sqliteConnection = new Microsoft.Data.Sqlite.SqliteConnection("Filename=:memory:");
                 await _sqliteConnection.OpenAsync().ConfigureAwait(false);
@@ -223,7 +223,7 @@ public class ProviderSaveChangesBenchmarks
 
 
 
-#if NET10_0
+#if NET10_0_OR_GREATER
     private async Task StartOracleAsync()
     {
         // Pin to the same exact image as Tests.Integration's OracleFixture
@@ -272,7 +272,7 @@ public class ProviderSaveChangesBenchmarks
     [GlobalCleanup]
     public async Task GlobalCleanup()
     {
-#if NET10_0
+#if NET10_0_OR_GREATER
         if (_sqlServerContainer is not null)
         {
             await _sqlServerContainer.DisposeAsync().ConfigureAwait(false);
@@ -405,7 +405,7 @@ public class ProviderSaveChangesBenchmarks
     {
         switch (Provider)
         {
-#if NET10_0
+#if NET10_0_OR_GREATER
             case BenchmarkProvider.Sqlite:
                 builder.UseSqlite(_sqliteConnection!);
                 break;

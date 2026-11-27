@@ -18,7 +18,7 @@
       adding a provider, put it on the newest slot its package supports and
       Compile Remove its files from every other slot.
     -->
-    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net10.0;net11.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <!-- Needs Linux containers (Testcontainers). Marker for workflows that run container-backed suites only on Linux runners; nothing reads it until that workflow change is synced. -->
@@ -101,7 +101,7 @@
     Wolfgang.AuditTrail.EntityFrameworkCore.Schema.Tests.Integration so the two
     integration suites stay on the same provider builds.
   -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0' Or '$(TargetFramework)' == 'net11.0'">
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="10.23.26300" />

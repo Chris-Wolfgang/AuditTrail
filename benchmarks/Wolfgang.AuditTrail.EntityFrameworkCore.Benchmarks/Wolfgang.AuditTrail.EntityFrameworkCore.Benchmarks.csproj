@@ -11,7 +11,7 @@
       net8.0 slot once Pomelo ships an EF Core 10 stable and MySQL can rejoin the
       net10.0-only matrix.
     -->
-    <TargetFrameworks>net10.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net10.0;net8.0;net11.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <!-- CA1001 suppressed because BDN owns disposable lifecycle via [GlobalSetup]/[GlobalCleanup]. -->
@@ -31,7 +31,7 @@
   <!-- EF Core 10-only providers: Sqlite, SqlServer, PostgreSQL. Microsoft's own
        EF Core 10 relational packages are net10.0-only builds, same pattern as
        the third-party Oracle/Db2 providers found in #273/#274. -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0' Or '$(TargetFramework)' == 'net11.0'">
     <ProjectReference Include="..\..\src\Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql\Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql.csproj" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
     <!-- NU1903 transitive override — see issue #121. -->
@@ -60,7 +60,7 @@
     same as the other providers in the ItemGroup above, since this package
     requires EF Core 10, which isn't referenced on the net8.0 slot.
   -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0' Or '$(TargetFramework)' == 'net11.0'">
     <PackageReference Include="IBM.EntityFrameworkCore" Version="10.0.0.100" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <PackageReference Include="IBM.EntityFrameworkCore-lnx" Version="10.0.0.100" Condition="!$([MSBuild]::IsOSPlatform('Windows'))" />
   </ItemGroup>
