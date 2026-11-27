@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795615903731,
+  "lastUpdate": 1795785839120,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -16764,6 +16764,138 @@ window.BENCHMARK_DATA = {
             "value": 22410936.242424242,
             "unit": "ns",
             "range": "± 14877196.09132767"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "0c5632ac36d9a96326532a1e3066bebb8fa08aaa",
+          "message": "build(deps): Bump the github-actions group with 2 updates (#549)\n\nBumps the github-actions group with 2 updates: [actions/setup-go](https://github.com/actions/setup-go) and [danielpalme/ReportGenerator-GitHub-Action](https://github.com/danielpalme/reportgenerator-github-action).\n\n\nUpdates `actions/setup-go` from 7.0.0 to 7.1.0\n- [Release notes](https://github.com/actions/setup-go/releases)\n- [Commits](https://github.com/actions/setup-go/compare/b7ad1dad31e06c5925ef5d2fc7ad053ef454303e...d8cbb8045d7f43706b9177cceb36c1f91a6644d5)\n\nUpdates `danielpalme/ReportGenerator-GitHub-Action` from 5.5.12 to 5.6.0\n- [Release notes](https://github.com/danielpalme/reportgenerator-github-action/releases)\n- [Commits](https://github.com/danielpalme/reportgenerator-github-action/compare/861674232075b2c6bd1405a04c4bb9b150653e81...5f3701a41d14548c9b8e575a5c235230e515cbc0)\n\n---\nupdated-dependencies:\n- dependency-name: actions/setup-go\n  dependency-version: 7.1.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: github-actions\n- dependency-name: danielpalme/ReportGenerator-GitHub-Action\n  dependency-version: 5.6.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: github-actions\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>\nCo-authored-by: Chris Wolfgang <210299580+Chris-Wolfgang@users.noreply.github.com>",
+          "timestamp": "2026-11-27T08:13:30-05:00",
+          "tree_id": "44af3e2942ff6c66b91e1ba09788bae8b15e2289",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/0c5632ac36d9a96326532a1e3066bebb8fa08aaa"
+        },
+        "date": 1795785837717,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 513550.5164835165,
+            "unit": "ns",
+            "range": "± 34632.02127972275"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 1445300.059139785,
+            "unit": "ns",
+            "range": "± 284364.86875776114"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 738989.869047619,
+            "unit": "ns",
+            "range": "± 72523.69187247688"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 2713139.1494252873,
+            "unit": "ns",
+            "range": "± 394870.0033125276"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 607289.268292683,
+            "unit": "ns",
+            "range": "± 82586.03514619086"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 1253471.923076923,
+            "unit": "ns",
+            "range": "± 12463.172011046106"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 1335841.505376344,
+            "unit": "ns",
+            "range": "± 192359.02647323563"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 7432778.129213483,
+            "unit": "ns",
+            "range": "± 1217343.0125674915"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1845943.5333333334,
+            "unit": "ns",
+            "range": "± 28522.034829901164"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 14280758.651515152,
+            "unit": "ns",
+            "range": "± 2422694.2353981016"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 1504781.6333333333,
+            "unit": "ns",
+            "range": "± 22176.028444074043"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 11792626.959183674,
+            "unit": "ns",
+            "range": "± 1354763.5934578334"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 3876711.433333333,
+            "unit": "ns",
+            "range": "± 44609.233194592394"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 32508456.285714287,
+            "unit": "ns",
+            "range": "± 902983.4761447788"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 10279157.117021276,
+            "unit": "ns",
+            "range": "± 928621.0594569847"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 21827519.346938774,
+            "unit": "ns",
+            "range": "± 12121650.757410245"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 7914298.03,
+            "unit": "ns",
+            "range": "± 1220650.2481099647"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 21780220.36734694,
+            "unit": "ns",
+            "range": "± 14162613.486758852"
           }
         ]
       }
