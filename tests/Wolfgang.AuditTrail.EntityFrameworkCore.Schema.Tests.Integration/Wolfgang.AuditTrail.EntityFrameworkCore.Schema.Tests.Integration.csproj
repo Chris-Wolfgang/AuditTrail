@@ -13,7 +13,7 @@
       SQL Server + PostgreSQL. SQLite is covered by
       Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Unit.
     -->
-    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net10.0;net11.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
@@ -67,7 +67,7 @@
   </ItemGroup>
 
   <!-- EF Core 10 providers: SQL Server, PostgreSQL. -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0' Or '$(TargetFramework)' == 'net11.0'">
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.2" />
