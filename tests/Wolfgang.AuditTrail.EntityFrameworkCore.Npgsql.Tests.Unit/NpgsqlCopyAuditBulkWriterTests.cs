@@ -197,13 +197,14 @@ public sealed class NpgsqlCopyAuditBulkWriterTests
         var row = headerImporter.Rows[0];
         Assert.Equal(header.HeaderId, row[0]);
         Assert.Equal(header.TransactionId, row[1]);
-        Assert.Equal(header.AuditedAtUtc, row[2]);
-        Assert.Equal(header.UserId, row[3]);
-        Assert.Null(row[4]); // OnBehalfOfUserId, not set on this header
-        Assert.Equal(header.EntityType, row[5]);
-        Assert.Equal(header.EntityTable, row[6]);
-        Assert.Equal(header.EntityKey, row[7]);
-        Assert.Equal("I", row[8]); // AuditOperation.Insert -> 'I'
+        Assert.Equal(header.Ordinal, row[2]);
+        Assert.Equal(header.AuditedAtUtc, row[3]);
+        Assert.Equal(header.UserId, row[4]);
+        Assert.Null(row[5]); // OnBehalfOfUserId, not set on this header
+        Assert.Equal(header.EntityType, row[6]);
+        Assert.Equal(header.EntityTable, row[7]);
+        Assert.Equal(header.EntityKey, row[8]);
+        Assert.Equal("I", row[9]); // AuditOperation.Insert -> 'I'
     }
 
 
@@ -220,7 +221,7 @@ public sealed class NpgsqlCopyAuditBulkWriterTests
 
         writer.Write(context, [NewHeader(operation: operation)]);
 
-        Assert.Equal(expected, factory.CreatedImporters[0].Rows[0][8]);
+        Assert.Equal(expected, factory.CreatedImporters[0].Rows[0][9]);
     }
 
 
@@ -234,7 +235,7 @@ public sealed class NpgsqlCopyAuditBulkWriterTests
 
         writer.Write(context, [NewHeader(onBehalfOfUserId: "delegate@example.com")]);
 
-        Assert.Equal("delegate@example.com", factory.CreatedImporters[0].Rows[0][4]);
+        Assert.Equal("delegate@example.com", factory.CreatedImporters[0].Rows[0][5]);
     }
 
 
@@ -306,7 +307,7 @@ public sealed class NpgsqlCopyAuditBulkWriterTests
         Assert.Equal(2, factory.CopyCommands.Count);
         var headerRow = factory.CreatedImporters[0].Rows[0];
         Assert.Equal(header.HeaderId, headerRow[0]);
-        Assert.Equal("delegate@example.com", headerRow[4]);
+        Assert.Equal("delegate@example.com", headerRow[5]);
         Assert.True(factory.CreatedImporters[0].Completed);
         Assert.True(factory.CreatedImporters[1].Completed);
     }
