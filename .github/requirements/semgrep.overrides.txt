@@ -1,10 +1,22 @@
 # semgrep 1.180.0 pins the opentelemetry 1.37.0 / 0.58b0 family. opentelemetry-api
 # <= 1.45.0 has unbounded tracestate parsing (GHSA-xcq7-p3pf-p88h, Dependabot alert 38,
-# fixed in 1.45.1). semgrep.yaml installs with --no-deps, so these overrides lift the
+# fixed in 1.45.1); opentelemetry-api 1.45.1 has GHSA-mf5v-w3w3-f6cg (Dependabot alerts 48/49,
+# fixed in 1.45.2). semgrep.yaml installs with --no-deps, so these overrides lift the
 # whole family together (api/sdk/exporter at 1.45.x pull the matching 0.66b instrumentation
-# packages). Drop this file once semgrep's own pins allow opentelemetry-api >= 1.45.1.
-opentelemetry-api>=1.45.1,<2
-opentelemetry-sdk>=1.45.1,<2
-opentelemetry-exporter-otlp-proto-http>=1.45.1,<2
+# packages). Drop this file once semgrep's own pins allow opentelemetry-api >= 1.45.2.
+opentelemetry-api>=1.45.2,<2
+opentelemetry-sdk>=1.45.2,<2
+opentelemetry-exporter-otlp-proto-http>=1.45.2,<2
 opentelemetry-instrumentation-requests
 opentelemetry-instrumentation-threading
+
+# semgrep (1.180.0 through 1.184.0, the latest) pins mcp==1.29.0. mcp < 1.30.0 has three
+# advisories (GHSA-w4fh-qvv9-3v23, GHSA-5h93-6whr-6q8j, GHSA-rwrf-2pqf-9j8j; Dependabot
+# alerts 41-43 and 45-47). semgrep only imports mcp for its `semgrep mcp` server command,
+# which CI never runs, so lifting it is safe. Drop this line once semgrep's pin allows >= 1.30.0.
+mcp>=1.30.0,<2
+
+# semgrep pins wcmatch~=8.3 (still true of 1.187.0), but wcmatch <= 11.1 is affected by
+# GHSA-53pm-wgxf-c6qf (polynomial-time ReDoS on multi-star patterns).
+# Drop this override once a semgrep release allows wcmatch >= 11.2.
+wcmatch>=11.2

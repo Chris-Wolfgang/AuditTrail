@@ -11,10 +11,5 @@ history.
 Format: [MADR](https://adr.github.io/madr/) (lightweight). Start a new record by
 copying [`TEMPLATE.md`](TEMPLATE.md) and giving it the next number.
 
-| ADR | Title | Status |
-|---|---|---|
-| [0001](0001-header-detail-per-column-schema.md) | Header/detail-per-column audit schema | Accepted |
-| [0002](0002-same-transaction-atomicity.md) | Same-transaction atomicity via `IExecutionStrategy` | Accepted |
-| [0003](0003-configurable-schema-and-table-names.md) | Configurable schema and table names | Accepted |
-| [0004](0004-pipe-delimited-default-key-serializer.md) | Pipe-delimited default entity-key serializer | Accepted |
-| [0005](0005-provider-specific-writers-live-in-companion-packages.md) | Provider-specific bulk writers live in companion packages, never core | Accepted |
+See [index.md](index.md) for every record and its status, starting with
+[ADR 0000](0000-record-architecture-decisions.md), which describes the practice.

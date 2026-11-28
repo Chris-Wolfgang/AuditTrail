@@ -142,10 +142,12 @@ two configurations show side-by-side in the chart.
 For very large bulk operations (thousands of rows per save), even `MaxBatchSize`
 maxed out won't fully close the gap. The Postgres-native path for bulk insert
 is the `COPY` streaming protocol, exposed through Npgsql's
-`NpgsqlConnection.BeginBinaryImport`. A future provider-specific code path in
-`AuditCapture.AddAuditEntities` (or an opt-in `AuditOptions.UseBulkInsertWhenAvailable`
-flag) could route audit writes through `COPY` once the row count crosses a
-threshold. That's a v1.1+ feature; track via the same #26 thread.
+`NpgsqlConnection.BeginBinaryImport`. That path ships (since 0.4.0) as the
+`Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql` package: register
+`NpgsqlCopyAuditBulkWriter` with `services.AddNpgsqlAuditBulkWriter()` and set
+`AuditOptions.BulkInsertRowThreshold`; saves whose pending header count meets the
+threshold write their audit rows through `COPY`, and smaller saves keep using the
+standard EF Core insert path.
 
 ---
 

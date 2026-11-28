@@ -124,7 +124,7 @@ Three end-to-end samples ship in [`examples/`](./examples):
 
 - [Console](./examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.Console) — minimal SQLite demo that prints the audit history.
 - [Web API](./examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.WebApi) — ASP.NET Core minimal API showing the on-behalf-of pattern (service account as `UserId`, authenticated human as `OnBehalfOfUserId`).
-- [AdventureWorks](./examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.AdventureWorks) — SQL Server demo (via Testcontainers) against the well-known AdventureWorks sample schema, covering Insert/Update and a secondary-row add-then-remove scenario.
+- [AdventureWorks](./examples/Wolfgang.AuditTrail.EntityFrameworkCore.Example.AdventureWorks) — SQL Server demo (via Testcontainers) against the well-known AdventureWorks sample schema, covering Insert/Update and a secondary-row add-then-remove scenario. Installs only the audit tables into an existing database with `MigrateAuditSchemaAsync()`. Needs Docker to run.
 
 ---
 
@@ -152,16 +152,18 @@ This repo ships four NuGet packages, each with its own TFM matrix:
 
 | Package | Target Frameworks |
 |---|---|
-| `Wolfgang.AuditTrail.Abstractions` | `netstandard2.0`, `net8.0`, `net10.0` |
-| `Wolfgang.AuditTrail.EntityFrameworkCore` | `net6.0`, `net8.0`, `net10.0` |
-| `Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql` | `net8.0`, `net10.0` |
-| `Wolfgang.AuditTrail.TestKit.Xunit` | `netstandard2.0`, `net8.0`, `net10.0` |
+| `Wolfgang.AuditTrail.Abstractions` | `netstandard2.0`, `net8.0`, `net10.0`, `net11.0` |
+| `Wolfgang.AuditTrail.EntityFrameworkCore` | `net6.0`, `net8.0`, `net10.0`, `net11.0` |
+| `Wolfgang.AuditTrail.EntityFrameworkCore.Npgsql` | `net8.0`, `net10.0`, `net11.0` |
+| `Wolfgang.AuditTrail.TestKit.Xunit` | `netstandard2.0`, `net8.0`, `net10.0`, `net11.0` |
 
 The `audittrail` CLI (`src/Wolfgang.AuditTrail.Cli`) targets `net10.0` and is built from source; it isn't published to NuGet (see [Packages](#-packages)).
 
-EF Core 6, 7, 8, 9, and 10 are all supported (the library targets the LTS `net6.0` / `net8.0` / `net10.0`; an EF Core 7 consumer running on `net6.0+` or `net7.0+` resolves the appropriate TFM automatically).
+EF Core 6, 7, 8, 9, and 10 are all supported (the library targets the LTS `net6.0` / `net8.0` / `net10.0`, plus `net11.0`, which uses the EF Core 10 packages; an EF Core 7 consumer running on `net6.0+` or `net7.0+` resolves the appropriate TFM automatically).
 
 See each package's NuGet page for the authoritative per-TFM compatibility matrix.
+
+**Test matrix:** every pull request runs the test suite on five legs: linux-x64, linux-arm64 (`ubuntu-24.04-arm`), windows-x64, windows-arm64 (`windows-11-arm`) and macos-arm64. Each leg runs every test target framework that its runtime supports: the two x64 legs run all of them, and the two ARM64 legs and macOS run net6.0 and later. The Docker-backed integration suites run on linux-x64 only. The Native AOT smoke test publishes and runs a native binary on linux-x64 and linux-arm64.
 
 ## 🧪 Testing
 
