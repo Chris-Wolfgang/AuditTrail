@@ -31,7 +31,7 @@ root/
 │   ├── Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Fuzz/        # FsCheck property-based fuzzing
 │   ├── Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Concurrency/ # Coyote systematic concurrency testing
 │   ├── Wolfgang.AuditTrail.EntityFrameworkCore.Tests.DocExamples/ # Compiles every XML-doc <example> block
-│   └── Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke(.Setup)/  # Native AOT publish-and-run smoke test
+│   └── Wolfgang.AuditTrail.EntityFrameworkCore.Tests.Aot/         # Serializer unit suites as a Native AOT executable
 ├── benchmarks/Wolfgang.AuditTrail.EntityFrameworkCore.Benchmarks/
 ├── examples/    # Console, WebApi, AdventureWorks (SQL Server via Testcontainers) sample apps
 ├── samples/     # ShadowWorkload: long-running workload used by shadow.yaml
