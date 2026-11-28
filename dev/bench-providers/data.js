@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795878003871,
+  "lastUpdate": 1795878006946,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Provider Benchmarks (net10.0)": [
@@ -9818,6 +9818,42 @@ window.BENCHMARK_DATA = {
             "value": 97567649.33333333,
             "unit": "ns",
             "range": "± 49851571.856745765"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "1d7c0984fa11de84531f725bbbfd0c76b05455d4",
+          "message": "ci: skip projects whose IsTestProject is explicitly false (release.yaml, pr.yaml Stages 1-3) (#554)\n\n* ci(release): skip projects whose IsTestProject is explicitly false\n\nThe release test loop ran `dotnet test` on every project under tests/. That\nis a no-op for the AotSmoke console apps, but a *.Tests.Aot project on\nxunit.v3.aot is a Microsoft.Testing.Platform app, and on the .NET 10 SDK the\nVSTest target fails it (\"Testing with VSTest target is no longer\nsupported\"). Skip a project when MSBuild evaluates IsTestProject to false,\nlike pr.yaml and build-pr.ps1 already do. An empty value still runs.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* ci(pr): skip test projects whose IsTestProject is explicitly false in Stages 1-3\n\nStages 4 and 5 already skip a project under ./tests that sets\n<IsTestProject>false</IsTestProject> and fail one with neither that\nopt-out nor Microsoft.NET.Test.Sdk. Stages 1-3 did neither, so\n`dotnet test` ran on the Tests.Aot console app (#555), which\nMicrosoft.Testing.Platform refuses on the .NET 10 SDK. Stages 1 and 3\nget the Stage 4 bash block and Stage 2 gets repo-template's pwsh block.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-28T09:52:34-05:00",
+          "tree_id": "57f0173ad10b9e3fbaf8cca5013f50bc77b6f364",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/1d7c0984fa11de84531f725bbbfd0c76b05455d4"
+        },
+        "date": 1795878005884,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_without_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 5600437.5,
+            "unit": "ns",
+            "range": "± 643102.3016542547"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.ProviderSaveChangesBenchmarks.Insert_with_audit(Provider: MySQL, BatchSize: 50, UseBulkInsert: False)",
+            "value": 28636448,
+            "unit": "ns",
+            "range": "± 1887119.7497935842"
           }
         ]
       }
