@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795791934296,
+  "lastUpdate": 1795878011695,
   "repoUrl": "https://github.com/Chris-Wolfgang/AuditTrail",
   "entries": {
     "Audit Interceptor Benchmarks": [
@@ -17028,6 +17028,138 @@ window.BENCHMARK_DATA = {
             "value": 21728155.20707071,
             "unit": "ns",
             "range": "± 15081536.914333656"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "210299580+Chris-Wolfgang@users.noreply.github.com",
+            "name": "Chris Wolfgang",
+            "username": "Chris-Wolfgang"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "1d7c0984fa11de84531f725bbbfd0c76b05455d4",
+          "message": "ci: skip projects whose IsTestProject is explicitly false (release.yaml, pr.yaml Stages 1-3) (#554)\n\n* ci(release): skip projects whose IsTestProject is explicitly false\n\nThe release test loop ran `dotnet test` on every project under tests/. That\nis a no-op for the AotSmoke console apps, but a *.Tests.Aot project on\nxunit.v3.aot is a Microsoft.Testing.Platform app, and on the .NET 10 SDK the\nVSTest target fails it (\"Testing with VSTest target is no longer\nsupported\"). Skip a project when MSBuild evaluates IsTestProject to false,\nlike pr.yaml and build-pr.ps1 already do. An empty value still runs.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n* ci(pr): skip test projects whose IsTestProject is explicitly false in Stages 1-3\n\nStages 4 and 5 already skip a project under ./tests that sets\n<IsTestProject>false</IsTestProject> and fail one with neither that\nopt-out nor Microsoft.NET.Test.Sdk. Stages 1-3 did neither, so\n`dotnet test` ran on the Tests.Aot console app (#555), which\nMicrosoft.Testing.Platform refuses on the .NET 10 SDK. Stages 1 and 3\nget the Stage 4 bash block and Stage 2 gets repo-template's pwsh block.\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n\n---------\n\nCo-authored-by: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-11-28T09:52:34-05:00",
+          "tree_id": "57f0173ad10b9e3fbaf8cca5013f50bc77b6f364",
+          "url": "https://github.com/Chris-Wolfgang/AuditTrail/commit/1d7c0984fa11de84531f725bbbfd0c76b05455d4"
+        },
+        "date": 1795878010613,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 1)",
+            "value": 333265.375,
+            "unit": "ns",
+            "range": "± 9566.077386500494"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 1)",
+            "value": 722735.1428571428,
+            "unit": "ns",
+            "range": "± 12801.165677733854"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 1)",
+            "value": 440221.93333333335,
+            "unit": "ns",
+            "range": "± 8144.55318836431"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 1)",
+            "value": 1344262.857142857,
+            "unit": "ns",
+            "range": "± 10904.847276870416"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 1)",
+            "value": 431869.96,
+            "unit": "ns",
+            "range": "± 11316.391196254513"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 1)",
+            "value": 862665.5,
+            "unit": "ns",
+            "range": "± 13103.113844753523"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 10)",
+            "value": 605321.0333333333,
+            "unit": "ns",
+            "range": "± 10183.327675783636"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 10)",
+            "value": 2635999.076923077,
+            "unit": "ns",
+            "range": "± 10811.813110833435"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 10)",
+            "value": 1027541,
+            "unit": "ns",
+            "range": "± 12421.162710347331"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 10)",
+            "value": 9294801.232323233,
+            "unit": "ns",
+            "range": "± 1609036.8575827312"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 10)",
+            "value": 862818.6538461539,
+            "unit": "ns",
+            "range": "± 3575.998831239412"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 10)",
+            "value": 5825127.659340659,
+            "unit": "ns",
+            "range": "± 919603.793371583"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_without_audit(BatchSize: 50)",
+            "value": 1774049.7333333334,
+            "unit": "ns",
+            "range": "± 24456.012767727247"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Insert_with_audit(BatchSize: 50)",
+            "value": 14569716.783505155,
+            "unit": "ns",
+            "range": "± 2152304.4279524474"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_without_audit(BatchSize: 50)",
+            "value": 3837477.714285714,
+            "unit": "ns",
+            "range": "± 22872.426710001622"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.Lifecycle_with_audit(BatchSize: 50)",
+            "value": 19421643.48,
+            "unit": "ns",
+            "range": "± 9034752.427951796"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_without_audit(BatchSize: 50)",
+            "value": 2800017.533333333,
+            "unit": "ns",
+            "range": "± 16048.484890065687"
+          },
+          {
+            "name": "Wolfgang.AuditTrail.Benchmarks.SaveChangesBenchmarks.MixedStates_per_save_with_audit(BatchSize: 50)",
+            "value": 18806523.35,
+            "unit": "ns",
+            "range": "± 9794398.56546987"
           }
         ]
       }
