@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Wolfgang.AuditTrail.Entities;
 
 namespace Wolfgang.AuditTrail.Schema;
 
@@ -47,33 +48,56 @@ internal sealed class AuditSchemaUpgrades : IAuditSchemaUpgrades
     {
         ArgumentNullException.ThrowIfNull(context);
 
-        // Version 1 is the only audit schema this library has ever installed,
-        // so there are no steps yet and every call lands on the throw below.
-        // A first step is a branch on fromVersion returning the operations that
-        // take that version to the next one -- for a new column, an
-        // AddColumnOperation whose Table and Schema come from the context
-        // rather than from AuditOptions, because the caller may have renamed
-        // either.
+        // Version 2 adds AuditHeader.Ordinal: the 0-based position of a header within
+        // its transaction. Table and Schema come from the context rather than from
+        // AuditOptions, because the caller may have renamed either since install.
         //
-        // Two constraints on such a column, both measured against SQL Server,
-        // PostgreSQL, MySQL and SQLite rather than assumed:
+        // The column is a plain NOT NULL int with a default, not a database-generated
+        // one, and both halves of that matter. The default is required at all: the
+        // target is an existing, populated table, and ADD COLUMN NOT NULL without one
+        // fails on every row already there. And generation must stay client-side --
+        // marking the property ValueGeneratedOnAdd and letting each provider emit its
+        // own identity syntax looks portable and is not. Measured against SQL Server,
+        // PostgreSQL, MySQL and SQLite: MySQL rejects a non-key AUTO_INCREMENT column
+        // outright, even on a fresh CREATE TABLE; SQLite has no identity concept for a
+        // non-primary-key column, so EF omits it from INSERTs expecting generation that
+        // never happens and the write fails at runtime; and PostgreSQL does backfill
+        // existing rows, but not in insert order, so historical rows would get values
+        // that misstate their order rather than merely being absent. AuditCapture
+        // assigns it instead, beside HeaderId.
         //
-        // A non-nullable column must carry a DefaultValue. The target is an
-        // existing, populated table, and ADD COLUMN NOT NULL without a default
-        // fails on every row already there.
-        //
-        // It must not rely on the database to generate per-row values. Marking
-        // the property ValueGeneratedOnAdd and letting the provider emit its
-        // own identity syntax looks portable and is not: MySQL rejects a
-        // non-key AUTO_INCREMENT column outright, even on a fresh CREATE TABLE,
-        // so it would need an extra index led by that column; SQLite has no
-        // identity concept for a non-primary-key column, so EF omits the column
-        // from INSERTs expecting generation that never happens and the write
-        // fails at runtime; and PostgreSQL does backfill existing rows but not
-        // in insert order, so historical rows get values that misstate their
-        // order rather than merely being absent. Assign such values in
-        // AuditCapture, where HeaderId is already assigned, and let the column
-        // be a plain NOT NULL with a default that marks pre-upgrade rows.
+        // Existing rows therefore read 0, which is why AuditHeader.Ordinal documents 0
+        // as "unknown" as much as "first" on pre-upgrade data.
+        if (fromVersion == 1)
+        {
+            return new MigrationOperation[]
+            {
+                new AddColumnOperation
+                {
+                    Table      = context.HeaderTable,
+                    Schema     = context.Schema,
+                    Name       = nameof(AuditHeader.Ordinal),
+                    ClrType    = typeof(int),
+                    IsNullable = false,
+
+                    // Also backfills every pre-existing row.
+                    DefaultValue = 0,
+                },
+
+                // Matches the model's (TransactionId, Ordinal) index so an upgraded
+                // database can replay a save in order without a sort, exactly as a
+                // fresh install can. The name follows EF's convention for the index
+                // this step creates, so the two paths agree.
+                new CreateIndexOperation
+                {
+                    Table   = context.HeaderTable,
+                    Schema  = context.Schema,
+                    Name    = $"IX_{context.HeaderTable}_{nameof(AuditHeader.TransactionId)}_{nameof(AuditHeader.Ordinal)}",
+                    Columns = new[] { nameof(AuditHeader.TransactionId), nameof(AuditHeader.Ordinal) },
+                },
+            };
+        }
+
         throw new NotSupportedException
         (
             $"No upgrade step is defined from audit schema version {fromVersion}. " +

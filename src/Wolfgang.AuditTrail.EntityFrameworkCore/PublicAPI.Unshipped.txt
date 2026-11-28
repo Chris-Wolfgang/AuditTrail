@@ -1,1 +1,3 @@
 #nullable enable
+*REMOVED*const Wolfgang.AuditTrail.Schema.AuditSchemaConstants.CurrentSchemaVersion = 1 -> int
+const Wolfgang.AuditTrail.Schema.AuditSchemaConstants.CurrentSchemaVersion = 2 -> int

@@ -1,4 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Wolfgang.AuditTrail.Schema;
 
@@ -39,6 +41,27 @@ internal sealed class StubSchemaUpgrades : IAuditSchemaUpgrades
     public IReadOnlyList<MigrationOperation> StepFrom(int fromVersion, AuditSchemaUpgradeContext context)
     {
         return _step(fromVersion, context);
+    }
+
+
+
+    /// <summary>
+    /// Installs the audit tables and stamps schema version 1, through the real
+    /// migrator, version store and provider DDL. The shipping migrator cannot be
+    /// used for this any more: a fresh install lands on the current version. The
+    /// tables carry the current model's shape; the upgrade tests only need a
+    /// version-1 row and the audit tables to alter, because they apply synthetic
+    /// steps.
+    /// </summary>
+    public static Task InstallVersionOneAsync(AuditMigrationsDbContext context)
+    {
+        var versionOne = new StubSchemaUpgrades
+        (
+            currentVersion: 1,
+            step: (_, _) => throw new InvalidOperationException("A fresh install requests no step.")
+        );
+
+        return AuditSchemaMigrator.RunAsync(context, versionOne, dryRun: false, CancellationToken.None);
     }
 
 
