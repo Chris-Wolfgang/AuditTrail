@@ -50,7 +50,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-    <PackageReference Include="coverlet.collector" Version="10.1.0">
+    <PackageReference Include="coverlet.collector" Version="10.1.1">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Xunit.SkippableFact" Version="1.5.85" />
@@ -81,9 +81,9 @@
       fixed in 2.6.1) and fails restore under NuGetAudit warnings-as-errors.
       Pin the patched release; drop this once Pomelo floors it itself.
     -->
-    <PackageReference Include="MySqlConnector" Version="2.6.2" />
+    <PackageReference Include="MySqlConnector" Version="3.0.0" />
 
-    <PackageReference Include="Testcontainers.MySql" Version="4.16.0" />
+    <PackageReference Include="Testcontainers.MySql" Version="4.17.0" />
 
     <Compile Remove="SqlServerAuditTests.cs" />
     <Compile Remove="PostgresAuditTests.cs" />
@@ -129,10 +129,10 @@
     <PackageReference Include="IBM.EntityFrameworkCore" Version="10.0.0.100" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
     <PackageReference Include="IBM.EntityFrameworkCore-lnx" Version="10.0.0.100" Condition="!$([MSBuild]::IsOSPlatform('Windows'))" />
 
-    <PackageReference Include="Testcontainers.MsSql" Version="4.16.0" />
-    <PackageReference Include="Testcontainers.PostgreSql" Version="4.16.0" />
-    <PackageReference Include="Testcontainers.Oracle" Version="4.16.0" />
-    <PackageReference Include="Testcontainers.Db2" Version="4.16.0" />
+    <PackageReference Include="Testcontainers.MsSql" Version="4.17.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.17.0" />
+    <PackageReference Include="Testcontainers.Oracle" Version="4.17.0" />
+    <PackageReference Include="Testcontainers.Db2" Version="4.17.0" />
 
     <Compile Remove="MySqlAuditTests.cs" />
     <Compile Remove="TestSupport\MySqlFixture.cs" />
