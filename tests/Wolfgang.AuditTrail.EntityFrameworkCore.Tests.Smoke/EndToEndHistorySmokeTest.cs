@@ -28,6 +28,11 @@ public class EndToEndHistorySmokeTest
         };
         var userProvider = new StaticAuditUserProvider("smoke-user");
 
+        // Every save stamps AuditHeader.AuditedAtUtc from this clock, one second
+        // apart, so ordering by AuditedAtUtc reproduces the save order exactly
+        // (HeaderId is a random Guid and cannot break a tie).
+        var clock = new SteppingTimeProvider(new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero), TimeSpan.FromSeconds(1));
+
         DbConnection connection = new SqliteConnection("Filename=:memory:");
         await connection.OpenAsync();
         try
@@ -37,7 +42,8 @@ public class EndToEndHistorySmokeTest
                     .UseSqlite(connection)
                     .Options,
                 userProvider,
-                options);
+                options,
+                clock);
 
             await using (var seed = NewContext())
             {
@@ -45,14 +51,6 @@ public class EndToEndHistorySmokeTest
             }
 
             int orderId;
-
-            // Each save below stamps AuditHeader.AuditedAtUtc with DateTime.UtcNow at
-            // microsecond precision (HasPrecision(6)). Without the small Task.Delay
-            // calls below, two consecutive saves on a fast machine can land in the
-            // same microsecond — the order-by tie-breaker (HeaderId is a random Guid,
-            // not chronological) then leaves the assertion sequence non-deterministic.
-            // 10ms is comfortably above any provider's tick granularity.
-            const int SaveSpacingMs = 10;
 
             // 1. Insert.
             await using (var ctx = NewContext())
@@ -62,7 +60,6 @@ public class EndToEndHistorySmokeTest
                 await ctx.SaveChangesAsync();
                 orderId = order.OrderId;
             }
-            await Task.Delay(SaveSpacingMs);
 
             // 2. Update status: Pending -> Processing.
             await using (var ctx = NewContext())
@@ -71,7 +68,6 @@ public class EndToEndHistorySmokeTest
                 order.Status = "Processing";
                 await ctx.SaveChangesAsync();
             }
-            await Task.Delay(SaveSpacingMs);
 
             // 3. Update total (price adjustment).
             await using (var ctx = NewContext())
@@ -80,7 +76,6 @@ public class EndToEndHistorySmokeTest
                 order.Total = 95m;
                 await ctx.SaveChangesAsync();
             }
-            await Task.Delay(SaveSpacingMs);
 
             // 4. Update status: Processing -> Shipped.
             await using (var ctx = NewContext())
@@ -89,7 +84,6 @@ public class EndToEndHistorySmokeTest
                 order.Status = "Shipped";
                 await ctx.SaveChangesAsync();
             }
-            await Task.Delay(SaveSpacingMs);
 
             // 5. Delete.
             await using (var ctx = NewContext())
@@ -100,11 +94,8 @@ public class EndToEndHistorySmokeTest
             }
 
             await using var verify = NewContext();
-            // With 10ms spacing between saves, AuditedAtUtc is guaranteed unique
-            // per header for this test, so no tie-breaker is needed. The previous
-            // ThenBy(HeaderId) was misleading: HeaderId is a random Guid, not a
-            // chronological successor, so it would order ties incorrectly any time
-            // two headers actually did tie. Better to make ties impossible.
+            // The stepping clock makes AuditedAtUtc unique per header, so no
+            // tie-breaker is needed.
             var history = await verify
                 .Set<AuditHeader>()
                 .Include(h => h.Details)

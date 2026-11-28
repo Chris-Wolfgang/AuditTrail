@@ -7,6 +7,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
+    <!-- A console app, not a test project: the CI test stages skip a project under tests/ only on
+         this explicit opt-out (they fail one with neither Microsoft.NET.Test.Sdk nor the opt-out). -->
+    <IsTestProject>false</IsTestProject>
     <RootNamespace>Wolfgang.AuditTrail.AotSmoke</RootNamespace>
     <AssemblyName>Wolfgang.AuditTrail.EntityFrameworkCore.AotSmoke.Setup</AssemblyName>
 
@@ -57,7 +60,7 @@
       transitively via Microsoft.EntityFrameworkCore.Tasks; pinning below
       that trips NU1605 (package downgrade, warning as error).
     -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.15">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -68,8 +71,8 @@
       CVE-2026-96960 denial-of-service advisories, which trip NU1902/NU1903
       (warning as error). Override both to the patched 10.0.x release.
     -->
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.13" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="11.0.0" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="11.0.0" />
   </ItemGroup>
 
 </Project>

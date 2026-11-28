@@ -280,4 +280,24 @@ public class MigrateTests
         Assert.Equal(ExitCode.ApplicationError, exit);
         Assert.Contains("kaboom", console.StdErr, StringComparison.Ordinal);
     }
+
+
+
+    [Fact]
+    public async Task OnExecuteAsync_when_cancelled_returns_cancelled_exit_code()
+    {
+        var migrate = new Migrate
+        {
+            ConnectionString = "Server=.;Database=x",
+            Provider         = "sqlserver",
+        };
+        var cancelled = new CancellationToken(canceled: true);
+        var runner = new CapturingMigrateRunner { ThrowOnRun = new OperationCanceledException(cancelled) };
+        var console = new StringConsole();
+
+        var exit = await migrate.OnExecuteAsync(console, NullLogger<Migrate>.Instance, runner, cancelled);
+
+        Assert.Equal(ExitCode.Cancelled, exit);
+        Assert.Contains("Cancelled.", console.StdErr, StringComparison.Ordinal);
+    }
 }

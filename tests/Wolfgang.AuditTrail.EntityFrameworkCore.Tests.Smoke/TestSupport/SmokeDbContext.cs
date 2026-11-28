@@ -1,3 +1,4 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 
 namespace Wolfgang.AuditTrail.Tests.Smoke.TestSupport;
@@ -8,9 +9,10 @@ public class SmokeDbContext : AuditingDbContext
     (
         DbContextOptions<SmokeDbContext> options,
         IAuditUserProvider userProvider,
-        AuditOptions auditOptions
+        AuditOptions auditOptions,
+        TimeProvider timeProvider
     )
-        : base(options, userProvider, auditOptions)
+        : base(options, userProvider, auditOptions, bulkWriter: null, timeProvider, guidProvider: null)
     {
     }
 

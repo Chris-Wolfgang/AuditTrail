@@ -69,7 +69,7 @@ internal class Program
 
 
     /// <summary>
-    /// Invoked when the user runs <c>audit</c> with no subcommand. Prints help.
+    /// Invoked when the user runs <c>audittrail</c> with no subcommand. Prints help.
     /// </summary>
     internal int OnExecute
     (

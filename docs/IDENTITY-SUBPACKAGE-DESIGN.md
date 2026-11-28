@@ -7,7 +7,7 @@
 Today those apps fall back to the `AuditSaveChangesInterceptor` path. That works, but carries documented caveats:
 
 - Doesn't preserve `SaveChanges(acceptAllChangesOnSuccess: false)` (throws at runtime).
-- Has a narrow cancellation-cleanup gap on EF Core 7+ (the `SaveChangesCanceledAsync` callback the interceptor doesn't implement because that method isn't on the EF Core 6 interface surface).
+- Has a narrow cancellation-cleanup gap on the `net6.0` (EF Core 6) target only: `SaveChangesCanceledAsync` isn't on the EF Core 6 interceptor surface, so cleanup there runs through `SaveChangesFailedAsync`. On `net8.0`+ the interceptor implements `SaveChangesCanceledAsync`.
 - Requires consumers to remember `modelBuilder.ApplyAuditing(options)` in `OnModelCreating`.
 
 The Identity sub-package eliminates all three: it ships pre-derived flavors of every Identity base so Identity users get the same one-word swap that vanilla `DbContext` users get.
